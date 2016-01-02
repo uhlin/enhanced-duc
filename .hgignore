@@ -1,0 +1,4 @@
+syntax: glob
+
+educ_noip
+*.o
