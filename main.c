@@ -154,7 +154,7 @@ main(int argc, char *argv[])
 	bool updateRequest_after_30m = false;
 	
 	if (net_connect() == 0 && make_http_get_request() == 0) {
-	    char buf[1000];
+	    char buf[2000];
 
 	    BZERO(buf, sizeof buf);
 	    
@@ -224,9 +224,9 @@ process_options(int argc, char *argv[])
 	case MISSING_OPTARG:
 	case UNRECOGNIZED_OPTION:
 	    if (opt == MISSING_OPTARG) {
-		fprintf(stderr, "Option '%c' requires an argument.\n", opt);
+		fprintf(stderr, "Option '%c' requires an argument.\n", optopt);
 	    } else {
-		fprintf(stderr, "Unrecognized option '%c'.\n", opt);
+		fprintf(stderr, "Unrecognized option '%c'.\n", optopt);
 	    }
 	    /*FALLTHROUGH*/
 	case 'h':
@@ -557,6 +557,8 @@ server_response(const char *buf)
 	char		*str;
 	response_code_t	 code;
     } responses[] = {
+	{ "good",     CODE_GOOD       },
+	{ "nochg",    CODE_NOCHG      },
 	{ "nohost",   CODE_NOHOST     },
 	{ "badauth",  CODE_BADAUTH    },
 	{ "badagent", CODE_BADAGENT   },
