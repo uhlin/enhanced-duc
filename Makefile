@@ -39,5 +39,5 @@ clean:
 	$(Q) $(RM) $(OUT_NAME) $(OBJS)
 
 install: $(OUT_NAME)
-	$(E) "  INSTALL"
+	$(E) "  INSTALL " $(OUT_NAME)
 	$(Q) $(INSTALL) $(OUT_NAME) $(BIN_DIR)/$(OUT_NAME)
