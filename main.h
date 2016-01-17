@@ -1,10 +1,19 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <stdbool.h>
+
 extern const char g_programName[];
 extern const char g_programVersion[];
 extern const char g_programAuthor[];
 extern const char g_maintainerEmail[];
+
+struct program_options {
+    bool want_usage;
+    bool want_create_config_file;
+    bool want_debug;
+    bool want_daemon;
+};
 
 typedef enum {
     CODE_GOOD,
