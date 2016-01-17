@@ -113,29 +113,11 @@ main(int argc, char *argv[])
     process_options(argc, argv);
 
     if (run_in_the_background) {
-#define FORK_FAILED -1
-#define VALUE_CHILD_PROCESS 0
-	
-	switch (fork()) {
-	case FORK_FAILED:
-	    log_warn(errno, "fork failed");
-	    return (1);
-	case VALUE_CHILD_PROCESS:
-	{
-	    if (setsid() == -1) {
-		log_warn(errno, "setsid failed");
-		return (1);
-	    }
+	extern void Daemonize(void); /* Prototype. */
 
-	    log_init(); /* Calls to the log functions before this log to stderr/stdout. */
-	    if (redirect_standard_streams() != REDIR_OK) log_warn(0, "redirect_standard_streams failed");
-	    
-	    break;
-	}
-	default:
-	    _exit(0);
-	}
-    } /* run_in_the_background */
+	/* Detach the program from the controlling terminal and continue execution. */
+	Daemonize();
+    }
 
     if (sigHand_init() == -1)           log_warn(0, "sigHand_init error");
     if (atexit(program_clean_up) == -1) log_warn(errno, "atexit error");
