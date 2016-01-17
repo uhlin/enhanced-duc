@@ -99,7 +99,7 @@ log_debug(const char *fmt, ...)
 static void
 log_doit(int errCode, int priority, const char *fmt, va_list ap)
 {
-    char buf[2000];
+    char buf[2000] = "";
 
     vsnprintf(buf, sizeof buf, fmt, ap);
 
