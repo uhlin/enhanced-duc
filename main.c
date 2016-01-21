@@ -19,11 +19,8 @@
 #include <assert.h>
 #include <errno.h>
 #include <pwd.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -36,7 +33,10 @@
 #include "various.h"
 #include "wrapper.h"
 
-#define SHOW_OPTIONS_FOR_MAINTAINERS 1
+#define SHOW_OPTIONS_FOR_MAINTAINERS	1
+#define DUC_PERMITTED_HOSTS_LIMIT	10	/* Qty of hostnames allowed. */
+#define DUC_PATH_MAX			500	/* Max bytes in a pathname. */
+#define UID_SUPER_USER			0
 
 const char g_programName[]     = "Enhanced DUC";
 const char g_programVersion[]  = "v1.0";
@@ -47,7 +47,7 @@ static const char *help_text[] = {
     "\n",
     "Options:\n",
     "  -h           Print this help text.\n",
-    "  -c           Create a config file and exit. Option wants root privs.\n",
+    "  -c           Create a config file and exit. Will prompt.\n",
     "  -x <path>    Load a config file from a custom location.\n",
 #if SHOW_OPTIONS_FOR_MAINTAINERS
     "  -D           D for debug log/messages.\n",
@@ -56,11 +56,10 @@ static const char *help_text[] = {
     "\n",
 };
 
-static char       explicit_config[500]      = "";
-static const char config_default_location[] = "/etc/educ_noip.conf";
-static bool       run_in_the_background     = false;
-static const char educ_noip_user[]          = "nobody";
-static const char educ_noip_dir[]           = "/tmp";
+static const char educ_noip_user[] = "nobody";
+static const char educ_noip_dir[]  = "/tmp";
+
+static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = {};
 
 static struct config_default_values_tag {
     char		*setting_name;
@@ -75,8 +74,8 @@ static struct config_default_values_tag {
     { "password", TYPE_STRING, "ChangeMe", NULL,
       "Your password." },
 
-    { "hostname", TYPE_STRING, "host.domain.com", NULL,
-      "The hostname to be updated." },
+    { "hostname", TYPE_STRING, "host1.domain.com|host2.domain.com", NULL,
+      "The hostname to be updated. Multiple hosts are separated with a vertical bar." },
 
     { "ip_addr", TYPE_STRING, "WAN_address", NULL,
       "Associate the hostname with this IP address. If the special value WAN_address\n"
@@ -93,109 +92,78 @@ static struct config_default_values_tag {
       "underlying code will fallback to 600 to avoid flooding the server with requests." },
 };
 
-static void             process_options       (int argc, char *argv[]);
+static void             process_options       (int, char *[], struct program_options *, char *, size_t);
 static void             usage                 (void) NORETURN;
 static void             create_config_file    (const char *path);
 static char            *get_answer            (const char *, enum setting_type, const char *);
 static bool             is_setting_ok         (const char *value, enum setting_type);
 static void             read_config_file      (const char *path);
+static void             turn_on_debug_mode    (void);
 static void             force_priv_drop       (void);
 static bool             is_recognized_setting (const char *setting_name);
 static int              install_setting       (const char *setting_name, const char *value);
-static int              make_http_get_request (void);
-static response_code_t  server_response       (const char *buf);
+static void             start_update_cycle          (void);
+static void             hostname_array_init         (void);
+static void             hostname_array_destroy      (void);
+static void             hostname_array_assign       (void);
+static bool             update_host                 (const char *which_host, const char *to_ip, bool *);
+static int              send_update_request         (const char *which_host, const char *to_ip);
+static int              store_server_resp_in_buffer (char **buf);
+static response_code_t  server_response             (const char *buf);
 
 int
 main(int argc, char *argv[])
 {
-    const char *conf;
+    struct program_options opt = {
+	.want_usage		 = false,
+	.want_create_config_file = false,
+	.want_debug		 = false,
+	.want_daemon		 = false,
+    };
+    char conf[DUC_PATH_MAX] =
+	"/etc/educ_noip.conf"; /* process_options change the value if -x is passed. */
     
-    process_options(argc, argv);
+    if (sigHand_init() == -1)
+	log_warn(0, "Initialization of signal handling failed");
+    if (atexit(program_clean_up) == -1)
+	log_warn(errno, "Failed to register a clean up function");
+    
+    process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
+    
+    if (opt.want_usage)
+	usage(); /* Doesn't return. */
+    if (opt.want_create_config_file) {
+	char *path = get_answer("Create where?", TYPE_STRING, &conf[0]);
+	
+	create_config_file(path);
+	free(path);
+	exit(0);
+    }
+    if (opt.want_debug)
+	turn_on_debug_mode();
+    if (opt.want_daemon) {
+	extern void Daemonize(void);
 
-    if (run_in_the_background) {
-	extern void Daemonize(void); /* Prototype. */
-
-	/* Detach the program from the controlling terminal and continue execution. */
+	/* Detach the program from the controlling terminal and continue execution... */
 	Daemonize();
     }
-
-    if (sigHand_init() == -1)           log_warn(0, "sigHand_init error");
-    if (atexit(program_clean_up) == -1) log_warn(errno, "atexit error");
     
     log_msg("%s %s has started.", g_programName, g_programVersion);
-    conf = (Strings_match(explicit_config, "")
-	    ? config_default_location
-	    : &explicit_config[0]);
     log_msg("Reading %s...", conf);
     read_config_file(conf);
 
-#define UID_SUPER_USER 0
-    if (geteuid() == UID_SUPER_USER) force_priv_drop();
+    /* Drop root privileges. */
+    if (geteuid() == UID_SUPER_USER) {
+	force_priv_drop();
+    }
     
-    do {
-	bool updateRequest_after_30m = false;
-	
-	if (net_connect() == 0 && make_http_get_request() == 0) {
-	    char buf[2000];
-
-	    BZERO(buf, sizeof buf);
-	    
-	    if (net_recv(buf, sizeof buf) != -1) {
-		switch (server_response(buf)) {
-		case CODE_GOOD:
-		    log_msg("DNS hostname update successful!");
-		    break;
-		case CODE_NOCHG:
-		    log_msg("IP address is current!");
-		    break;
-		case CODE_NOHOST:
-		    log_die(0, "Hostname supplied does not exist under specified account.");
-		case CODE_BADAUTH:
-		    log_die(0, "Invalid username password combination.");
-		case CODE_BADAGENT:
-		    log_die(0, "Bad agent? I don't think so! But the server is always right. Dying...");
-		case CODE_NOTDONATOR:
-		    log_die(0, "Bad update request. Feature not available.");
-		case CODE_ABUSE:
-		    log_die(0, "Username blocked due to abuse.");
-		case CODE_EMERG:
-		    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
-		    updateRequest_after_30m = true;
-		    break;
-		default: case CODE_UNKNOWN:
-		    log_die(0, "Unknown server response!");
-		}
-	    }
-	}
-
-	if (g_on_air) {
-	    log_msg("Closing connection to server.");
-	    close(g_socket);
-	    g_on_air = false;
-	}
-
-	if (run_in_the_background) {
-	    struct integer_unparse_context ctx = {
-		.setting_name = "update_interval_seconds",
-		.lo_limit     = 600,	/* 10 minutes */
-		.hi_limit     = 172800,	/* 2 days */
-		.fallback_val = 1800,	/* 30 minutes */
-	    };
-	    struct timespec ts = {
-		.tv_sec	 = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx),
-		.tv_nsec = 0
-	    };
-
-	    log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
-	    nanosleep(&ts, NULL);
-	}
-    } while (run_in_the_background);
+    start_update_cycle();
     
-    return (0);
+    return 0;
 }
 
 static void
-process_options(int argc, char *argv[])
+process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
 {
     int opt = -1;
     const char opt_string[] = ":hcx:DB";
@@ -212,19 +180,19 @@ process_options(int argc, char *argv[])
 	    }
 	    /*FALLTHROUGH*/
 	case 'h':
-	    usage();
+	    po->want_usage = true;
+	    return;
 	case 'c':
-	    create_config_file(config_default_location);
-	    exit(0);
+	    po->want_create_config_file = true;
+	    return;
 	case 'x':
-	    if (!Strings_match(explicit_config, "")) BZERO(explicit_config, sizeof explicit_config);
-	    snprintf(explicit_config, sizeof explicit_config, "%s", optarg);
+	    snprintf(ar, ar_sz, "%s", optarg);
 	    break;
 	case 'D':
-	    g_debug_mode = true;
+	    po->want_debug = true;
 	    break;
 	case 'B':
-	    run_in_the_background = true;
+	    po->want_daemon = true;
 	    break;
 	}
     }
@@ -342,7 +310,7 @@ is_setting_ok(const char *value, enum setting_type type)
 	break;
     }
     default:
-	assert(0); /* Should not be reached. */
+	assert(false); /* Should not be reached. */
 	break;
     }
     
@@ -396,6 +364,12 @@ read_config_file(const char *path)
     }
 
     file_read = true;
+}
+
+static void
+turn_on_debug_mode(void)
+{
+    g_debug_mode = true;
 }
 
 static void
@@ -498,21 +472,156 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     return (ctx->fallback_val);
 }
 
+static void
+start_update_cycle(void)
+{
+    const size_t ar_sz = ARRAY_SIZE(hostname_array);
+    struct integer_unparse_context ctx = {
+	.setting_name = "update_interval_seconds",
+	.lo_limit     = 600,	/* 10 minutes */
+	.hi_limit     = 172800,	/* 2 days */
+	.fallback_val = 1800,	/* 30 minutes */
+    };
+    struct timespec ts = {
+	.tv_sec	 = 0,
+	.tv_nsec = 0,
+    };
+
+    hostname_array_init();
+    
+    do {
+	bool updateRequest_after_30m = false;
+
+	hostname_array_assign();
+	
+	for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
+	    log_msg("Trying to update %s...", *ar_p);
+
+	    if (!update_host(*ar_p, setting("ip_addr"), &updateRequest_after_30m))
+		break; /* Stop updating on the first unsuccessful try. */
+	}
+
+	hostname_array_destroy();
+	
+	ts.tv_sec = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx);
+	log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
+	nanosleep(&ts, NULL);
+    } while (true);
+}
+
+static void
+hostname_array_init(void)
+{
+    const size_t ar_sz = ARRAY_SIZE(hostname_array);
+
+    /* Initialize all ptrs to NULL. */
+    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) *ar_p = NULL;
+}
+
+static void
+hostname_array_destroy(void)
+{
+    const size_t ar_sz = ARRAY_SIZE(hostname_array);
+
+    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) {
+	free_not_null(*ar_p);
+	*ar_p = NULL;
+    }
+}
+
+static void
+hostname_array_assign(void)
+{
+    char *dump = xstrdup(setting("hostname"));
+    const char legal_index[] =
+	"abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
+
+    if (Strings_match(dump, "")) {
+	log_die(EINVAL, "hostname_array_assign: no hostnames to update  --  setting empty");
+    }
+
+    for (const char *cp = dump; *cp; cp++) {
+	if (strchr(legal_index, *cp) == NULL)
+	    log_die(0, "hostname_array_assign: invalid chars in setting: first invalid char was '%c'...", *cp);
+    }
+
+    for (size_t hosts_assigned = 0;; hosts_assigned++) {
+	char *token = strtok(hosts_assigned == 0 ? dump : NULL, "|");
+
+	if (token && hosts_assigned < ARRAY_SIZE(hostname_array))
+	    hostname_array[hosts_assigned] = xstrdup(token);
+	else {
+	    log_debug("hostname_array_assign: a total of %zu hosts were assigned!", hosts_assigned);
+	    break;
+	}
+    }
+
+    free(dump);
+}
+
+static bool
+update_host(const char *which_host, const char *to_ip, bool *updateRequest_after_30m)
+{
+    char	*buf = NULL;
+    bool	 ok  = true;
+
+    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
+	ok = false;
+	goto err;
+    }
+    
+    switch (server_response(buf)) {
+    case CODE_GOOD:
+	log_msg("*** DNS hostname update successful! ***");
+	break;
+    case CODE_NOCHG:
+	log_msg("*** IP address is current! ***");
+	break;
+    case CODE_NOHOST:
+	log_die(0, "Hostname supplied does not exist under specified account.");
+    case CODE_BADAUTH:
+	log_die(0, "Invalid username password combination.");
+    case CODE_BADAGENT:
+	log_die(0, "Bad agent? I don't think so! But the server is always right. Dying...");
+    case CODE_NOTDONATOR:
+	log_die(0, "Bad update request. Feature not available.");
+    case CODE_ABUSE:
+	log_die(0, "Username blocked due to abuse.");
+    case CODE_EMERG:
+	log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
+	*updateRequest_after_30m = true;
+	break;
+    default:
+    case CODE_UNKNOWN:
+	log_die(0, "Unknown server response!");
+    }
+
+  err:
+    if (g_on_air) {
+	log_debug("Closing connection to server...");
+	close(g_socket);
+	g_on_air = false;
+    }
+
+    free_not_null(buf);
+
+    return (ok);
+}
+
 static int
-make_http_get_request(void)
+send_update_request(const char *which_host, const char *to_ip)
 {
     extern int b64_encode(uint8_t const *src, size_t srclength, char *target, size_t targsize);
     char	*s, *host, *unp;
-    char	 buf[500];
+    char	 buf[500] = "";
     char	*auth;
     char	*agent;
     bool	 ok = true;
 
-    if (Strings_match(setting("ip_addr"), "WAN_address")) {
-	s = Strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", setting("hostname"));
+    if (Strings_match(to_ip, "WAN_address")) {
+	s = Strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
     } else {
-	s = Strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0",
-			  setting("hostname"), setting("ip_addr"));
+	s = Strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0", which_host, to_ip);
     }
 
     host = Strdup_printf("Host: %s", setting("sp_hostname"));
@@ -522,13 +631,28 @@ make_http_get_request(void)
     auth  = Strdup_printf("Authorization: Basic %s", buf);
     agent = Strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
 
-    log_msg("Sending http GET request...");
+    log_debug("Sending http GET request...");
     if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;
     free(s);
     free(host);
     free(auth);
     free(agent);
     return ok ? 0 : -1;
+}
+
+static int
+store_server_resp_in_buffer(char **buf)
+{
+    const size_t sz = 2000;
+
+    if (*buf) {
+	free(*buf);
+	*buf = NULL;
+    }
+
+    *buf = xcalloc(sz, 1);
+
+    return net_recv(*buf, sz);
 }
 
 static response_code_t
