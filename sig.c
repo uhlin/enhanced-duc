@@ -16,14 +16,13 @@
 
 #include <errno.h>
 #include <signal.h>
-#include <stdbool.h>
 #include <syslog.h>
 #include <unistd.h>
 
-#include "def.h"
 #include "log.h"
 #include "main.h"
 #include "network.h"
+#include "settings.h"
 #include "sig.h"
 
 static struct sig_message_tag {

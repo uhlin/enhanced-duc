@@ -21,13 +21,12 @@
 #include <errno.h>
 #include <netdb.h>
 #include <stdarg.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "log.h"
-#include "main.h"
 #include "network.h"
+#include "settings.h"
 #include "wrapper.h"
 
 #define IO_MULTIPLEXING 1
