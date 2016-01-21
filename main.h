@@ -3,6 +3,11 @@
 
 #include <stdbool.h>
 
+#define DUC_PATH_MAX			500	/* Max bytes in a pathname. */
+#define DUC_PERMITTED_HOSTS_LIMIT	10	/* Qty of hostnames allowed. */
+#define SHOW_OPTIONS_FOR_MAINTAINERS	1
+#define UID_SUPER_USER			0
+
 extern const char g_programName[];
 extern const char g_programVersion[];
 extern const char g_programAuthor[];

@@ -33,11 +33,6 @@
 #include "various.h"
 #include "wrapper.h"
 
-#define SHOW_OPTIONS_FOR_MAINTAINERS	1
-#define DUC_PERMITTED_HOSTS_LIMIT	10	/* Qty of hostnames allowed. */
-#define DUC_PATH_MAX			500	/* Max bytes in a pathname. */
-#define UID_SUPER_USER			0
-
 const char g_programName[]     = "Enhanced DUC";
 const char g_programVersion[]  = "v1.0";
 const char g_programAuthor[]   = "Markus Uhlin";
