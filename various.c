@@ -17,7 +17,6 @@
 #include <sys/stat.h>
 
 #include <ctype.h>
-#include <errno.h>
 #include <stdint.h>
 
 #include "log.h"
@@ -45,6 +44,15 @@ bool is_regularFile(const char *path)
     if (path == NULL || *path == '\0') return false;
 
     return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
+}
+
+bool is_directory(const char *path)
+{
+    struct stat sb;
+
+    if (path == NULL || *path == '\0') return false;
+
+    return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
 
 bool is_numeric(const char *string)
