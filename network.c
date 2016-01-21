@@ -18,7 +18,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#include <errno.h>
 #include <netdb.h>
 #include <stdarg.h>
 #include <string.h>
@@ -131,20 +130,20 @@ net_connect(void)
     const char		*port = setting("port");
     struct addrinfo	*res, *rp;
 
-    log_msg("Connecting to %s (%s)...", host, port);
+    log_debug("Connecting to %s/%s...", host, port);
 
     if ((res = net_addr_resolve(host, port)) == NULL) {
 	log_warn(0, "Unable to get a list of IP addresses. Bogus hostname?");
 	return -1;
     } else {
-	log_msg("Get a list of IP addresses complete");
+	log_debug("Get a list of IP addresses complete");
     }
 
     for (rp = res; rp; rp = rp->ai_next)
 	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
-	    log_msg("Connected!");
+	    log_debug("Connected!");
 	    g_on_air = true;
 	    break;
 	} else {
