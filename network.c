@@ -31,13 +31,16 @@
 #define IO_MULTIPLEXING 1
 #define SOCKET_CREATION_FAILED -1
 
+NET_SEND_FUNCPTR net_send = net_send_plain;
+NET_RECV_FUNCPTR net_recv = net_recv_plain;
+
 int	g_socket = -1;
 bool	g_on_air = false;
 
 static struct addrinfo *net_addr_resolve(const char *host, const char *port);
 
 int
-net_send(const char *fmt, ...)
+net_send_plain(const char *fmt, ...)
 {
     extern int my_vasprintf(char **ret, const char *format, va_list ap);
     va_list     ap;
@@ -50,12 +53,12 @@ net_send(const char *fmt, ...)
     chars_printed = my_vasprintf(&buffer, fmt, ap);
     va_end(ap);
 
-    if (chars_printed < 0) log_die(errno, "net_send: my_vasprintf error");
+    if (chars_printed < 0) log_die(errno, "net_send_plain: my_vasprintf error");
     buffer = xrealloc(buffer, strlen(buffer) + sizeof message_terminate);
     strcat(buffer, message_terminate);
 
     if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
-	log_warn(errno, "net_send: send error");
+	log_warn(errno, "net_send_plain: send error");
 	ok = false;
     }
 
@@ -64,7 +67,7 @@ net_send(const char *fmt, ...)
 }
 
 int
-net_recv(char *recvbuf, size_t recvbuf_size)
+net_recv_plain(char *recvbuf, size_t recvbuf_size)
 {
 #if IO_MULTIPLEXING
     fd_set		readset;
@@ -78,10 +81,10 @@ net_recv(char *recvbuf, size_t recvbuf_size)
     tv.tv_usec = 0;
 
     if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-	log_warn(errno, "net_recv: select error");
+	log_warn(errno, "net_recv_plain: select error");
 	return -1;
     } else if (!FD_ISSET(g_socket, &readset)) {
-	log_warn(0, "net_recv: no data to receive  --  timed out!");
+	log_warn(0, "net_recv_plain: no data to receive  --  timed out!");
 	return -1;
     } else {
 	;
@@ -89,10 +92,10 @@ net_recv(char *recvbuf, size_t recvbuf_size)
 #endif /* IO_MULTIPLEXING */
     switch (recv(g_socket, recvbuf, recvbuf_size, 0)) {
     case -1:
-	log_warn(errno, "net_recv: recv error");
+	log_warn(errno, "net_recv_plain: recv error");
 	return -1;
     case 0:
-	log_warn(0, "net_recv: fatal: connection lost");
+	log_warn(0, "net_recv_plain: fatal: connection lost");
 	return -1;
     default:
 	break;
