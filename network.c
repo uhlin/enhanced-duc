@@ -49,6 +49,8 @@ net_send_plain(const char *fmt, ...)
     const char  message_terminate[] = "\r\n\r\n";
     bool        ok = true;
 
+    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
+
     va_start(ap, fmt);
     chars_printed = my_vasprintf(&buffer, fmt, ap);
     va_end(ap);
@@ -90,6 +92,9 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
 	;
     }
 #endif /* IO_MULTIPLEXING */
+
+    log_assert_arg_nonnull("net_recv_plain", "recvbuf", recvbuf);
+
     switch (recv(g_socket, recvbuf, recvbuf_size, 0)) {
     case -1:
 	log_warn(errno, "net_recv_plain: recv error");
@@ -109,6 +114,10 @@ net_addr_resolve(const char *host, const char *port)
 {
     struct addrinfo	 hints;
     struct addrinfo	*res;
+
+    if (host == NULL || port == NULL) {
+	return (NULL);
+    }
 
     hints.ai_flags     = AI_CANONNAME;
     hints.ai_family    = AF_UNSPEC;
