@@ -20,12 +20,12 @@
 
 #include <netdb.h>
 #include <stdarg.h>
-#include <string.h>
 #include <unistd.h>
 
 #include "log.h"
 #include "network.h"
 #include "settings.h"
+#include "various.h"
 #include "wrapper.h"
 
 #define IO_MULTIPLEXING 1
@@ -44,7 +44,6 @@ net_send_plain(const char *fmt, ...)
 {
     extern int my_vasprintf(char **ret, const char *format, va_list ap);
     va_list     ap;
-    int         chars_printed;
     char       *buffer;
     const char  message_terminate[] = "\r\n\r\n";
     bool        ok = true;
@@ -52,12 +51,15 @@ net_send_plain(const char *fmt, ...)
     log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
 
     va_start(ap, fmt);
-    chars_printed = my_vasprintf(&buffer, fmt, ap);
+    if (my_vasprintf(&buffer, fmt, ap) < 0)
+	log_die(errno, "net_send_plain: my_vasprintf error");
     va_end(ap);
 
-    if (chars_printed < 0) log_die(errno, "net_send_plain: my_vasprintf error");
-    buffer = xrealloc(buffer, strlen(buffer) + sizeof message_terminate);
-    strcat(buffer, message_terminate);
+    size_t newSize = strlen(buffer) + sizeof message_terminate;
+    buffer = xrealloc(buffer, newSize);
+
+    if (duc_strlcat(buffer, message_terminate, newSize) >= newSize)
+	log_die(EOVERFLOW, "net_send_plain: duc_strlcat error");
 
     if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
 	log_warn(errno, "net_send_plain: send error");
