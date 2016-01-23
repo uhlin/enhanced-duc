@@ -4,6 +4,8 @@
 #include <ctype.h> /* isspace */
 #include <stdbool.h>
 
+#include "def.h"
+
 enum setting_type {
     TYPE_BOOLEAN,
     TYPE_INTEGER,
@@ -21,7 +23,7 @@ struct Interpreter_in {
     Interpreter_instFunc	 install_func;
 };
 
-void Interpreter(const struct Interpreter_in *);
+void Interpreter(const struct Interpreter_in *) PTR_ARGS_NONNULL;
 
 static inline void
 adv_while_isspace(const char **ptr)
