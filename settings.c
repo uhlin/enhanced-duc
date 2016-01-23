@@ -50,7 +50,7 @@ static struct config_default_values_tag {
       "Service provider hostname. The http GET request is sent to this hostname." },
 
     { "port", TYPE_INTEGER, "80", NULL,
-      "Connect to sp_hostname + this port." },
+      "Connect to sp_hostname + this port. 443 = enable SSL." },
 
     { "update_interval_seconds", TYPE_INTEGER, "1800", NULL,
       "Update interval specified in seconds. If a value less than 600 is entered, the\n"
