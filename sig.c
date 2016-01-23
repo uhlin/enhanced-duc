@@ -110,8 +110,8 @@ program_clean_up(void)
     net_deinit();
     destroy_config_customValues();
 
-    log_msg("%s %s has exited.", g_programName, g_programVersion);
-
+    if (g_conf_read)
+	log_msg("%s %s has exited.", g_programName, g_programVersion);
     if (g_log_to_syslog)
 	closelog();
 }
