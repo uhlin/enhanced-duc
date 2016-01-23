@@ -192,7 +192,7 @@ force_priv_drop(void)
     
     if ((pw = getpwnam(educ_noip_user)) == NULL)
 	log_die(0, "getpwnam: no such user %s", educ_noip_user);
-    else if (file_exists(educ_noip_dir) && chdir(educ_noip_dir) != 0)
+    else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
 	log_die(errno, "chdir %s", educ_noip_dir);
     else if (setgid(pw->pw_gid)  == -1) log_die(errno, "setgid");
     else if (setegid(pw->pw_gid) == -1) log_die(errno, "setegid");
