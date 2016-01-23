@@ -28,8 +28,8 @@
 
 bool g_conf_read = false;
 
-static const char GfxFailure[] = "[\x1b[1;32m*\x1b[0m]";
-static const char GfxSuccess[] = "[\x1b[1;31m*\x1b[0m]";
+static const char GfxFailure[] = "[\x1b[1;31m*\x1b[0m]";
+static const char GfxSuccess[] = "[\x1b[1;32m*\x1b[0m]";
 
 static struct config_default_values_tag {
     char		*setting_name;
