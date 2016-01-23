@@ -158,7 +158,7 @@ static void
 usage(void)
 {
     extern char		*__progname;
-    char		*msgVersion = Strdup_printf("%s %s\n", g_programName, g_programVersion);
+    char		*msgVersion = Strdup_printf("%s %s by %s\n", g_programName, g_programVersion, g_programAuthor);
     char		*msgUsage   = Strdup_printf("Usage: %s [OPTION] ...\n", __progname);
     const size_t	 ar_sz	    = ARRAY_SIZE(help_text);
 
