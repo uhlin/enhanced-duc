@@ -19,4 +19,11 @@ int net_send_plain (const char *fmt, ...) PRINTFLIKE(1);
 int net_recv_plain (char *recvbuf, size_t recvbuf_size);
 int net_connect    (void);
 
+void	net_ssl_init   (void);
+void	net_ssl_deinit (void);
+void	net_ssl_close  (void);
+int	net_ssl_start  (void);
+int	net_ssl_send   (const char *fmt, ...) PRINTFLIKE(1);
+int	net_ssl_recv   (char *recvbuf, size_t recvbuf_size);
+
 #endif
