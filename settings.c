@@ -28,6 +28,9 @@
 
 bool g_conf_read = false;
 
+static const char GfxFailure[] = "[\x1b[1;32m*\x1b[0m]";
+static const char GfxSuccess[] = "[\x1b[1;31m*\x1b[0m]";
+
 static struct config_default_values_tag {
     char		*setting_name;
     enum setting_type	 type;
@@ -72,9 +75,9 @@ create_config_file(const char *path)
     log_assert_arg_nonnull("create_config_file", "path", path);
 
     if (file_exists(path)) {
-	log_die(EEXIST, "create_config_file: can't create config file  --  it's already existent");
+	log_die(EEXIST, "%s create_config_file: can't create config file  --  it's already existent", GfxFailure);
     } else if ((fp = fopen(path, "w")) == NULL) {
-	log_die(errno, "create_config_file: fopen error");
+	log_die(errno, "%s create_config_file: fopen error", GfxFailure);
     } else {
 	struct config_default_values_tag *cdv;
 	const size_t ar_sz = ARRAY_SIZE(config_default_values);
@@ -83,7 +86,7 @@ create_config_file(const char *path)
 	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
 	    
 	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
-		log_die(0, "create_config_file: failed to write to the file stream");
+		log_die(0, "%s create_config_file: failed to write to the file stream", GfxFailure);
 
 	    free(ans);
 	}
@@ -92,8 +95,10 @@ create_config_file(const char *path)
     }
 
     if (chmod(path, mode) != 0) {
-	log_die(errno, "create_config_file: chmod error");
+	log_die(errno, "%s create_config_file: chmod error", GfxFailure);
     }
+
+    printf("%s %s successfully written!\n", GfxSuccess, path);
 }
 
 char *
