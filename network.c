@@ -37,7 +37,8 @@ NET_RECV_FUNCPTR net_recv = net_recv_plain;
 int	g_socket = -1;
 bool	g_on_air = false;
 
-static struct addrinfo *net_addr_resolve(const char *host, const char *port);
+static struct addrinfo	*net_addr_resolve (const char *host, const char *port);
+static inline bool	 is_ssl_enabled   (void);
 
 int
 net_send_plain(const char *fmt, ...)
@@ -172,4 +173,10 @@ net_connect(void)
     }
 
     return 0;
+}
+
+static inline bool
+is_ssl_enabled(void)
+{
+    return (strcmp(setting("port"), "443") == 0);
 }
