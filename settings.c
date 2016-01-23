@@ -26,6 +26,8 @@
 #include "various.h"
 #include "wrapper.h"
 
+bool g_conf_read = false;
+
 static struct config_default_values_tag {
     char		*setting_name;
     enum setting_type	 type;
@@ -171,12 +173,11 @@ is_setting_ok(const char *value, enum setting_type type)
 void
 read_config_file(const char *path)
 {
-    static bool	 file_read = false;
-    FILE	*fp	   = NULL;
+    FILE *fp = NULL;
 
     log_assert_arg_nonnull("read_config_file", "path", path);
 
-    if (file_read) {
+    if (g_conf_read) {
 	return;
     } else if (!is_regularFile(path)) {
 	log_die(0, "read_config_file: either the config file is nonexistent  --  or it isn't a regular file");
@@ -216,7 +217,7 @@ read_config_file(const char *path)
 	log_die(0, "read_config_file: FATAL: fgets returned null and the reason cannot be determined");
     }
 
-    file_read = true;
+    g_conf_read = true;
 }
 
 static bool

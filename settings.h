@@ -10,6 +10,8 @@ struct integer_unparse_context {
     long int	 fallback_val;
 };
 
+extern bool g_conf_read;
+
 void		 create_config_file          (const char *path);
 char		*get_answer                  (const char *desc, enum setting_type, const char *defaultAnswer);
 void		 read_config_file            (const char *path);
