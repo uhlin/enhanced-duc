@@ -66,7 +66,9 @@ create_config_file(const char *path)
 {
     FILE		*fp   = NULL;
     const mode_t	 mode = S_IRUSR | S_IWUSR;	/* Read and write for the owner. */
-    
+
+    log_assert_arg_nonnull("create_config_file", "path", path);
+
     if (file_exists(path)) {
 	log_die(EEXIST, "create_config_file: can't create config file  --  it's already existent");
     } else if ((fp = fopen(path, "w")) == NULL) {
@@ -98,6 +100,9 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
     const size_t	 sz	= 390;
     char		*answer = xcalloc(sz, 1);
 
+    log_assert_arg_nonnull("get_answer", "desc", desc);
+    log_assert_arg_nonnull("get_answer", "defaultAnswer", defaultAnswer);
+
     puts(desc);
     printf("Ans [%s]: ", defaultAnswer);
     fflush(stdout);
@@ -125,6 +130,10 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 static bool
 is_setting_ok(const char *value, enum setting_type type)
 {
+    if (value == NULL) {
+	return false;
+    }
+
     switch (type) {
     case TYPE_BOOLEAN:
     {
@@ -164,6 +173,8 @@ read_config_file(const char *path)
 {
     static bool	 file_read = false;
     FILE	*fp	   = NULL;
+
+    log_assert_arg_nonnull("read_config_file", "path", path);
 
     if (file_read) {
 	return;
@@ -214,6 +225,9 @@ is_recognized_setting(const char *setting_name)
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
 
+    if (setting_name == NULL)
+	return false;
+
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (Strings_match(setting_name, cdv->setting_name))
 	    return true;
@@ -227,6 +241,9 @@ install_setting(const char *setting_name, const char *value)
 {
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+
+    if (setting_name == NULL || value == NULL)
+	return (EINVAL);
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (Strings_match(setting_name, cdv->setting_name)) {
@@ -263,6 +280,10 @@ setting(const char *setting_name)
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
 
+    if (setting_name == NULL) {
+	return ("");
+    }
+
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (Strings_match(setting_name, cdv->setting_name))
 	    return (cdv->custom_val ? cdv->custom_val : cdv->value);
@@ -277,6 +298,8 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
     long int val;
+
+    log_assert_arg_nonnull("setting_integer_unparse", "ctx", ctx);
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (Strings_match(ctx->setting_name, cdv->setting_name)) {
