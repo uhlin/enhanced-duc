@@ -215,7 +215,8 @@ start_update_cycle(void)
     };
 
     hostname_array_init();
-    
+    net_init();
+
     do {
 	bool updateRequest_after_30m = false;
 
