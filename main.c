@@ -324,12 +324,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
     }
 
   err:
-    if (g_on_air) {
-	log_debug("Closing connection to server...");
-	close(g_socket);
-	g_on_air = false;
-    }
-
+    net_disconnect();
     free_not_null(buf);
 
     return (ok);
