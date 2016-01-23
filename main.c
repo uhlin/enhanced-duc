@@ -17,6 +17,7 @@
 #include <sys/types.h>
 
 #include <errno.h>
+#include <locale.h>
 #include <pwd.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -83,7 +84,8 @@ main(int argc, char *argv[])
 	log_warn(0, "Initialization of signal handling failed");
     if (atexit(program_clean_up) == -1)
 	log_warn(errno, "Failed to register a clean up function");
-    
+
+    setlocale(LC_ALL, "");
     process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
     
     if (opt.want_usage)
