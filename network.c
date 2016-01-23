@@ -34,8 +34,7 @@
 NET_SEND_FUNCPTR net_send = net_send_plain;
 NET_RECV_FUNCPTR net_recv = net_recv_plain;
 
-int	g_socket = -1;
-bool	g_on_air = false;
+int g_socket = -1;
 
 static struct addrinfo	*net_addr_resolve (const char *host, const char *port);
 static inline bool	 is_ssl_enabled   (void);
@@ -171,9 +170,10 @@ net_addr_resolve(const char *host, const char *port)
 int
 net_connect(void)
 {
-    const char		*host = setting("sp_hostname");
-    const char		*port = setting("port");
+    const char		*host	   = setting("sp_hostname");
+    const char		*port	   = setting("port");
     struct addrinfo	*res, *rp;
+    bool		 connected = false;
 
     log_debug("Connecting to %s/%s...", host, port);
 
@@ -189,7 +189,7 @@ net_connect(void)
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
 	    log_debug("Connected!");
-	    g_on_air = true;
+	    connected = true;
 	    break;
 	} else {
 	    close(g_socket);
@@ -197,7 +197,7 @@ net_connect(void)
 
     freeaddrinfo(res);
     
-    if (!g_on_air) {
+    if (!connected) {
 	log_warn(0, "Failed to establish a connection");
 	return -1;
     }

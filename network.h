@@ -12,8 +12,7 @@ typedef int (*NET_RECV_FUNCPTR)(char *, size_t);
 extern NET_SEND_FUNCPTR net_send;
 extern NET_RECV_FUNCPTR net_recv;
 
-extern int	g_socket;
-extern bool	g_on_air;
+extern int g_socket;
 
 void	net_init       (void);
 void	net_deinit     (void);
