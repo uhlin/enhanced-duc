@@ -40,6 +40,36 @@ bool	g_on_air = false;
 static struct addrinfo	*net_addr_resolve (const char *host, const char *port);
 static inline bool	 is_ssl_enabled   (void);
 
+void
+net_init(void)
+{
+    if (is_ssl_enabled()) net_ssl_init();
+}
+
+void
+net_deinit(void)
+{
+    if (is_ssl_enabled())
+	net_ssl_deinit();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
+}
+
+void
+net_disconnect(void)
+{
+    if (is_ssl_enabled())
+	net_ssl_close();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
+}
+
 int
 net_send_plain(const char *fmt, ...)
 {

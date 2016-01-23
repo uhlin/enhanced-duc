@@ -15,9 +15,12 @@ extern NET_RECV_FUNCPTR net_recv;
 extern int	g_socket;
 extern bool	g_on_air;
 
-int net_send_plain (const char *fmt, ...) PRINTFLIKE(1);
-int net_recv_plain (char *recvbuf, size_t recvbuf_size);
-int net_connect    (void);
+void	net_init       (void);
+void	net_deinit     (void);
+void	net_disconnect (void);
+int	net_send_plain (const char *fmt, ...) PRINTFLIKE(1);
+int	net_recv_plain (char *recvbuf, size_t recvbuf_size);
+int	net_connect    (void);
 
 void	net_ssl_init   (void);
 void	net_ssl_deinit (void);
