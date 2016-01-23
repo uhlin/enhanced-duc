@@ -202,7 +202,7 @@ net_connect(void)
 	return -1;
     }
 
-    return 0;
+    return (is_ssl_enabled() ? net_ssl_start() : 0);
 }
 
 static inline bool
