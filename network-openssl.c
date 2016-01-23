@@ -33,7 +33,7 @@ net_ssl_init()
     SSL_load_error_strings();
     SSL_library_init();
 
-    if (RAND_load_file("/dev/random", 1024) <= 0) {
+    if (RAND_load_file("/dev/urandom", 1024) <= 0) {
 	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG! LibreSSL?");
     }
     
