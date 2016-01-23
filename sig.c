@@ -107,8 +107,11 @@ signal_handler(int signum)
 void
 program_clean_up(void)
 {
-    if (g_on_air) close(g_socket);
+    net_deinit();
     destroy_config_customValues();
+
     log_msg("%s by %s has exited.", g_programName, g_programAuthor);
-    if (g_log_to_syslog) closelog();
+
+    if (g_log_to_syslog)
+	closelog();
 }
