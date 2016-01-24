@@ -310,9 +310,15 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (Strings_match(ctx->setting_name, cdv->setting_name)) {
 	    errno = 0;
-	    val = strtol(cdv->custom_val ? cdv->custom_val : cdv->value, NULL, 10);
-	    if (errno != 0 || (val < ctx->lo_limit || val > ctx->hi_limit)) break;
-	    else return (val);
+	    val	  = strtol(cdv->custom_val ? cdv->custom_val : cdv->value, NULL, 10);
+
+	    if (errno != 0 || (val < ctx->lo_limit || val > ctx->hi_limit)) {
+		log_warn(ERANGE, "warning: setting %s out of range %ld-%ld: fallback value is %ld",
+			 ctx->setting_name, ctx->lo_limit, ctx->hi_limit, ctx->fallback_val);
+		break;
+	    } else {
+		return (val);
+	    }
 	}
     }
 
