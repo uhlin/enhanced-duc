@@ -24,7 +24,12 @@ int my_vasprintf(char **ret, const char *format, va_list ap)
 {
     va_list	ap_copy;
     int		sz;
-    
+
+    if (ret == NULL || format == NULL) {
+	errno = EINVAL;
+	return -1;
+    }
+
     va_copy(ap_copy, ap);
     sz = vsnprintf(NULL, 0, format, ap_copy);
     va_end(ap_copy);
@@ -36,7 +41,7 @@ int my_vasprintf(char **ret, const char *format, va_list ap)
     } else {
 	sz += 1; /* +1 for `\0'. */
     }
-    
+
     if ((*ret = malloc(sz)) == NULL) {
 	errno = ENOMEM;
 	return -1;
