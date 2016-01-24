@@ -280,6 +280,8 @@ hostname_array_assign(void)
 
 	if (token && hosts_assigned < ARRAY_SIZE(hostname_array))
 	    hostname_array[hosts_assigned] = xstrdup(token);
+	else if (hosts_assigned == 0)
+	    log_die(0, "hostname_array_assign: fatal: zero assigned hosts!");
 	else {
 	    log_debug("hostname_array_assign: a total of %zu hosts were assigned!", hosts_assigned);
 	    break;
