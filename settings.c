@@ -16,6 +16,8 @@
 
 #include <sys/stat.h>
 
+#include <arpa/inet.h> /* inet_pton() */
+
 #include <assert.h>
 #include <errno.h>
 #include <stddef.h>
@@ -65,6 +67,9 @@ static struct config_default_values_tag {
 static bool	is_setting_ok         (const char *value, enum setting_type);
 static bool	is_recognized_setting (const char *setting_name);
 static int	install_setting       (const char *setting_name, const char *value);
+static bool	is_ip_addr_ok         (char **reason);
+static bool	is_sp_hostname_ok     (char **reason);
+static bool	is_port_ok            (void);
 
 void
 create_config_file(const char *path)
@@ -323,4 +328,98 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     }
 
     return (ctx->fallback_val);
+}
+
+void
+check_some_settings_strictly(void)
+{
+    const char *username = setting("username");
+    const char *password = setting("password");
+    const size_t username_maxlen = 50;
+    const size_t password_maxlen = 120;
+    char *reason = "";
+
+    if (Strings_match(username, "") || Strings_match(password, ""))
+	log_die(0, "error: empty username nor password");
+    else if (strlen(username) > username_maxlen)
+	log_die(0, "error: username too long. max=%zu", username_maxlen);
+    else if (strlen(password) > password_maxlen)
+	log_die(0, "error: password too long. max=%zu", password_maxlen);
+    else if (!is_ip_addr_ok(&reason))
+	log_die(0, "is_ip_addr_ok: error: %s", reason);
+    else if (!is_sp_hostname_ok(&reason))
+	log_die(0, "is_sp_hostname_ok: error: %s", reason);
+    else if (!is_port_ok())
+	log_die(0, "error: bogus port number");
+    else
+	return;
+}
+
+static bool
+is_ip_addr_ok(char **reason)
+{
+    const char		*ip = setting("ip_addr");
+    unsigned char	 buf[sizeof (struct in_addr)];
+
+    if (Strings_match(ip, "")) {
+	*reason = "empty setting";
+	return false;
+    } else if (Strings_match(ip, "WAN_address")) {
+	*reason = "";
+	return true;
+    } else if (inet_pton(AF_INET, ip, buf) == 0) {
+	*reason = "bogus ipv4 address";
+	return false;
+    } else {
+	*reason = "";
+	return true;
+    }
+
+    /*NOTREACHED*/
+    *reason = "";
+    return true;
+}
+
+static bool
+is_sp_hostname_ok(char **reason)
+{
+    const char *host = setting("sp_hostname");
+    const size_t host_maxlen = 253;
+    const char host_chars[] =
+	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    if (Strings_match(host, "")) {
+	*reason = "empty setting";
+	return false;
+    } else if (strlen(host) > host_maxlen) {
+	*reason = "name too long";
+	return false;
+    } else {
+	for (const char *cp = host; *cp; cp++)
+	    if (strchr(host_chars, *cp) == NULL) {
+		*reason = "invalid chars found!";
+		return false;
+	    }
+    }
+
+    *reason = "";
+    return true;
+}
+
+static bool
+is_port_ok(void)
+{
+    const char *port = setting("port");
+
+    if (Strings_match(port, "80"))
+	return true;
+    else if (Strings_match(port, "443"))
+	return true;
+    else if (Strings_match(port, "8245"))
+	return true;
+    else
+	return false;
+
+    /*NOTREACHED*/
+    return false;
 }
