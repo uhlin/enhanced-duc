@@ -14,6 +14,7 @@
    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    PERFORMANCE OF THIS SOFTWARE. */
 
+#include <sys/socket.h> /* AF_INET */
 #include <sys/stat.h>
 
 #include <arpa/inet.h> /* inet_pton() */
