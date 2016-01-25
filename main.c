@@ -109,6 +109,7 @@ main(int argc, char *argv[])
     log_msg("%s %s has started.", g_programName, g_programVersion);
     log_msg("Reading %s...", conf);
     read_config_file(conf);
+    check_some_settings_strictly();
 
     /* Drop root privileges. */
     if (geteuid() == UID_SUPER_USER) {
