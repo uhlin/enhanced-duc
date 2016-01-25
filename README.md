@@ -39,3 +39,4 @@ Example: `educ_noip -c`
 
 * If the program isn't running as a daemon it can be terminated with CTRL+C.
 * If port 443 is specified SSL will be enabled.
+* Valid ports are 80, 443 and 8245.
