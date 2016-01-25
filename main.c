@@ -298,6 +298,9 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
     char	*buf = NULL;
     bool	 ok  = true;
 
+    if (which_host == NULL || to_ip == NULL || updateRequest_after_30m == NULL)
+	log_die(EINVAL, "update_host() fatal error!");
+
     if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
 	ok = false;
 	goto err;
