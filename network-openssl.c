@@ -24,6 +24,9 @@
 #include "various.h"
 #include "wrapper.h"
 
+#define HAVE_TLS_SUPPORT \
+    (defined(SSL_OP_NO_TLSv1) && defined(SSL_OP_NO_TLSv1_1) && defined(SSL_OP_NO_TLSv1_2))
+
 static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
 
@@ -38,12 +41,21 @@ net_ssl_init()
     if (RAND_load_file("/dev/urandom", 1024) <= 0) {
 	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG! LibreSSL?");
     }
-    
+
+#if HAVE_TLS_SUPPORT
+    if (( ssl_ctx = SSL_CTX_new(TLS_client_method()) ) == NULL) {
+	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
+    } else {
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 |
+			    SSL_OP_NO_TLSv1 | SSL_OP_NO_TLSv1_1);
+    }
+#else
     if (( ssl_ctx = SSL_CTX_new(SSLv23_client_method()) ) == NULL) {
 	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
     }
+#endif /* HAVE_TLS_SUPPORT */
 
     if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
 	log_warn(EINVAL, "net_ssl_init: Bogus cipher list");
@@ -52,6 +64,11 @@ net_ssl_init()
     net_recv = net_ssl_recv;
 
     log_msg("SSL enabled");
+#if HAVE_TLS_SUPPORT
+    log_debug("HAVE_TLS_SUPPORT = 1");
+#else
+    log_debug("HAVE_TLS_SUPPORT = 0");
+#endif
 }
 
 void
