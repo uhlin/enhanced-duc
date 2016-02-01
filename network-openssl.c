@@ -27,7 +27,7 @@
 static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
 
-static const char cipher_list[] = "ALL:!ADH:!EXP:!LOW:!MD5:@STRENGTH";
+static const char cipher_list[] = "HIGH:@STRENGTH";
 
 void
 net_ssl_init()
