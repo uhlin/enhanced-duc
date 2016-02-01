@@ -42,7 +42,7 @@ net_ssl_init()
     if (( ssl_ctx = SSL_CTX_new(SSLv23_client_method()) ) == NULL) {
 	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2);
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
     }
 
     if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
