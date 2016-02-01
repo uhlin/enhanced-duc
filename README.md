@@ -2,16 +2,18 @@
 
 ## About ##
 
-Enhanced DUC is an update client primarily written for use with the
-DNS solutions that [NoIP](http://www.noip.com) provide. I began
-working on the project in November 2015. The goal is to create a
-better update client for UNIX by using modern C coding practices.
+Enhanced DUC is a dynamic DNS update client and daemon. Primarily it's
+written for use with the DNS services that [NoIP](http://www.noip.com)
+provide.  However: the protocol "is in an open format used by other
+service providers".  I began working on the project in November
+2015. The goal is to create a better update client for UNIX by using
+modern C coding practices.
 
 ## Cloning ##
 
-To clone the repository use [Mercurial](http://mercurial.selenic.com/).
+To clone the repository use [Git](https://git-scm.com).
 
-    $ hg clone https://bitbucket.org/ma_uhl/enhanced-duc
+    $ git clone https://github.com/uhlin/enhanced-duc.git
 
 ## Framework ##
 
