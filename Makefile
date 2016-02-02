@@ -12,6 +12,8 @@ RM=rm -f
 INSTALL=install
 PREFIX?=/usr/local
 BIN_DIR=$(PREFIX)/bin
+MAN_DIR=$(PREFIX)/man/man1
+MAN_FILE=educ_noip.1
 
 OBJS=b64_decode.o b64_encode.o daemonize.o duc_strlcat.o duc_strlcpy.o
 OBJS+=interpreter.o log.o main.o my_vasprintf.o network.o
@@ -48,3 +50,5 @@ clean:
 install: $(OUT_NAME)
 	$(E) "  INSTALL " $(OUT_NAME)
 	$(Q) $(INSTALL) $(OUT_NAME) $(BIN_DIR)/$(OUT_NAME)
+	$(E) "  INSTALL " $(MAN_FILE)
+	$(Q) $(INSTALL) $(MAN_FILE) $(MAN_DIR)/$(MAN_FILE)
