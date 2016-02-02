@@ -4,13 +4,14 @@ E=@echo
 Q=@
 
 CC=gcc
-CFLAGS=-std=c99 -Wall -D_POSIX_C_SOURCE=200809L
+_CFLAGS=$(CFLAGS) -std=c99 -Wall -D_POSIX_C_SOURCE=200809L
 OUT_NAME=educ_noip
 LDFLAGS=-lcrypto -lssl
 
 RM=rm -f
 INSTALL=install
-BIN_DIR=/usr/local/bin
+PREFIX?=/usr/local
+BIN_DIR=$(PREFIX)/bin
 
 OBJS=b64_decode.o b64_encode.o daemonize.o duc_strlcat.o duc_strlcpy.o
 OBJS+=interpreter.o log.o main.o my_vasprintf.o network.o
@@ -18,7 +19,7 @@ OBJS+=network-openssl.o settings.o sig.o various.o wrapper.o
 
 .c.o:
 	$(E) "  CC      " $@
-	$(Q) $(CC) $(CFLAGS) -c $*.c
+	$(Q) $(CC) $(_CFLAGS) -c $*.c
 
 $(OUT_NAME): $(OBJS)
 	$(E) "  LINK    " $@
