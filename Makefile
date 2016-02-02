@@ -4,7 +4,7 @@ E=@echo
 Q=@
 
 CC=gcc
-_CFLAGS=$(CFLAGS) -std=c99 -Wall -D_POSIX_C_SOURCE=200809L
+DUC_CFLAGS=$(CFLAGS) -std=c99 -Wall -D_POSIX_C_SOURCE=200809L
 OUT_NAME=educ_noip
 LDFLAGS=-lcrypto -lssl
 
@@ -19,7 +19,7 @@ OBJS+=network-openssl.o settings.o sig.o various.o wrapper.o
 
 .c.o:
 	$(E) "  CC      " $@
-	$(Q) $(CC) $(_CFLAGS) -c $*.c
+	$(Q) $(CC) $(DUC_CFLAGS) -c $*.c
 
 $(OUT_NAME): $(OBJS)
 	$(E) "  LINK    " $@
