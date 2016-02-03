@@ -33,6 +33,7 @@ you need to install a package with name `libssl-dev` before building:
 
     -c           Create a config file and exit. Will prompt.
     -x <path>    Load a config file from a custom location.
+    -o           Don't cycle. Update the host(s) only once.
     -B           Run in the background.
 
 Example: `educ_noip -c`
