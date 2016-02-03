@@ -16,7 +16,6 @@
 
 #include <sys/types.h>
 
-#include <errno.h>
 #include <locale.h>
 #include <pwd.h>
 #include <stdint.h>
