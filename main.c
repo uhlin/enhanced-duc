@@ -45,9 +45,12 @@ static const char *help_text[] = {
 #if SHOW_OPTIONS_FOR_MAINTAINERS
     "  -D           D for debug log/messages.\n",
 #endif
+    "  -o           Don't cycle. Update the host(s) only once.\n",
     "  -B           Run in the background.\n",
     "\n",
 };
+
+static bool Cycle = true;
 
 static const char educ_noip_user[] = "nobody";
 static const char educ_noip_dir[]  = "/tmp";
@@ -57,6 +60,7 @@ static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = {};
 static void             process_options             (int, char *[], struct program_options *, char *, size_t);
 static void             usage                       (void) NORETURN;
 static void             turn_on_debug_mode          (void);
+static void             set_cycle_off               (void);
 static void             force_priv_drop             (void);
 static void             start_update_cycle          (void);
 static void             hostname_array_init         (void);
@@ -74,6 +78,7 @@ main(int argc, char *argv[])
 	.want_usage		 = false,
 	.want_create_config_file = false,
 	.want_debug		 = false,
+	.want_update_once	 = false,
 	.want_daemon		 = false,
     };
     char conf[DUC_PATH_MAX] =
@@ -98,6 +103,8 @@ main(int argc, char *argv[])
     }
     if (opt.want_debug)
 	turn_on_debug_mode();
+    if (opt.want_update_once)
+	set_cycle_off();
     if (opt.want_daemon) {
 	extern void Daemonize(void);
 
@@ -124,7 +131,7 @@ static void
 process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
 {
     int opt = -1;
-    const char opt_string[] = ":hcx:DB";
+    const char opt_string[] = ":hcx:DoB";
     enum { MISSING_OPTARG = ':', UNRECOGNIZED_OPTION = '?' };
 
     while ((opt = getopt(argc, argv, opt_string)) != -1) {
@@ -148,6 +155,9 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar, si
 	    break;
 	case 'D':
 	    po->want_debug = true;
+	    break;
+	case 'o':
+	    po->want_update_once = true;
 	    break;
 	case 'B':
 	    po->want_daemon = true;
@@ -181,6 +191,12 @@ static void
 turn_on_debug_mode(void)
 {
     g_debug_mode = true;
+}
+
+static void
+set_cycle_off(void)
+{
+    Cycle = false;
 }
 
 static void
@@ -236,7 +252,7 @@ start_update_cycle(void)
 	ts.tv_sec = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx);
 	log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
 	nanosleep(&ts, NULL);
-    } while (true);
+    } while (Cycle);
 }
 
 static void
@@ -323,7 +339,10 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
     case CODE_ABUSE:
 	log_die(0, "Username blocked due to abuse.");
     case CODE_EMERG:
-	log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
+	if (Cycle)
+	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
+	else
+	    log_warn(0, "Fatal error on the server side.");
 	*updateRequest_after_30m = true;
 	break;
     default:

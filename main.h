@@ -17,6 +17,7 @@ struct program_options {
     bool want_usage;
     bool want_create_config_file;
     bool want_debug;
+    bool want_update_once;
     bool want_daemon;
 };
 
