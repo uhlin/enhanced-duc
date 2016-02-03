@@ -14,9 +14,7 @@
    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    PERFORMANCE OF THIS SOFTWARE. */
 
-#include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "interpreter.h"
 #include "log.h"
