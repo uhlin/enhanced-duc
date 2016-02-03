@@ -14,6 +14,14 @@ bool    is_numeric     (const char *);
 char   *trim           (char *);
 char   *Strtolower     (char *);
 
+#if defined(HAVE_STRLCPY) && defined(HAVE_STRLCAT)
+#define duc_strlcpy strlcpy
+#define duc_strlcat strlcat
+#endif
+
+/* XXX: If the prefix duc_ is removed due to HAVE_STRLCPY and HAVE_STRLCAT these
+        won't conflict the declarations in string.h: because _POSIX_C_SOURCE
+        restricts the visibility... */
 size_t	duc_strlcpy (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 size_t	duc_strlcat (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 
