@@ -24,6 +24,8 @@ void        log_warn                  (int code, const char *fmt, ...) PRINTFLIK
 void        log_msg                   (const char *fmt, ...) PRINTFLIKE(1);
 void        log_debug                 (const char *fmt, ...) PRINTFLIKE(1);
 
+/*lint -sem(log_die, r_no) */
+
 static inline void
 log_assert_arg_nonnull(const char *in_func, const char *arg_name, const void *arg)
 {
