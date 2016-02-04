@@ -221,16 +221,6 @@ static void
 start_update_cycle(void)
 {
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
-    struct integer_unparse_context ctx = {
-	.setting_name = "update_interval_seconds",
-	.lo_limit     = 600,	/* 10 minutes */
-	.hi_limit     = 172800,	/* 2 days */
-	.fallback_val = 1800,	/* 30 minutes */
-    };
-    struct timespec ts = {
-	.tv_sec	 = 0,
-	.tv_nsec = 0,
-    };
 
     hostname_array_init();
     net_init();
@@ -239,7 +229,7 @@ start_update_cycle(void)
 	bool updateRequest_after_30m = false;
 
 	hostname_array_assign();
-	
+
 	for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
 	    log_msg("Trying to update %s...", *ar_p);
 
@@ -248,10 +238,22 @@ start_update_cycle(void)
 	}
 
 	hostname_array_destroy();
-	
-	ts.tv_sec = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx);
-	log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
-	nanosleep(&ts, NULL);
+
+	if (Cycle) {
+	    struct integer_unparse_context ctx = {
+		.setting_name = "update_interval_seconds",
+		.lo_limit     = 600,	/* 10 minutes */
+		.hi_limit     = 172800,	/* 2 days */
+		.fallback_val = 1800,	/* 30 minutes */
+	    };
+	    struct timespec ts = {
+		.tv_sec	 = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx),
+		.tv_nsec = 0,
+	    };
+
+	    log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
+	    nanosleep(&ts, NULL);
+	}
     } while (Cycle);
 }
 
