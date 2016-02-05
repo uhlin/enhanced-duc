@@ -16,6 +16,7 @@
 
 #include <sys/select.h>
 
+#include <openssl/opensslv.h>
 #include <openssl/rand.h>
 #include <openssl/ssl.h>
 
@@ -23,9 +24,6 @@
 #include "network.h"
 #include "various.h"
 #include "wrapper.h"
-
-#define HAVE_TLS_SUPPORT \
-    (defined(SSL_OP_NO_TLSv1) && defined(SSL_OP_NO_TLSv1_1) && defined(SSL_OP_NO_TLSv1_2))
 
 static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
@@ -42,7 +40,7 @@ net_ssl_init()
 	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG! LibreSSL?");
     }
 
-#if HAVE_TLS_SUPPORT
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     if (( ssl_ctx = SSL_CTX_new(TLS_client_method()) ) == NULL) {
 	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
@@ -55,7 +53,7 @@ net_ssl_init()
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
     }
-#endif /* HAVE_TLS_SUPPORT */
+#endif
 
     if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
 	log_warn(EINVAL, "net_ssl_init: Bogus cipher list");
@@ -64,11 +62,6 @@ net_ssl_init()
     net_recv = net_ssl_recv;
 
     log_msg("SSL enabled");
-#if HAVE_TLS_SUPPORT
-    log_debug("HAVE_TLS_SUPPORT = 1");
-#else
-    log_debug("HAVE_TLS_SUPPORT = 0");
-#endif
 }
 
 void
