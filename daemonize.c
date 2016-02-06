@@ -14,6 +14,10 @@
    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    PERFORMANCE OF THIS SOFTWARE. */
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -22,23 +26,38 @@
 #define FORK_FAILED -1
 #define VALUE_CHILD_PROCESS 0
 
-FILE *g_lockfile_handle = NULL;
+int g_lockfile_fd = -1;
 
 static bool
 is_already_running()
 {
-    const char	*file_path     = "/var/run/educ_noip.pid";
-    const int	 LOCK_OBTAINED = 0;
+    int			 fd	   = -1;
+    const char		*file_path = "/var/run/educ_noip.pid";
+    const mode_t	 mode	   = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;	/* -rw-r--r-- */
+    struct flock lock_ctx = {
+	.l_type	  = F_WRLCK,
+	.l_whence = SEEK_SET,
+	.l_start  = 0,
+	.l_len	  = 0,
+	.l_pid	  = -1,
+    };
+    const int	OBTAIN_LOCK_ERR = -1;
+    int		errno_save	= 0;
 
-    if ((g_lockfile_handle = fopen(file_path, "w+")) == NULL)
+    if ((fd = open(file_path, O_RDWR | O_CREAT, mode)) == -1)
 	log_die(errno, "is_already_running: can't open %s", file_path);
-    if (ftrylockfile(g_lockfile_handle) == LOCK_OBTAINED) {
-	fprintf(g_lockfile_handle, "%ld\n", (long int) getpid());
-	return false;
+    if (fcntl(fd, F_SETLK, &lock_ctx) == OBTAIN_LOCK_ERR) {
+	errno_save = errno;
+	close(fd);
+	if (errno_save == EACCES || errno_save == EAGAIN)
+	    return (true);
+	else
+	    log_die(errno_save, "is_already_running: can't lock %s", file_path);
     }
-    if (g_lockfile_handle)
-	fclose(g_lockfile_handle);
-    return true;
+    ftruncate(fd, 0);
+    dprintf(fd, "%ld\n", (long int) getpid());
+    g_lockfile_fd = fd;
+    return (false);
 }
 
 void
