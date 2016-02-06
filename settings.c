@@ -60,7 +60,7 @@ static struct config_default_values_tag {
 
     { "update_interval_seconds", TYPE_INTEGER, "1800", NULL,
       "Update interval specified in seconds. If a value less than 600 is entered, the\n"
-      "underlying code will fallback to 600 to avoid flooding the server with requests." },
+      "underlying code will fallback to 1800 to avoid flooding the server with requests." },
 };
 
 static bool	is_setting_ok         (const char *value, enum setting_type);
