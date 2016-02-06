@@ -9,7 +9,7 @@ OUT_NAME=educ_noip
 LDFLAGS=-lcrypto -lssl
 
 RM=rm -f
-INSTALL=install
+INSTALL=install -D
 PREFIX?=/usr/local
 BIN_DIR=$(PREFIX)/bin
 MAN_DIR=$(PREFIX)/man/man1
