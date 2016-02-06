@@ -14,6 +14,7 @@
    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    PERFORMANCE OF THIS SOFTWARE. */
 
+#include <stdio.h>
 #include <unistd.h>
 
 #include "log.h"
@@ -21,7 +22,27 @@
 #define FORK_FAILED -1
 #define VALUE_CHILD_PROCESS 0
 
-void Daemonize(void)
+FILE *g_lockfile_handle = NULL;
+
+static bool
+is_already_running()
+{
+    const char	*file_path     = "/var/run/educ_noip.pid";
+    const int	 LOCK_OBTAINED = 0;
+
+    if ((g_lockfile_handle = fopen(file_path, "w+")) == NULL)
+	log_die(errno, "is_already_running: can't open %s", file_path);
+    if (ftrylockfile(g_lockfile_handle) == LOCK_OBTAINED) {
+	fprintf(g_lockfile_handle, "%ld\n", (long int) getpid());
+	return false;
+    }
+    if (g_lockfile_handle)
+	fclose(g_lockfile_handle);
+    return true;
+}
+
+void
+Daemonize()
 {
     switch (fork()) {
     case FORK_FAILED:
@@ -51,4 +72,7 @@ void Daemonize(void)
 	log_debug("Daemonize: All standard IO-streams successfully redirected");
 	break;
     }
+
+    if (is_already_running())
+	log_die(0, "Daemonize: FATAL: A copy of the daemon is already running!");
 }
