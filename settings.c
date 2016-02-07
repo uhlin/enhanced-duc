@@ -49,7 +49,7 @@ static struct config_default_values_tag {
       "The hostname to be updated. Multiple hosts are separated with a vertical bar." },
 
     { "ip_addr", TYPE_STRING, "WAN_address", NULL,
-      "Associate the hostname with this IP address. If the special value WAN_address\n"
+      "Associate the hostname(s) with this IP address. If the special value WAN_address\n"
       "is specified: the WAN address from which the update request is sent from is used." },
 
     { "sp_hostname", TYPE_STRING, "dynupdate.no-ip.com", NULL,
