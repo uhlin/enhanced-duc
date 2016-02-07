@@ -106,9 +106,12 @@ signal_handler(int signum)
 void
 program_clean_up(void)
 {
+    extern int g_lockfile_fd;
+
     net_deinit();
     destroy_config_customValues();
-
+    if (g_lockfile_fd != -1)
+	close(g_lockfile_fd);
     if (g_conf_read)
 	log_msg("%s %s has exited.", g_programName, g_programVersion);
     if (g_log_to_syslog)
