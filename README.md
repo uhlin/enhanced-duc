@@ -1,5 +1,7 @@
 # README #
 
+![EDUC globe](http://hem.bredband.net/markuhli/duc/gfx/educ-globe-140x140.png)
+
 ## About ##
 
 Enhanced DUC is a dynamic DNS update client and daemon. Primarily it's
