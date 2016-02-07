@@ -365,9 +365,11 @@ send_update_request(const char *which_host, const char *to_ip)
     extern int b64_encode(uint8_t const *src, size_t srclength, char *target, size_t targsize);
     char	*s, *host, *unp;
     char	 buf[500] = "";
-    char	*auth;
-    char	*agent;
-    bool	 ok = true;
+    char	*auth	  = NULL;
+    char	*agent	  = NULL;
+    bool	 ok	  = true;
+
+    s = host = unp = NULL;
 
     if (Strings_match(to_ip, "WAN_address")) {
 	s = Strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
@@ -377,17 +379,22 @@ send_update_request(const char *which_host, const char *to_ip)
 
     host = Strdup_printf("Host: %s", setting("sp_hostname"));
     unp	 = Strdup_printf("%s:%s", setting("username"), setting("password"));
-    b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf);
-    free(unp);
+    if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
+	log_warn(EMSGSIZE, "In send_update_request: b64_encode() error");
+	ok = false;
+	goto err;
+    }
     auth  = Strdup_printf("Authorization: Basic %s", buf);
     agent = Strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
 
     log_debug("Sending http GET request...");
     if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;
-    free(s);
-    free(host);
-    free(auth);
-    free(agent);
+  err:
+    free_not_null(s);
+    free_not_null(host);
+    free_not_null(unp);
+    free_not_null(auth);
+    free_not_null(agent);
     return ok ? 0 : -1;
 }
 
