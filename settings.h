@@ -18,6 +18,7 @@ void		 read_config_file             (const char *path);
 void		 destroy_config_customValues  (void);
 const char	*setting                      (const char *setting_name);
 long int	 setting_integer_unparse      (const struct integer_unparse_context *);
+bool		 setting_bool_unparse         (const char *setting_name, const bool fallback_val);
 void		 check_some_settings_strictly (void);
 
 #endif

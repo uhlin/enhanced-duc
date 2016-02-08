@@ -329,6 +329,37 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     return (ctx->fallback_val);
 }
 
+bool
+setting_bool_unparse(const char *setting_name, const bool fallback_val)
+{
+    struct config_default_values_tag *cdv;
+    const size_t ar_sz = ARRAY_SIZE(config_default_values);
+
+    if (setting_name == NULL) {
+	return (fallback_val);
+    }
+
+    for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
+	if (Strings_match(setting_name, cdv->setting_name)) {
+	    const char *value = cdv->custom_val ? cdv->custom_val : cdv->value;
+
+	    if (cdv->type != TYPE_BOOLEAN) {
+		log_warn(0, "setting_bool_unparse: %s: setting not a boolean!", setting_name);
+		break;
+	    } else if (Strings_match(value, "yes") || Strings_match(value, "YES")) {
+		return (true);
+	    } else if (Strings_match(value, "no") || Strings_match(value, "NO")) {
+		return (false);
+	    } else {
+		log_warn(0, "setting_bool_unparse: %s: setting has an invalid value!", setting_name);
+		break;
+	    }
+	} /* if */
+    } /* for */
+
+    return (fallback_val);
+}
+
 void
 check_some_settings_strictly(void)
 {
