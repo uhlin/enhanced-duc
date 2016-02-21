@@ -55,4 +55,4 @@ install: $(OUT_NAME) $(MAN_FILE) example.conf
 	$(E) "  INSTALL " $(MAN_DIR)/$(MAN_FILE)
 	$(Q) $(INSTALL) -m 0444 $(MAN_FILE) $(MAN_DIR)/$(MAN_FILE)
 	$(E) "  INSTALL " $(CONF_FILE)
-	$(Q) $(INSTALL) -m 0600 example.conf $(CONF_FILE)
+	$(Q) $(INSTALL) -m 0600 -b example.conf $(CONF_FILE)
