@@ -43,7 +43,7 @@ static struct config_default_values_tag {
       "Your username." },
     
     { "password", TYPE_STRING, "ChangeMe", NULL,
-      "Your password." },
+      "Your password. (Will not echo!)" },
 
     { "hostname", TYPE_STRING, "host1.domain.com|host2.domain.com", NULL,
       "The hostname to be updated. Multiple hosts are separated with a vertical bar." },
@@ -118,8 +118,17 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
     printf("Ans [%s]: ", defaultAnswer);
     fflush(stdout);
 
-    if (fgets(answer, sz, stdin) == NULL) {
-	log_die(errno, "get_answer: FATAL: fgets fail");
+    if (!strncmp(desc, "Your password.", 14))
+	toggle_echo(OFF);
+    const bool	fgets_fail = fgets(answer, sz, stdin) == NULL;
+    const int	errno_save = errno;
+    if (!strncmp(desc, "Your password.", 14)) {
+	putchar('\n');
+	toggle_echo(ON);
+    }
+
+    if (fgets_fail) {
+	log_die(errno_save, "get_answer: FATAL: fgets fail");
     } else {
 	const bool input_too_big = strchr(answer, '\n') == NULL;
 
