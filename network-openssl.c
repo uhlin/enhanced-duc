@@ -19,6 +19,8 @@
 #include <openssl/opensslv.h>
 #include <openssl/rand.h>
 #include <openssl/ssl.h>
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
 
 #include "log.h"
 #include "network.h"
@@ -29,6 +31,32 @@ static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
 
 static const char cipher_list[] = "HIGH:@STRENGTH";
+
+static int
+verify_callback(int ok, X509_STORE_CTX *ctx)
+{
+    X509 *cert  = X509_STORE_CTX_get_current_cert(ctx);
+    int   err   = X509_STORE_CTX_get_error(ctx);
+    int   depth = X509_STORE_CTX_get_error_depth(ctx);
+    char  issuer[256]  = "";
+    char  subject[256] = "";
+
+    X509_NAME_oneline(X509_get_issuer_name(cert), issuer, sizeof issuer);
+    X509_NAME_oneline(X509_get_subject_name(cert), subject, sizeof subject);
+
+    if (!ok) {
+	log_warn(0, "Error with certificate at depth: %d", depth);
+	log_warn(0, "  issuer  = %s", issuer);
+	log_warn(0, "  subject = %s", subject);
+	log_warn(0, "Reason: %s", X509_verify_cert_error_string(err));
+    } else {
+	log_debug("Cert verification OK!");
+	log_debug("  issuer  = %s", issuer);
+	log_debug("  subject = %s", subject);
+    }
+
+    return (ok);
+}
 
 void
 net_ssl_init()
@@ -54,6 +82,13 @@ net_ssl_init()
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL | SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
     }
 #endif
+
+    if (SSL_CTX_set_default_verify_paths(ssl_ctx)) {
+	SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER, verify_callback);
+	SSL_CTX_set_verify_depth(ssl_ctx, 4);
+    } else {
+	log_warn(ENOSYS, "net_ssl_init: Certificate verification is disabled");
+    }
 
     if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
 	log_warn(EINVAL, "net_ssl_init: Bogus cipher list");
