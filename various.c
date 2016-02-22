@@ -18,9 +18,40 @@
 
 #include <ctype.h>
 #include <stdint.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "log.h"
 #include "various.h"
+
+void toggle_echo(on_off_t state)
+{
+    static bool initialized = false;
+    static struct termios term_attrs = {};
+
+    if (!initialized) {
+	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
+	    log_die(errno, "toggle_echo: tcgetattr error");
+	initialized = true;
+    }
+
+    switch (state) {
+    case ON:
+	if (! (term_attrs.c_lflag & ECHO)) {
+	    term_attrs.c_lflag |= ECHO;
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) == 0)
+		log_debug("toggle_echo: echo is now on");
+	}
+	break;
+    case OFF:
+	if (term_attrs.c_lflag & ECHO) {
+	    term_attrs.c_lflag &= ~ECHO;
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) == 0)
+		log_debug("toggle_echo: echo is now off");
+	}
+	break;
+    }
+}
 
 size_t size_product(const size_t elt_count, const size_t elt_size)
 {

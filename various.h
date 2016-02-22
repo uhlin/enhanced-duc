@@ -6,6 +6,9 @@
 
 #include "def.h" /* PTR_ARGS_NONNULL etc */
 
+typedef enum { ON, OFF } on_off_t;
+
+void    toggle_echo    (on_off_t);
 size_t  size_product   (const size_t elt_count, const size_t elt_size);
 bool    file_exists    (const char *path);
 bool    is_regularFile (const char *path);
