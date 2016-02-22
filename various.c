@@ -16,6 +16,7 @@
 
 #include <sys/stat.h>
 
+#include <assert.h>
 #include <ctype.h>
 #include <stdint.h>
 #include <termios.h>
@@ -39,17 +40,19 @@ void toggle_echo(on_off_t state)
     case ON:
 	if (! (term_attrs.c_lflag & ECHO)) {
 	    term_attrs.c_lflag |= ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) == 0)
-		log_debug("toggle_echo: echo is now on");
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+		log_die(errno, "toggle_echo: tcsetattr error");
 	}
 	break;
     case OFF:
 	if (term_attrs.c_lflag & ECHO) {
 	    term_attrs.c_lflag &= ~ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) == 0)
-		log_debug("toggle_echo: echo is now off");
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+		log_die(errno, "toggle_echo: tcsetattr error");
 	}
 	break;
+    default:
+	assert(false); /* Shouldn't be reached. */
     }
 }
 
