@@ -35,9 +35,9 @@ static const char cipher_list[] = "HIGH:@STRENGTH";
 static int
 verify_callback(int ok, X509_STORE_CTX *ctx)
 {
-    X509 *cert  = X509_STORE_CTX_get_current_cert(ctx);
-    int   err   = X509_STORE_CTX_get_error(ctx);
-    int   depth = X509_STORE_CTX_get_error_depth(ctx);
+    X509	*cert  = X509_STORE_CTX_get_current_cert(ctx);
+    const int	 depth = X509_STORE_CTX_get_error_depth(ctx);
+    const int	 err   = X509_STORE_CTX_get_error(ctx);
     char  issuer[256]  = "";
     char  subject[256] = "";
 
