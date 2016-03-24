@@ -7,6 +7,7 @@ CC=gcc
 DUC_CFLAGS=$(CFLAGS) -std=c99 -Wall -D_POSIX_C_SOURCE=200809L
 OUT_NAME=educ_noip
 LDFLAGS=-lcrypto -lssl
+TEST_LDFLAGS=
 
 RM=rm -f
 INSTALL=install -D
@@ -20,6 +21,9 @@ CONF_FILE=/etc/educ_noip.conf
 OBJS=b64_decode.o b64_encode.o daemonize.o duc_strlcat.o duc_strlcpy.o
 OBJS+=interpreter.o log.o main.o my_vasprintf.o network.o
 OBJS+=network-openssl.o settings.o sig.o various.o wrapper.o
+
+TEST_OBJS=interpreter.o log.o my_vasprintf.o ptest.o
+TEST_OBJS+=settings.o tests.o various.o wrapper.o
 
 .c.o:
 	$(E) "  CC      " $@
@@ -45,9 +49,21 @@ sig.o: sig.c
 various.o: various.c
 wrapper.o: wrapper.c
 
+ptest.o: deps/ptest/ptest.c
+	$(E) "  CC      " $@
+	$(Q) $(CC) $(DUC_CFLAGS) -I. -Ideps/ptest -c deps/ptest/ptest.c -o ptest.o
+tests.o: tests/tests.c
+	$(E) "  CC      " $@
+	$(Q) $(CC) $(DUC_CFLAGS) -I. -Ideps/ptest -c tests/tests.c -o tests.o
+
+test: $(TEST_OBJS)
+	$(E) "  LINK    " $@
+	$(Q) $(CC) $(TEST_LDFLAGS) -o $@ $(TEST_OBJS)
+	./$@
+
 clean:
 	$(E) "  CLEAN"
-	$(Q) $(RM) $(OUT_NAME) $(OBJS)
+	$(Q) $(RM) $(OUT_NAME) $(OBJS) test ptest.o tests.o
 
 install: $(OUT_NAME) $(MAN_FILE) example.conf
 	$(E) "  INSTALL " $(BIN_DIR)/$(OUT_NAME)
