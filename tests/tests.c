@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "ptest.h"
-
 #include "various.h"
+#include "wrapper.h"
 
 PT_SUITE(suite_various)
 {
@@ -47,8 +47,29 @@ PT_SUITE(suite_various)
     }
 }
 
+PT_SUITE(suite_wrapper)
+{
+    PT_TEST(test_xstrdup)
+    {
+	char *ref;
+
+	ref = xstrdup("string to dup  --  return value must be freed");
+	PT_ASSERT_STR_EQ(ref, "string to dup  --  return value must be freed");
+	free(ref);
+    }
+    PT_TEST(test_strdup_printf)
+    {
+	char *ref;
+
+	ref = Strdup_printf("%d %s", 31337, "test string");
+	PT_ASSERT_STR_EQ(ref, "31337 test string");
+	free(ref);
+    }
+}
+
 int main(void)
 {
     pt_add_suite(suite_various);
+    pt_add_suite(suite_wrapper);
     return pt_run();
 }
