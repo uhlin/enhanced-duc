@@ -12,6 +12,22 @@ PT_SUITE(suite_various)
 	PT_ASSERT(size_product(5, 20) == 100);
 	PT_ASSERT(size_product(0, 1000) == 0);
     }
+    PT_TEST(test_is_numeric)
+    {
+	char *str;
+
+	str = "123";
+	PT_ASSERT(is_numeric(str));
+
+	str = "123456 789";
+	PT_ASSERT(!is_numeric(str));
+
+	str = " 123456789";
+	PT_ASSERT(!is_numeric(str));
+
+	str = "123456789 ";
+	PT_ASSERT(!is_numeric(str));
+    }
     PT_TEST(test_trim)
     {
 	char buf[200];
