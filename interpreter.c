@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2015 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2012-2016 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -26,8 +26,8 @@
 static const size_t	identifier_maxSize = 50;
 static const size_t	argument_maxSize   = 390;
 
-static char *	copy_identifier (const char *);
-static char *	copy_argument   (const char *);
+static char	*copy_identifier (const char *);
+static char	*copy_argument   (const char *);
 
 void
 Interpreter(const struct Interpreter_in *in)
@@ -114,6 +114,8 @@ copy_identifier(const char *id)
     }
 
     *dest = '\0';
+    if (! (count > 1))
+	log_die(EOVERFLOW, "copy_identifier: fatal: result truncated!");
     return (dest_buf);
 }
 
@@ -138,6 +140,8 @@ copy_argument(const char *arg)
 
     if (inside_arg) {
 	free(dest_buf);
+	if (! (count > 1))
+	    log_die(EOVERFLOW, "copy_argument: fatal: result truncated!");
 	return (NULL);
     }
 
