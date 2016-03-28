@@ -220,6 +220,7 @@ read_config_file(const char *path)
 	    line = trim(xstrdup(ccp));
 	    in.path	      = (char *) path;
 	    in.line	      = line;
+	    in.line_num	      = ++line_num;
 	    in.validator_func = is_recognized_setting;
 	    in.install_func   = install_setting;
 	    Interpreter(&in);
