@@ -61,6 +61,11 @@ test: $(TEST_OBJS)
 	$(Q) $(CC) $(TEST_LDFLAGS) -o $@ $(TEST_OBJS)
 	./$@
 
+.PHONY: config-test clean install
+
+config-test: $(OUT_NAME)
+	./config-test.sh
+
 clean:
 	$(E) "  CLEAN"
 	$(Q) $(RM) $(OUT_NAME) $(OBJS) test ptest.o tests.o
