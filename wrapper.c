@@ -22,6 +22,14 @@
 #include "log.h"
 #include "wrapper.h"
 
+/**
+ * @brief malloc wrapper
+ * @param size Size in bytes to allocate
+ * @return A pointer to the allocated memory
+ *
+ * A wrapper for the malloc() function that checks for error
+ * conditions.
+ */
 void *xmalloc(size_t size)
 {
     void *vp;
@@ -37,6 +45,15 @@ void *xmalloc(size_t size)
     return (vp);
 }
 
+/**
+ * @brief calloc wrapper
+ * @param elt_count	Element count
+ * @param elt_size	Element size
+ * @return A pointer to the allocated memory
+ *
+ * A wrapper for the calloc function that checks for error
+ * conditions. calloc always initializes the allocated memory to 0's.
+ */
 void *xcalloc(size_t elt_count, size_t elt_size)
 {
     void *vp;
@@ -55,6 +72,15 @@ void *xcalloc(size_t elt_count, size_t elt_size)
     return (vp);
 }
 
+/**
+ * @brief realloc wrapper
+ * @param ptr		A pointer to a memory block
+ * @param newSize	The new size
+ * @return A pointer to a memory block with given size
+ *
+ * A wrapper for the realloc() function that checks for error
+ * conditions.
+ */
 void *xrealloc(void *ptr, size_t newSize)
 {
     void *newPtr;
@@ -71,6 +97,14 @@ void *xrealloc(void *ptr, size_t newSize)
     return (newPtr);
 }
 
+/**
+ * @brief Make an exact copy of a string
+ * @param s Input string
+ * @return A copy of the input string
+ *
+ * Make an exact copy of a string. The storage of the new string is
+ * obtained with malloc(). The routine never returns NULL.
+ */
 char *xstrdup(const char *s)
 {
     size_t	 sz	       = 0;
@@ -94,6 +128,13 @@ char *xstrdup(const char *s)
     return (s_copy);
 }
 
+/**
+ * @brief	Duplicates a printf style format string
+ * @return	The result of the conversation
+ *
+ * Duplicates a printf style format string. The storage is obtained
+ * with malloc() which means that it must be freed.
+ */
 char *Strdup_printf(const char *format, ...)
 {
     int my_vasprintf(char **ret, const char *format, va_list ap);
