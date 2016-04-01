@@ -78,6 +78,7 @@ Interpreter(const struct Interpreter_in *in)
     adv_while_isspace(&ccp);
     if (*ccp && *ccp != '#') {
 	interpreter_message("Implicit data after line terminator");
+	goto die;
     } else if ( !(in->validator_func(id)) ) { /* Unrecognized identifier. */
 #if IGNORE_UNRECOGNIZED_IDENTIFIERS
 	;
