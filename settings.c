@@ -61,6 +61,16 @@ static struct config_default_values_tag {
     { "update_interval_seconds", TYPE_INTEGER, "1800", NULL,
       "Update interval specified in seconds. If a value less than 600 is entered, the\n"
       "underlying code will fallback to 1800 to avoid flooding the server with requests." },
+
+    { "primary_ip_lookup_srv", TYPE_STRING, "ip1.dynupdate.no-ip.com", NULL,
+      "Server used to determine your external IP." },
+
+    { "backup_ip_lookup_srv", TYPE_STRING, "ip2.dynupdate.no-ip.com", NULL,
+      "Backup server for IP lookups." },
+
+    { "force_update", TYPE_BOOLEAN, "NO", NULL,
+      "Even if your external IP address hasn't changed between update intervals, or if\n"
+      "the program cannot determine your external IP  --  in either way: force update." },
 };
 
 static bool	is_setting_ok         (const char *value, enum setting_type);
