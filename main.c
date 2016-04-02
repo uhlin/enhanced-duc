@@ -83,7 +83,7 @@ main(int argc, char *argv[])
     };
     char conf[DUC_PATH_MAX] =
 	"/etc/educ_noip.conf"; /* process_options change the value if -x is passed. */
-    
+
     if (sigHand_init() == -1)
 	log_warn(0, "Initialization of signal handling failed");
     if (atexit(program_clean_up) == -1)
@@ -91,12 +91,12 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
     process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
-    
+
     if (opt.want_usage)
 	usage(); /* Doesn't return. */
     if (opt.want_create_config_file) {
 	char *path = get_answer("Create where?", TYPE_STRING, &conf[0]);
-	
+
 	create_config_file(path);
 	free(path);
 	exit(0);
@@ -111,7 +111,7 @@ main(int argc, char *argv[])
 	/* Detach the program from the controlling terminal and continue execution... */
 	Daemonize();
     }
-    
+
     log_msg("%s %s has started.", g_programName, g_programVersion);
     log_msg("Reading %s...", conf);
     read_config_file(conf);
@@ -121,9 +121,9 @@ main(int argc, char *argv[])
     if (geteuid() == UID_SUPER_USER) {
 	force_priv_drop();
     }
-    
+
     start_update_cycle();
-    
+
     return 0;
 }
 
@@ -179,7 +179,7 @@ usage(void)
 
     free(msgVersion);
     free(msgUsage);
-    
+
     for (const char **ppcc = &help_text[0]; ppcc < &help_text[ar_sz]; ppcc++) {
 	fputs(*ppcc, stderr);
     }
@@ -205,7 +205,7 @@ force_priv_drop(void)
     struct passwd *pw;
 
     log_msg("Dropping root privileges...");
-    
+
     if ((pw = getpwnam(educ_noip_user)) == NULL)
 	log_die(0, "getpwnam: no such user %s", educ_noip_user);
     else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
@@ -322,7 +322,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
 	ok = false;
 	goto err;
     }
-    
+
     switch (server_response(buf)) {
     case CODE_GOOD:
 	log_msg("*** DNS hostname update successful! ***");
@@ -432,7 +432,7 @@ server_response(const char *buf)
     };
     const size_t ar_sz = ARRAY_SIZE(responses);
     const struct responses_tag *ar_p = &responses[0];
-    
+
     if (buf == NULL || Strings_match(buf, "")) {
 	return CODE_UNKNOWN;
     } else {
@@ -458,7 +458,7 @@ server_response(const char *buf)
     r = Strtolower(xstrdup(++cp));
     free(dump);
     log_debug("server_response: r = \"%s\"", r);
-    
+
     if (!strncmp(r, "good ", 5)) {
 	free(r);
 	return CODE_GOOD;
