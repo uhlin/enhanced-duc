@@ -25,6 +25,13 @@
 #include "log.h"
 #include "various.h"
 
+/**
+ * @brief Toggle echo ON/OFF
+ * @param state Set echoing to this state
+ * @return void
+ *
+ * Toggle echo ON/OFF.
+ */
 void toggle_echo(on_off_t state)
 {
     static bool initialized = false;
@@ -56,6 +63,15 @@ void toggle_echo(on_off_t state)
     }
 }
 
+/**
+ * @brief Calculate multiplication
+ * @param elt_count	Element count
+ * @param elt_size	Element size
+ * @return The product
+ *
+ * Calculate elt_count * elt_size and return its result -- but check
+ * for overflow.
+ */
 size_t size_product(const size_t elt_count, const size_t elt_size)
 {
     if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
@@ -64,6 +80,14 @@ size_t size_product(const size_t elt_count, const size_t elt_size)
     return (elt_count * elt_size);
 }
 
+/**
+ * @brief Check if a file exists
+ * @param path Path to file
+ * @return true or false
+ *
+ * Check if a file exists. It returns true for any filetype, even a
+ * directory.
+ */
 bool file_exists(const char *path)
 {
     struct stat sb;
@@ -71,6 +95,14 @@ bool file_exists(const char *path)
     return path != NULL && *path != '\0' && stat(path, &sb) == 0;
 }
 
+/**
+ * @brief Check for a regular file
+ * @param path Path to file
+ * @return true or false
+ *
+ * Check for a regular file. If path is either NULL or an empty string
+ * it returns false.
+ */
 bool is_regularFile(const char *path)
 {
     struct stat sb;
@@ -80,6 +112,14 @@ bool is_regularFile(const char *path)
     return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
 }
 
+/**
+ * @brief Check if a file is a directory
+ * @param path Path to file
+ * @return true or false
+ *
+ * Check if a file is a directory. If path is either NULL or an empty
+ * string it returns false.
+ */
 bool is_directory(const char *path)
 {
     struct stat sb;
@@ -89,6 +129,13 @@ bool is_directory(const char *path)
     return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
 
+/**
+ * @brief Check if a string consists of digits only
+ * @param string The string to check
+ * @return true or false
+ *
+ * Check if a string consists of digits only determined by isdigit().
+ */
 bool is_numeric(const char *string)
 {
     const char *p;
@@ -104,6 +151,13 @@ bool is_numeric(const char *string)
     return true;
 }
 
+/**
+ * @brief Delete trailing whitespace characters
+ * @param string Input string
+ * @return The result
+ *
+ * Delete trailing whitespace characters determined by isspace().
+ */
 char *trim(char *string)
 {
     if (string == NULL) {
@@ -123,6 +177,14 @@ char *trim(char *string)
     return string;
 }
 
+/**
+ * @brief Convert a input string to all lowercase characters
+ * @param s Input string
+ * @return The result
+ *
+ * Convert a input string to all lowercase characters. Strtolower()
+ * modifies the input string and return its result.
+ */
 char *Strtolower(char *s)
 {
     size_t len = 0;
