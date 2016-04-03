@@ -14,6 +14,9 @@
    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
    PERFORMANCE OF THIS SOFTWARE. */
 
+#if __OpenBSD__
+#include <sys/param.h>
+#endif
 #include <sys/types.h>
 
 #include <locale.h>
@@ -122,6 +125,7 @@ main(int argc, char *argv[])
 	force_priv_drop();
     }
 
+    net_init();
     start_update_cycle();
 
     return 0;
@@ -220,10 +224,21 @@ force_priv_drop(void)
 static void
 start_update_cycle(void)
 {
+    extern int pledge(const char *promises, const char **paths);
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
 
     hostname_array_init();
-    net_init();
+
+#if defined(OpenBSD) && OpenBSD >= 201605
+    if (pledge("stdio inet dns", NULL) == -1)
+	log_die(errno, "pledge");
+    else {
+	log_msg("An OpenBSD computer and it has pledge(). Exciting!");
+	log_msg("Forced %s into a restricted service operating mode.", g_programName);
+    }
+#else
+    (void) pledge;
+#endif
 
     do {
 	bool updateRequest_after_30m = false;
