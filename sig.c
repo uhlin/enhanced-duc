@@ -25,10 +25,10 @@
 #include "sig.h"
 
 static struct sig_message_tag {
-    int		 num;
-    char	*num_str;
-    bool	 ignore;
-    char	*msg;
+    int		 num;		/**< Signal number                     */
+    char	*num_str;	/**< Official name                     */
+    bool	 ignore;	/**< Ignore this signal if it arrives? */
+    char	*msg;		/**< Signal description                */
 } sig_message[] = {
     { SIGABRT,  "SIGABRT",  false, "Abnormal termination"           },
     { SIGBUS,   "SIGBUS",   false, "Bus error (bad memory access)"  },
@@ -50,6 +50,14 @@ static struct sig_message_tag {
 
 static void signal_handler(int signum);
 
+/**
+ * @brief	Initialize signal handling
+ * @return	0 on success, and -1 on failure
+ *
+ * Initialize signal handling for the program. For example decide what
+ * to do if the OS sends SIGSEGV (invalid memory reference) to the
+ * program.
+ */
 int
 sigHand_init(void)
 {
@@ -103,6 +111,13 @@ signal_handler(int signum)
     _exit(1);
 }
 
+/**
+ * @brief	Program clean up function
+ * @return	void
+ *
+ * This function is called whenever the program exits, no matter if it
+ * was an error that caused it, or if the program exited normally.
+ */
 void
 program_clean_up(void)
 {
