@@ -13,6 +13,8 @@ extern const char g_programVersion[];
 extern const char g_programAuthor[];
 extern const char g_maintainerEmail[];
 
+extern char g_last_ip_addr[100];
+
 struct program_options {
     bool want_usage;
     bool want_create_config_file;

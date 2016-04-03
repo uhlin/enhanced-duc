@@ -68,9 +68,10 @@ static struct config_default_values_tag {
     { "backup_ip_lookup_srv", TYPE_STRING, "ip2.dynupdate.no-ip.com", NULL,
       "Backup server for IP lookups." },
 
-    { "force_update", TYPE_BOOLEAN, "NO", NULL,
+    { "force_update", TYPE_BOOLEAN, "YES", NULL,
       "Even if your external IP address hasn't changed between update intervals, or if\n"
-      "the program cannot determine your external IP  --  in either way: force update." },
+      "the program cannot determine your external IP  --  in either way: force update.\n"
+      "This setting should be set to YES if ip_addr is not equal to value WAN_address." },
 };
 
 static bool	is_setting_ok         (const char *value, enum setting_type);

@@ -39,6 +39,8 @@ const char g_programVersion[]  = "v1.5";
 const char g_programAuthor[]   = "Markus Uhlin";
 const char g_maintainerEmail[] = "markus.uhlin@bredband.net";
 
+char g_last_ip_addr[100] = "";
+
 static const char *help_text[] = {
     "\n",
     "Options:\n",
@@ -243,6 +245,20 @@ start_update_cycle(void)
     do {
 	bool updateRequest_after_30m = false;
 
+	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
+	    hostname_array_assign();
+
+	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
+		log_msg("Trying to update %s...", *ar_p);
+
+		if (!update_host(*ar_p, setting("ip_addr"), &updateRequest_after_30m))
+		    break; /* Stop updating on the first unsuccessful try. */
+	    }
+
+	    hostname_array_destroy();
+	}
+
+#if 0
 	hostname_array_assign();
 
 	for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
@@ -253,6 +269,7 @@ start_update_cycle(void)
 	}
 
 	hostname_array_destroy();
+#endif
 
 	if (Cycle) {
 	    struct integer_unparse_context ctx = {

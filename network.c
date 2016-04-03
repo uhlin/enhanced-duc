@@ -18,11 +18,14 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#include <arpa/inet.h>
+#include <assert.h>
 #include <netdb.h>
 #include <stdarg.h>
 #include <unistd.h>
 
 #include "log.h"
+#include "main.h"
 #include "network.h"
 #include "settings.h"
 #include "various.h"
@@ -42,7 +45,8 @@ static inline bool	 is_ssl_enabled   (void);
 void
 net_init(void)
 {
-    if (is_ssl_enabled()) net_ssl_init();
+    if (is_ssl_enabled())
+	net_ssl_init();
 }
 
 void
@@ -209,4 +213,83 @@ static inline bool
 is_ssl_enabled(void)
 {
     return (strcmp(setting("port"), "443") == 0);
+}
+
+ip_chg_t
+net_check_for_ip_change(void)
+{
+    struct addrinfo *res, *rp;
+    const char    *primary_srv      = setting("primary_ip_lookup_srv");
+    const char    *backup_srv       = setting("backup_ip_lookup_srv");
+    const char    *port             = "80";
+    char           srv[255]         = "";
+    bool           address_resolved = false;
+    bool           connected        = false;
+    char           buf[1000]        = "";
+    unsigned char  nw_addr[sizeof (struct in_addr)];
+
+    if (setting_bool_unparse("force_update", true))
+	return (IP_HAS_CHANGED);
+
+    if ((res = net_addr_resolve(primary_srv, port)) != NULL) {
+	duc_strlcpy(srv, primary_srv, sizeof srv);
+	address_resolved = true;
+	goto done;
+    }
+
+    if ((res = net_addr_resolve(backup_srv, port)) != NULL) {
+	duc_strlcpy(srv, backup_srv, sizeof srv);
+	address_resolved = true;
+    }
+
+  done:
+
+    if (!address_resolved)
+	return (IP_HAS_CHANGED); /* force update */
+
+    for (rp = res; rp; rp = rp->ai_next) {
+	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
+	    continue;
+	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
+	    connected = true;
+	    break;
+	} else {
+	    close(g_socket);
+	}
+    }
+
+    freeaddrinfo(res);
+
+    if (!connected) {
+	close(g_socket);
+	g_socket = -1;
+	return (IP_HAS_CHANGED);
+    }
+
+    net_send_plain("GET /index.html HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s/%s %s",
+		   srv, g_programName, g_programVersion, g_maintainerEmail);
+    net_recv_plain(buf, sizeof buf);
+    close(g_socket);
+    g_socket = -1;
+    trim(buf);
+    const char *cp = strrchr(buf, '\n');
+
+    if (!cp) {
+	log_warn(0, "net_check_for_ip_change: warning: cannot locate last occurrance of a newline");
+	return (IP_NO_CHANGE);
+    } else if (inet_pton(AF_INET, ++cp, nw_addr) == 0) {
+	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
+	return (IP_NO_CHANGE);
+    } else if (Strings_match(cp, g_last_ip_addr)) {
+	log_msg("Not updating  --  the external IP hasn't changed");
+	return (IP_NO_CHANGE);
+    } else {
+	duc_strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
+	log_msg("IP has changed to %s", cp);
+	return (IP_HAS_CHANGED);
+    }
+
+    /*NOTREACHED*/
+    assert(false);
+    return (IP_NO_CHANGE);
 }

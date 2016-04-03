@@ -19,18 +19,19 @@ extern NET_RECV_FUNCPTR net_recv;
 
 extern int g_socket;
 
-void	net_init       (void);
-void	net_deinit     (void);
-void	net_disconnect (void);
-int	net_send_plain (const char *fmt, ...) PRINTFLIKE(1);
-int	net_recv_plain (char *recvbuf, size_t recvbuf_size);
-int	net_connect    (void);
+int		net_connect(void);
+int		net_recv_plain(char *recvbuf, size_t recvbuf_size);
+int		net_send_plain(const char *fmt, ...) PRINTFLIKE(1);
+ip_chg_t	net_check_for_ip_change(void);
+void		net_deinit(void);
+void		net_disconnect(void);
+void		net_init(void);
 
-void	net_ssl_init   (void);
-void	net_ssl_deinit (void);
-void	net_ssl_close  (void);
-int	net_ssl_start  (void);
-int	net_ssl_send   (const char *fmt, ...) PRINTFLIKE(1);
 int	net_ssl_recv   (char *recvbuf, size_t recvbuf_size);
+int	net_ssl_send   (const char *fmt, ...) PRINTFLIKE(1);
+int	net_ssl_start  (void);
+void	net_ssl_close  (void);
+void	net_ssl_deinit (void);
+void	net_ssl_init   (void);
 
 #endif
