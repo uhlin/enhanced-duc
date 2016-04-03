@@ -167,7 +167,7 @@ net_addr_resolve(const char *host, const char *port)
     if (getaddrinfo(host, port, &hints, &res) != 0) {
 	return (NULL);
     }
-    
+
     return (res);
 }
 
@@ -200,7 +200,7 @@ net_connect(void)
 	}
 
     freeaddrinfo(res);
-    
+
     if (!connected) {
 	log_warn(0, "Failed to establish a connection");
 	return -1;
