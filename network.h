@@ -6,6 +6,11 @@
 
 #include "def.h"
 
+typedef enum {
+    IP_HAS_CHANGED,
+    IP_NO_CHANGE
+} ip_chg_t;
+
 typedef int (*NET_SEND_FUNCPTR)(const char *, ...);
 typedef int (*NET_RECV_FUNCPTR)(char *, size_t);
 
