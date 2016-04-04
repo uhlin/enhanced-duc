@@ -78,9 +78,6 @@ static bool	is_setting_ok         (const char *value, enum setting_type);
 static bool	is_recognized_setting (const char *setting_name);
 static int	install_setting       (const char *setting_name, const char *value);
 static bool	is_ip_addr_ok         (char **reason);
-#if 0
-static bool	is_sp_hostname_ok     (char **reason);
-#endif
 static bool	is_hostname_ok        (const char *host, char **reason);
 static bool	is_port_ok            (void);
 
@@ -504,34 +501,6 @@ is_ip_addr_ok(char **reason)
     *reason = "";
     return true;
 }
-
-#if 0
-static bool
-is_sp_hostname_ok(char **reason)
-{
-    const char *host = setting("sp_hostname");
-    const size_t host_maxlen = 253;
-    const char host_chars[] =
-	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    if (Strings_match(host, "")) {
-	*reason = "empty setting";
-	return false;
-    } else if (strlen(host) > host_maxlen) {
-	*reason = "name too long";
-	return false;
-    } else {
-	for (const char *cp = host; *cp; cp++)
-	    if (strchr(host_chars, *cp) == NULL) {
-		*reason = "invalid chars found!";
-		return false;
-	    }
-    }
-
-    *reason = "";
-    return true;
-}
-#endif
 
 static bool
 is_hostname_ok(const char *host, char **reason)
