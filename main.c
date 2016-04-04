@@ -35,7 +35,7 @@
 #include "wrapper.h"
 
 const char g_programName[]     = "Enhanced DUC";
-const char g_programVersion[]  = "v1.5";
+const char g_programVersion[]  = "v1.6";
 const char g_programAuthor[]   = "Markus Uhlin";
 const char g_maintainerEmail[] = "markus.uhlin@bredband.net";
 
