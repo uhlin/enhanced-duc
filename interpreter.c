@@ -29,6 +29,14 @@ static const size_t	argument_maxSize   = 390;
 static char	*copy_identifier (const char *);
 static char	*copy_argument   (const char *);
 
+/**
+ * @brief Interpreter
+ * @param in Context structure
+ * @return void
+ *
+ * An interpreter for configuration files. The context structure
+ * contains the data to be passed to the interpreter.
+ */
 void
 Interpreter(const struct Interpreter_in *in)
 {
