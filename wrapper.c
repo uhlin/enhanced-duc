@@ -31,10 +31,10 @@
 char *
 Strdup_printf(const char *format, ...)
 {
-    char *ret;
-    extern int my_vasprintf(char **ret, const char *format, va_list);
-    int chars_printed;
-    va_list ap;
+    char	*ret;
+    extern int	 my_vasprintf(char **ret, const char *format, va_list);
+    int		 chars_printed;
+    va_list	 ap;
 
     va_start(ap, format);
     chars_printed = my_vasprintf(&ret, format, ap);
