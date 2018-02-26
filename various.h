@@ -8,14 +8,14 @@
 
 typedef enum { ON, OFF } on_off_t;
 
-void    toggle_echo    (on_off_t);
-size_t  size_product   (const size_t elt_count, const size_t elt_size);
 bool    file_exists    (const char *path);
-bool    is_regularFile (const char *path);
 bool    is_directory   (const char *path);
 bool    is_numeric     (const char *);
-char   *trim           (char *);
+bool    is_regularFile (const char *path);
 char   *Strtolower     (char *);
+char   *trim           (char *);
+size_t  size_product   (const size_t elt_count, const size_t elt_size);
+void    toggle_echo    (on_off_t);
 
 #if defined(HAVE_STRLCPY) && defined(HAVE_STRLCAT)
 #define duc_strlcpy strlcpy

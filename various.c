@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -26,61 +26,6 @@
 #include "various.h"
 
 /**
- * @brief Toggle echo ON/OFF
- * @param state Set echoing to this state
- * @return void
- *
- * Toggle echo ON/OFF.
- */
-void toggle_echo(on_off_t state)
-{
-    static bool initialized = false;
-    static struct termios term_attrs = {};
-
-    if (!initialized) {
-	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
-	    log_die(errno, "toggle_echo: tcgetattr error");
-	initialized = true;
-    }
-
-    switch (state) {
-    case ON:
-	if (! (term_attrs.c_lflag & ECHO)) {
-	    term_attrs.c_lflag |= ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		log_die(errno, "toggle_echo: tcsetattr error");
-	}
-	break;
-    case OFF:
-	if (term_attrs.c_lflag & ECHO) {
-	    term_attrs.c_lflag &= ~ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		log_die(errno, "toggle_echo: tcsetattr error");
-	}
-	break;
-    default:
-	assert(false); /* Shouldn't be reached. */
-    }
-}
-
-/**
- * @brief Calculate multiplication
- * @param elt_count	Element count
- * @param elt_size	Element size
- * @return The product
- *
- * Calculate elt_count * elt_size and return its result -- but check
- * for overflow.
- */
-size_t size_product(const size_t elt_count, const size_t elt_size)
-{
-    if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
-	log_die(ERANGE, "size_product: FATAL: numerical result out of range");
-    
-    return (elt_count * elt_size);
-}
-
-/**
  * @brief Check if a file exists
  * @param path Path to file
  * @return true or false
@@ -93,23 +38,6 @@ bool file_exists(const char *path)
     struct stat sb;
 
     return path != NULL && *path != '\0' && stat(path, &sb) == 0;
-}
-
-/**
- * @brief Check for a regular file
- * @param path Path to file
- * @return true or false
- *
- * Check for a regular file. If path is either NULL or an empty string
- * it returns false.
- */
-bool is_regularFile(const char *path)
-{
-    struct stat sb;
-
-    if (path == NULL || *path == '\0') return false;
-
-    return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
 }
 
 /**
@@ -152,29 +80,20 @@ bool is_numeric(const char *string)
 }
 
 /**
- * @brief Delete trailing whitespace characters
- * @param string Input string
- * @return The result
+ * @brief Check for a regular file
+ * @param path Path to file
+ * @return true or false
  *
- * Delete trailing whitespace characters determined by isspace().
+ * Check for a regular file. If path is either NULL or an empty string
+ * it returns false.
  */
-char *trim(char *string)
+bool is_regularFile(const char *path)
 {
-    if (string == NULL) {
-	log_die(EINVAL, "trim error");
-    } else if (*string == '\0') {
-	return string;
-    } else {
-	char *p;
-	
-	for (p = &string[strlen(string) - 1]; p >= &string[0]; p--) {
-	    if (!isspace(*p)) break;
-	}
-	
-	*(p + 1) = '\0';
-    }
-    
-    return string;
+    struct stat sb;
+
+    if (path == NULL || *path == '\0') return false;
+
+    return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
 }
 
 /**
@@ -202,4 +121,85 @@ char *Strtolower(char *s)
     }
 
     return s;
+}
+
+/**
+ * @brief Delete trailing whitespace characters
+ * @param string Input string
+ * @return The result
+ *
+ * Delete trailing whitespace characters determined by isspace().
+ */
+char *trim(char *string)
+{
+    if (string == NULL) {
+	log_die(EINVAL, "trim error");
+    } else if (*string == '\0') {
+	return string;
+    } else {
+	char *p;
+
+	for (p = &string[strlen(string) - 1]; p >= &string[0]; p--) {
+	    if (!isspace(*p)) break;
+	}
+
+	*(p + 1) = '\0';
+    }
+
+    return string;
+}
+
+/**
+ * @brief Calculate multiplication
+ * @param elt_count	Element count
+ * @param elt_size	Element size
+ * @return The product
+ *
+ * Calculate elt_count * elt_size and return its result -- but check
+ * for overflow.
+ */
+size_t size_product(const size_t elt_count, const size_t elt_size)
+{
+    if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
+	log_die(ERANGE, "size_product: FATAL: numerical result out of range");
+
+    return (elt_count * elt_size);
+}
+
+/**
+ * @brief Toggle echo ON/OFF
+ * @param state Set echoing to this state
+ * @return void
+ *
+ * Toggle echo ON/OFF.
+ */
+void toggle_echo(on_off_t state)
+{
+    static bool initialized = false;
+    static struct termios term_attrs = {};
+
+    if (!initialized) {
+	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
+	    log_die(errno, "toggle_echo: tcgetattr error");
+	initialized = true;
+    }
+
+    switch (state) {
+    case ON:
+	if (! (term_attrs.c_lflag & ECHO)) {
+	    term_attrs.c_lflag |= ECHO;
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+		log_die(errno, "toggle_echo: tcsetattr error");
+	}
+	break;
+    case OFF:
+	if (term_attrs.c_lflag & ECHO) {
+	    term_attrs.c_lflag &= ~ECHO;
+	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+		log_die(errno, "toggle_echo: tcsetattr error");
+	}
+	break;
+    default:
+	assert(false); /* Shouldn't be reached. */
+    }
 }
