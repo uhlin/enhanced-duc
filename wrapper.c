@@ -23,11 +23,10 @@
 #include "wrapper.h"
 
 /**
- * @brief	Duplicates a printf style format string
- * @return	The result of the conversation
- *
  * Duplicates a printf style format string. The storage is obtained
  * with malloc() which means that it must be freed.
+ *
+ * @return The result of the conversation
  */
 char *
 Strdup_printf(const char *format, ...)
@@ -49,12 +48,11 @@ Strdup_printf(const char *format, ...)
 }
 
 /**
- * @brief Make an exact copy of a string
- * @param s Input string
- * @return A copy of the input string
- *
  * Make an exact copy of a string. The storage of the new string is
  * obtained with malloc(). The routine never returns NULL.
+ *
+ * @param s Input string
+ * @return A copy of the input string
  */
 char *
 xstrdup(const char *s)
@@ -81,13 +79,12 @@ xstrdup(const char *s)
 }
 
 /**
- * @brief calloc wrapper
+ * A wrapper for the calloc function that checks for error
+ * conditions. calloc always initializes the allocated memory to 0's.
+ *
  * @param elt_count	Element count
  * @param elt_size	Element size
  * @return A pointer to the allocated memory
- *
- * A wrapper for the calloc function that checks for error
- * conditions. calloc always initializes the allocated memory to 0's.
  */
 void *
 xcalloc(size_t elt_count, size_t elt_size)
@@ -109,12 +106,11 @@ xcalloc(size_t elt_count, size_t elt_size)
 }
 
 /**
- * @brief malloc wrapper
- * @param size Size in bytes to allocate
- * @return A pointer to the allocated memory
- *
  * A wrapper for the malloc() function that checks for error
  * conditions.
+ *
+ * @param size Size in bytes to allocate
+ * @return A pointer to the allocated memory
  */
 void *
 xmalloc(size_t size)
@@ -133,13 +129,12 @@ xmalloc(size_t size)
 }
 
 /**
- * @brief realloc wrapper
+ * A wrapper for the realloc() function that checks for error
+ * conditions.
+ *
  * @param ptr		A pointer to a memory block
  * @param newSize	The new size
  * @return A pointer to a memory block with given size
- *
- * A wrapper for the realloc() function that checks for error
- * conditions.
  */
 void *
 xrealloc(void *ptr, size_t newSize)
