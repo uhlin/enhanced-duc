@@ -91,7 +91,7 @@ xstrdup(const char *s)
 void *
 xcalloc(size_t elt_count, size_t elt_size)
 {
-    void *vp;
+    void *vp = NULL;
 
     if (elt_count == 0) {
 	fatal(EINVAL, "xcalloc: invalid argument: element count is zero");
@@ -118,7 +118,7 @@ xcalloc(size_t elt_count, size_t elt_size)
 void *
 xmalloc(size_t size)
 {
-    void *vp;
+    void *vp = NULL;
 
     if (size == 0) {
 	fatal(EINVAL, "xmalloc: invalid argument -- zero size");
@@ -142,7 +142,7 @@ xmalloc(size_t size)
 void *
 xrealloc(void *ptr, size_t newSize)
 {
-    void *newPtr;
+    void *newPtr = NULL;
 
     if (ptr == NULL) {
 	fatal(EINVAL, "xrealloc: invalid argument: a null pointer was passed");
