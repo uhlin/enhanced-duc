@@ -5,9 +5,7 @@
 
 #include <stdlib.h>
 
-#define strdup_printf Strdup_printf
-
-char *Strdup_printf (const char *format, ...) PRINTFLIKE(1);
+char *strdup_printf (const char *format, ...) PRINTFLIKE(1);
 char *xstrdup       (const char *string);
 void *xcalloc       (size_t elt_count, size_t elt_size);
 void *xmalloc       (size_t);
