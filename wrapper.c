@@ -29,7 +29,8 @@
  * Duplicates a printf style format string. The storage is obtained
  * with malloc() which means that it must be freed.
  */
-char *Strdup_printf(const char *format, ...)
+char *
+Strdup_printf(const char *format, ...)
 {
     int my_vasprintf(char **ret, const char *format, va_list ap);
     va_list	 ap;
@@ -55,7 +56,8 @@ char *Strdup_printf(const char *format, ...)
  * Make an exact copy of a string. The storage of the new string is
  * obtained with malloc(). The routine never returns NULL.
  */
-char *xstrdup(const char *s)
+char *
+xstrdup(const char *s)
 {
     size_t	 sz	       = 0;
     char	*s_copy	       = NULL;
@@ -87,7 +89,8 @@ char *xstrdup(const char *s)
  * A wrapper for the calloc function that checks for error
  * conditions. calloc always initializes the allocated memory to 0's.
  */
-void *xcalloc(size_t elt_count, size_t elt_size)
+void *
+xcalloc(size_t elt_count, size_t elt_size)
 {
     void *vp;
 
@@ -113,7 +116,8 @@ void *xcalloc(size_t elt_count, size_t elt_size)
  * A wrapper for the malloc() function that checks for error
  * conditions.
  */
-void *xmalloc(size_t size)
+void *
+xmalloc(size_t size)
 {
     void *vp;
 
@@ -137,7 +141,8 @@ void *xmalloc(size_t size)
  * A wrapper for the realloc() function that checks for error
  * conditions.
  */
-void *xrealloc(void *ptr, size_t newSize)
+void *
+xrealloc(void *ptr, size_t newSize)
 {
     void *newPtr;
 
