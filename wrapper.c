@@ -71,8 +71,10 @@ xstrdup(const char *s)
 	fatal(ENOMEM, "xstrdup: error allocating %zu bytes", sz);
     }
 
-    if ((chars_printed = snprintf(s_copy, sz, "%s", s)) == -1 || (size_t) chars_printed >= sz) {
-	fatal(errno, "xstrdup: snprintf error (chars_printed = %d)", chars_printed);
+    if ((chars_printed = snprintf(s_copy, sz, "%s", s)) == -1 ||
+	chars_printed >= sz) {
+	fatal(errno, "xstrdup: snprintf error (chars_printed = %d)",
+	      chars_printed);
     }
 
     return (s_copy);
@@ -99,7 +101,8 @@ xcalloc(size_t elt_count, size_t elt_size)
 	fatal(0, "xcalloc: integer overflow");
     } else {
 	if ((vp = calloc(elt_count, elt_size)) == NULL)
-	    fatal(ENOMEM, "xcalloc: out of memory (allocating %zu bytes)", (elt_count * elt_size));
+	    fatal(ENOMEM, "xcalloc: out of memory (allocating %zu bytes)",
+		  (elt_count * elt_size));
     }
 
     return (vp);
@@ -147,7 +150,8 @@ xrealloc(void *ptr, size_t newSize)
 	fatal(EINVAL, "xrealloc: invalid argument: zero size  --  use free");
     } else {
 	if ((newPtr = realloc(ptr, newSize)) == NULL)
-	    fatal(errno, "xrealloc: error changing memory block to %zu bytes", newSize);
+	    fatal(errno, "xrealloc: error changing memory block to %zu bytes",
+		  newSize);
     }
 
     return (newPtr);
