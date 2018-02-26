@@ -176,8 +176,8 @@ static void
 usage(void)
 {
     extern char		*__progname;
-    char		*msgVersion = Strdup_printf("%s %s by %s\n", g_programName, g_programVersion, g_programAuthor);
-    char		*msgUsage   = Strdup_printf("Usage: %s [OPTION] ...\n", __progname);
+    char		*msgVersion = strdup_printf("%s %s by %s\n", g_programName, g_programVersion, g_programAuthor);
+    char		*msgUsage   = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
     const size_t	 ar_sz	    = ARRAY_SIZE(help_text);
 
     fputs(msgVersion, stderr);
@@ -391,20 +391,20 @@ send_update_request(const char *which_host, const char *to_ip)
     s = host = unp = NULL;
 
     if (Strings_match(to_ip, "WAN_address")) {
-	s = Strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
+	s = strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
     } else {
-	s = Strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0", which_host, to_ip);
+	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0", which_host, to_ip);
     }
 
-    host = Strdup_printf("Host: %s", setting("sp_hostname"));
-    unp	 = Strdup_printf("%s:%s", setting("username"), setting("password"));
+    host = strdup_printf("Host: %s", setting("sp_hostname"));
+    unp	 = strdup_printf("%s:%s", setting("username"), setting("password"));
     if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
 	log_warn(EMSGSIZE, "In send_update_request: b64_encode() error");
 	ok = false;
 	goto err;
     }
-    auth  = Strdup_printf("Authorization: Basic %s", buf);
-    agent = Strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
+    auth  = strdup_printf("Authorization: Basic %s", buf);
+    agent = strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
 
     log_debug("Sending http GET request...");
     if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;

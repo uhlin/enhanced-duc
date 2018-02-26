@@ -29,7 +29,7 @@
  * @return The result of the conversation
  */
 char *
-Strdup_printf(const char *format, ...)
+strdup_printf(const char *format, ...)
 {
     char	*ret;
     extern int	 my_vasprintf(char **ret, const char *format, va_list);
@@ -41,7 +41,7 @@ Strdup_printf(const char *format, ...)
     va_end(ap);
 
     if (chars_printed < 0) {
-	fatal(errno, "Strdup_printf: fatal error");
+	fatal(errno, "strdup_printf: fatal error");
     }
 
     return (ret);
