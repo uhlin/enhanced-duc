@@ -93,6 +93,12 @@ copy_argument(const char *arg)
 
 /**
  * Interpreter
+ *
+ * @param in Context structure
+ * @return Void
+ *
+ * An interpreter for configuration files. The context structure
+ * contains the data to be passed to the interpreter.
  */
 void
 Interpreter(const struct Interpreter_in *in)
