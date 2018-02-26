@@ -17,6 +17,8 @@ typedef enum {
     REDIR_STDOUT_FAIL
 } redir_res_t;
 
+#define fatal log_die
+
 redir_res_t redirect_standard_streams (void);
 void        log_init                  (void);
 void        log_die                   (int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
