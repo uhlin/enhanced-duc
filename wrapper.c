@@ -31,10 +31,10 @@
 char *
 Strdup_printf(const char *format, ...)
 {
-    int my_vasprintf(char **ret, const char *format, va_list ap);
-    va_list	 ap;
-    int		 chars_printed;
-    char	*ret;
+    char *ret;
+    extern int my_vasprintf(char **ret, const char *format, va_list);
+    int chars_printed;
+    va_list ap;
 
     va_start(ap, format);
     chars_printed = my_vasprintf(&ret, format, ap);
@@ -57,9 +57,9 @@ Strdup_printf(const char *format, ...)
 char *
 xstrdup(const char *s)
 {
-    size_t	 sz	       = 0;
-    char	*s_copy	       = NULL;
-    int		 chars_printed = -1;
+    char *s_copy = NULL;
+    int chars_printed = -1;
+    size_t sz = 0;
 
     if (s == NULL) {
 	fatal(EINVAL, "xstrdup: invalid argument");
