@@ -129,7 +129,7 @@ static const uint8_t b64rmap_space = 0xfe;
 static const uint8_t b64rmap_invalid = 0xff;
 
 /**
- * Initializing the reverse map is not thread safe. 
+ * Initializing the reverse map is not thread safe.
  * Which is fine for NSD. For now...
  **/
 static void
