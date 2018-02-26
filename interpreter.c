@@ -37,7 +37,7 @@ copy_identifier(const char *id)
     char	*dest;
 
     if (!dest_buf)
-	log_die(ENOMEM, "copy_identifier");
+	fatal(ENOMEM, "copy_identifier");
     else {
 	dest = &dest_buf[0];
     }
@@ -48,7 +48,7 @@ copy_identifier(const char *id)
 
     *dest = '\0';
     if (count == 1)
-	log_die(0, "In copy_identifier: fatal: string was truncated!");
+	fatal(0, "In copy_identifier: fatal: string was truncated!");
     return (dest_buf);
 }
 
@@ -64,7 +64,7 @@ copy_argument(const char *arg)
     char	*dest;
 
     if (!dest_buf)
-	log_die(ENOMEM, "copy_argument");
+	fatal(ENOMEM, "copy_argument");
     else {
 	dest = &dest_buf[0];
     }
@@ -81,7 +81,7 @@ copy_argument(const char *arg)
     *dest = '\0';
 
     if (inside_arg && count == 1)
-	log_die(0, "In copy_argument: fatal: string was truncated!");
+	fatal(0, "In copy_argument: fatal: string was truncated!");
 
     if (inside_arg) {
 	free(dest_buf);
