@@ -33,7 +33,8 @@
  * Check if a file exists. It returns true for any filetype, even a
  * directory.
  */
-bool file_exists(const char *path)
+bool
+file_exists(const char *path)
 {
     struct stat sb;
 
@@ -48,7 +49,8 @@ bool file_exists(const char *path)
  * Check if a file is a directory. If path is either NULL or an empty
  * string it returns false.
  */
-bool is_directory(const char *path)
+bool
+is_directory(const char *path)
 {
     struct stat sb;
 
@@ -64,7 +66,8 @@ bool is_directory(const char *path)
  *
  * Check if a string consists of digits only determined by isdigit().
  */
-bool is_numeric(const char *string)
+bool
+is_numeric(const char *string)
 {
     const char *p;
 
@@ -87,7 +90,8 @@ bool is_numeric(const char *string)
  * Check for a regular file. If path is either NULL or an empty string
  * it returns false.
  */
-bool is_regularFile(const char *path)
+bool
+is_regularFile(const char *path)
 {
     struct stat sb;
 
@@ -104,7 +108,8 @@ bool is_regularFile(const char *path)
  * Convert a input string to all lowercase characters. Strtolower()
  * modifies the input string and return its result.
  */
-char *Strtolower(char *s)
+char *
+Strtolower(char *s)
 {
     size_t len = 0;
 
@@ -130,7 +135,8 @@ char *Strtolower(char *s)
  *
  * Delete trailing whitespace characters determined by isspace().
  */
-char *trim(char *string)
+char *
+trim(char *string)
 {
     if (string == NULL) {
 	log_die(EINVAL, "trim error");
@@ -158,7 +164,8 @@ char *trim(char *string)
  * Calculate elt_count * elt_size and return its result -- but check
  * for overflow.
  */
-size_t size_product(const size_t elt_count, const size_t elt_size)
+size_t
+size_product(const size_t elt_count, const size_t elt_size)
 {
     if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
 	log_die(ERANGE, "size_product: FATAL: numerical result out of range");
@@ -173,7 +180,8 @@ size_t size_product(const size_t elt_count, const size_t elt_size)
  *
  * Toggle echo ON/OFF.
  */
-void toggle_echo(on_off_t state)
+void
+toggle_echo(on_off_t state)
 {
     static bool initialized = false;
     static struct termios term_attrs = {};
