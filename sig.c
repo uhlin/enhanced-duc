@@ -82,7 +82,7 @@ sigHand_init(void)
 
     (void) sigfillset(&set);
     if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sigHand_init: SIG_SETMASK error");
+	log_warn(errno, "sigHand_init: SIG_SETMASK");
 	return -1;
     }
 
@@ -105,7 +105,7 @@ sigHand_init(void)
 
     (void) sigemptyset(&set);
     if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sigHand_init: SIG_SETMASK error");
+	log_warn(errno, "sigHand_init: SIG_SETMASK");
 	return -1;
     }
 
@@ -126,7 +126,7 @@ program_clean_up(void)
     if (g_lockfile_fd != -1)
 	close(g_lockfile_fd);
     if (g_conf_read)
-	log_msg("%s %s has exited.", g_programName, g_programVersion);
+	log_msg("%s %s has exited", g_programName, g_programVersion);
     if (g_log_to_syslog)
 	closelog();
 }
