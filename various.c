@@ -178,7 +178,7 @@ void
 toggle_echo(on_off_t state)
 {
     static bool initialized = false;
-    static struct termios term_attrs = {};
+    static struct termios term_attrs = { 0 };
 
     if (!initialized) {
 	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
