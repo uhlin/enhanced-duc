@@ -48,7 +48,22 @@ static struct sig_message_tag {
 #endif
 };
 
-static void signal_handler(int signum);
+static void
+signal_handler(int signum)
+{
+    struct sig_message_tag *ssp;
+    const size_t ar_sz = ARRAY_SIZE(sig_message);
+
+    program_clean_up();
+
+    for (ssp = &sig_message[0]; ssp < &sig_message[ar_sz]; ssp++) {
+	if (ssp->num == signum)
+	    log_warn(0, "Received signal %d (%s): %s",
+		     ssp->num, ssp->num_str, ssp->msg);
+    }
+
+    _exit(1);
+}
 
 /**
  * Initialize signal handling for the program. For example decide what
@@ -95,23 +110,6 @@ sigHand_init(void)
     }
 
     return 0; /* All ok! */
-}
-
-static void
-signal_handler(int signum)
-{
-    struct sig_message_tag *ssp;
-    const size_t ar_sz = ARRAY_SIZE(sig_message);
-
-    program_clean_up();
-    
-    for (ssp = &sig_message[0]; ssp < &sig_message[ar_sz]; ssp++) {
-	if (ssp->num == signum)
-	    log_warn(0, "Received signal %d (%s): %s",
-		     ssp->num, ssp->num_str, ssp->msg);
-    }
-    
-    _exit(1);
 }
 
 /**
