@@ -2,7 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
+### Added ###
+- Better initialization of variables
+
 ### Changed ###
+- All C sources to be 80 columns max
+- Certain error messages
+- Name of `Strdup_printf` to `strdup_printf`
+- Name of `Strtolower` to `strToLower`
+- Name of `log_die()` to `fatal()`
 - The interpreter
 
 ## [1.6] - 2016-04-04 ##
