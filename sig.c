@@ -72,7 +72,9 @@ sigHand_init(void)
     }
 
     (void) sigfillset(&act.sa_mask);
-    for (act.sa_flags = 0, ssp = &sig_message[0]; ssp < &sig_message[ar_sz]; ssp++) {
+    for (act.sa_flags = 0, ssp = &sig_message[0];
+	 ssp < &sig_message[ar_sz];
+	 ssp++) {
 	if (ssp->ignore) {
 	    act.sa_handler = SIG_IGN;
 	} else {
@@ -80,7 +82,8 @@ sigHand_init(void)
 	}
 
 	if (sigaction(ssp->num, &act, NULL) != 0) {
-	    log_warn(errno, "sigHand_init: sigaction failed on signal %d (%s)", ssp->num, ssp->num_str);
+	    log_warn(errno, "sigHand_init: sigaction failed on signal %d (%s)",
+		     ssp->num, ssp->num_str);
 	    return -1;
 	}
     }
@@ -104,7 +107,8 @@ signal_handler(int signum)
     
     for (ssp = &sig_message[0]; ssp < &sig_message[ar_sz]; ssp++) {
 	if (ssp->num == signum)
-	    log_warn(0, "Received signal %d (%s): %s", ssp->num, ssp->num_str, ssp->msg);
+	    log_warn(0, "Received signal %d (%s): %s",
+		     ssp->num, ssp->num_str, ssp->msg);
     }
     
     _exit(1);
