@@ -99,9 +99,9 @@ create_config_file(const char *path)
     log_assert_arg_nonnull("create_config_file", "path", path);
 
     if (file_exists(path)) {
-	log_die(EEXIST, "%s create_config_file: can't create config file  --  it's already existent", GfxFailure);
+	fatal(EEXIST, "%s create_config_file: can't create config file  --  it's already existent", GfxFailure);
     } else if ((fp = fopen(path, "w")) == NULL) {
-	log_die(errno, "%s create_config_file: fopen error", GfxFailure);
+	fatal(errno, "%s create_config_file: fopen error", GfxFailure);
     } else {
 	struct config_default_values_tag *cdv;
 	const size_t ar_sz = ARRAY_SIZE(config_default_values);
@@ -110,7 +110,7 @@ create_config_file(const char *path)
 	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
 	    
 	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
-		log_die(0, "%s create_config_file: failed to write to the file stream", GfxFailure);
+		fatal(0, "%s create_config_file: failed to write to the file stream", GfxFailure);
 
 	    free(ans);
 	}
@@ -119,7 +119,7 @@ create_config_file(const char *path)
     }
 
     if (chmod(path, mode) != 0) {
-	log_die(errno, "%s create_config_file: chmod error", GfxFailure);
+	fatal(errno, "%s create_config_file: chmod error", GfxFailure);
     }
 
     printf("%s %s successfully written!\n", GfxSuccess, path);
@@ -159,11 +159,11 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
     }
 
     if (fgets_fail) {
-	log_die(errno_save, "get_answer: FATAL: fgets fail");
+	fatal(errno_save, "get_answer: FATAL: fgets fail");
     } else {
 	const bool input_too_big = strchr(answer, '\n') == NULL;
 
-	if (input_too_big) log_die(0, "get_answer: FATAL: input too big");
+	if (input_too_big) fatal(0, "get_answer: FATAL: input too big");
 	answer[strcspn(answer, "\n")] = '\0';
 
 	if (strings_match(answer, "")) {
@@ -237,9 +237,9 @@ read_config_file(const char *path)
     if (g_conf_read) {
 	return;
     } else if (!is_regularFile(path)) {
-	log_die(0, "read_config_file: either the config file is nonexistent  --  or it isn't a regular file");
+	fatal(0, "read_config_file: either the config file is nonexistent  --  or it isn't a regular file");
     } else if ((fp = fopen(path, "r")) == NULL) {
-	log_die(errno, "read_config_file: fopen error");
+	fatal(errno, "read_config_file: fopen error");
     } else {
 	char		buf[900];
 	long int	line_num = 0;
@@ -270,9 +270,9 @@ read_config_file(const char *path)
     if (feof(fp)) {
 	fclose(fp);
     } else if (ferror(fp)) {
-	log_die(0, "read_config_file: FATAL: fgets returned null and the error indicator is set");
+	fatal(0, "read_config_file: FATAL: fgets returned null and the error indicator is set");
     } else {
-	log_die(0, "read_config_file: FATAL: fgets returned null and the reason cannot be determined");
+	fatal(0, "read_config_file: FATAL: fgets returned null and the reason cannot be determined");
     }
 
     g_conf_read = true;
@@ -458,21 +458,21 @@ check_some_settings_strictly(void)
     char *reason = "";
 
     if (strings_match(username, "") || strings_match(password, ""))
-	log_die(0, "error: empty username nor password");
+	fatal(0, "error: empty username nor password");
     else if (strlen(username) > username_maxlen)
-	log_die(0, "error: username too long. max=%zu", username_maxlen);
+	fatal(0, "error: username too long. max=%zu", username_maxlen);
     else if (strlen(password) > password_maxlen)
-	log_die(0, "error: password too long. max=%zu", password_maxlen);
+	fatal(0, "error: password too long. max=%zu", password_maxlen);
     else if (!is_ip_addr_ok(&reason))
-	log_die(0, "is_ip_addr_ok: error: %s", reason);
+	fatal(0, "is_ip_addr_ok: error: %s", reason);
     else if (!is_hostname_ok(setting("sp_hostname"), &reason))
-	log_die(0, "is_hostname_ok: sp_hostname: %s", reason);
+	fatal(0, "is_hostname_ok: sp_hostname: %s", reason);
     else if (!is_port_ok())
-	log_die(0, "error: bogus port number");
+	fatal(0, "error: bogus port number");
     else if (!is_hostname_ok(setting("primary_ip_lookup_srv"), &reason))
-	log_die(0, "is_hostname_ok: primary_ip_lookup_srv: %s", reason);
+	fatal(0, "is_hostname_ok: primary_ip_lookup_srv: %s", reason);
     else if (!is_hostname_ok(setting("backup_ip_lookup_srv"), &reason))
-	log_die(0, "is_hostname_ok: backup_ip_lookup_srv: %s", reason);
+	fatal(0, "is_hostname_ok: backup_ip_lookup_srv: %s", reason);
     else
 	return;
 }
