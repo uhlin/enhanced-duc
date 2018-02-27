@@ -304,11 +304,12 @@ is_hostname_ok(const char *host, char **reason)
 	*reason = "name too long";
 	return false;
     } else {
-	for (const char *cp = host; *cp; cp++)
+	for (const char *cp = host; *cp; cp++) {
 	    if (strchr(host_chars, *cp) == NULL) {
 		*reason = "invalid chars found!";
 		return false;
 	    }
+	}
     }
 
     *reason = "";
@@ -418,11 +419,12 @@ destroy_config_custom_values(void)
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
 
-    for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++)
+    for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (cdv->custom_val) {
 	    free(cdv->custom_val);
 	    cdv->custom_val = NULL;
 	}
+    }
 }
 
 static bool
