@@ -8,6 +8,8 @@
 
 typedef enum { ON, OFF } on_off_t;
 
+#define strToLower Strtolower
+
 bool    file_exists    (const char *path);
 bool    is_directory   (const char *path);
 bool    is_numeric     (const char *);
