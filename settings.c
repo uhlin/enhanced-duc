@@ -41,7 +41,7 @@ static struct config_default_values_tag {
 } config_default_values[] = {
     { "username", TYPE_STRING, "ChangeMe", NULL,
       "Your username." },
-    
+
     { "password", TYPE_STRING, "ChangeMe", NULL,
       "Your password. (Will not echo!)" },
 
@@ -108,7 +108,7 @@ create_config_file(const char *path)
 
 	for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
-	    
+
 	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
 		fatal(0, "%s create_config_file: failed to write to the file stream", GfxFailure);
 
@@ -174,7 +174,7 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 
     if (!is_setting_ok(answer, type))
 	exit(1);
-    
+
     return (answer);
 }
 
@@ -215,7 +215,7 @@ is_setting_ok(const char *value, enum setting_type type)
 	assert(false); /* Should not be reached. */
 	break;
     }
-    
+
     return true;
 }
 
@@ -243,7 +243,7 @@ read_config_file(const char *path)
     } else {
 	char		buf[900];
 	long int	line_num = 0;
-	
+
 	while (BZERO(buf, sizeof buf), fgets(buf, sizeof buf, fp) != NULL) {
 	    const char			*ccp	     = &buf[0];
 	    const char			 commentChar = '#';
