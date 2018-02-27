@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -497,9 +497,8 @@ is_ip_addr_ok(char **reason)
 	return true;
     }
 
-    /*NOTREACHED*/
-    *reason = "";
-    return true;
+    /*NOTREACHED*/ *reason = "";
+    /*NOTREACHED*/ return true;
 }
 
 static bool
@@ -541,6 +540,5 @@ is_port_ok(void)
     else
 	return false;
 
-    /*NOTREACHED*/
-    return false;
+    /*NOTREACHED*/ return false;
 }
