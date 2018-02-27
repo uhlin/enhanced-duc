@@ -75,14 +75,13 @@ static struct config_default_values_tag {
 };
 
 /**
- * @brief Unparse a setting of type boolean
- * @param setting_name	Setting name
- * @param fallback_val	Fallback value
- * @return true or false
- *
  * Unparse a setting of type boolean. In either way: if a setting
  * isn't found at all, or the setting found isn't of type boolean, it
  * returns the fallback value.
+ *
+ * @param setting_name	Setting name
+ * @param fallback_val	Fallback value
+ * @return true or false
  */
 bool
 setting_bool_unparse(const char *setting_name, const bool fallback_val)
@@ -157,15 +156,14 @@ is_setting_ok(const char *value, enum setting_type type)
 }
 
 /**
- * @brief Get answer
+ * Get answer based on setting description and setting type. The
+ * storage of the return is dynamically allocated and must be freed
+ * fter use.
+ *
  * @param desc		Setting description
  * @param type		Setting type
  * @param defaultAnswer	Value used on empty input
  * @return The answer
- *
- * Get answer based on setting description and setting type. The
- * storage of the return is dynamically allocated and must be freed
- * after use.
  */
 char *
 get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
@@ -210,12 +208,11 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 }
 
 /**
- * @brief Lookup a setting
- * @param setting_name Setting name
- * @return Setting value
- *
  * Lookup a setting. If a null pointer is passed, or if a setting
  * isn't found, it returns an empty string.
+ *
+ * @param setting_name Setting name
+ * @return Setting value
  */
 const char *
 setting(const char *setting_name)
@@ -236,12 +233,11 @@ setting(const char *setting_name)
 }
 
 /**
- * @brief Unparse a setting of type integer
- * @param ctx Context structure
- * @return The result of the conversation
- *
  * Unparse a setting of type integer. The context structure specifies
  * the rules.
+ *
+ * @param ctx Context structure
+ * @return The result of the conversation
  */
 long int
 setting_integer_unparse(const struct integer_unparse_context *ctx)
@@ -337,10 +333,8 @@ is_port_ok(void)
 }
 
 /**
- * @brief	Check some settings strictly
- * @return	void
- *
- * Validate that certain settings are OK.
+ * Check some settings strictly. That is validate that certain
+ * settings are OK.
  */
 void
 check_some_settings_strictly(void)
@@ -372,13 +366,12 @@ check_some_settings_strictly(void)
 }
 
 /**
- * @brief Creates a configuration file
- * @param path Specifies where to create the file including its filename
- * @return void
- *
  * Creates a configuration file for the DUC by asking the user for
  * input. On empty input (that is: if the user just hits ENTER) a
  * default value is used.
+ *
+ * @param path Specifies where to create the file including its filename
+ * @return Void
  */
 void
 create_config_file(const char *path)
@@ -416,11 +409,8 @@ create_config_file(const char *path)
 }
 
 /**
- * @brief	Free dynamically allocated memory
- * @return	void
- *
- * Settings that are customized are read into the memory. This
- * function destroys them.
+ * Free dynamically allocated memory. Settings that are customized are
+ * read into the memory. This function destroys them.
  */
 void
 destroy_config_custom_values(void)
@@ -478,12 +468,11 @@ install_setting(const char *setting_name, const char *value)
 }
 
 /**
- * @brief Reads a configuration file
- * @param path Path to the file
- * @return void
- *
  * Reads a configuration file line by line, and installs settings,
  * until an end of file condition is entercounted.
+ *
+ * @param path Path to the file
+ * @return Void
  */
 void
 read_config_file(const char *path)
