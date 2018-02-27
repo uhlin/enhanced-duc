@@ -86,8 +86,8 @@ static struct config_default_values_tag {
 bool
 setting_bool_unparse(const char *setting_name, const bool fallback_val)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+    struct config_default_values_tag *cdv;
 
     if (setting_name == NULL) {
 	return (fallback_val);
@@ -217,8 +217,8 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 const char *
 setting(const char *setting_name)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+    struct config_default_values_tag *cdv;
 
     if (setting_name == NULL) {
 	return ("");
@@ -242,9 +242,9 @@ setting(const char *setting_name)
 long int
 setting_integer_unparse(const struct integer_unparse_context *ctx)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
     long int val;
+    struct config_default_values_tag *cdv;
 
     log_assert_arg_nonnull("setting_integer_unparse", "ctx", ctx);
 
@@ -293,9 +293,8 @@ is_ip_addr_ok(char **reason)
 static bool
 is_hostname_ok(const char *host, char **reason)
 {
+    const char host_chars[] = "abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const size_t host_maxlen = 253;
-    const char host_chars[] =
-	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     if (strings_match(host, "")) {
 	*reason = "empty setting";
@@ -340,11 +339,11 @@ is_port_ok(void)
 void
 check_some_settings_strictly(void)
 {
-    const char *username = setting("username");
-    const char *password = setting("password");
-    const size_t username_maxlen = 50;
-    const size_t password_maxlen = 120;
     char *reason = "";
+    const char *password = setting("password");
+    const char *username = setting("username");
+    const size_t password_maxlen = 120;
+    const size_t username_maxlen = 50;
 
     if (strings_match(username, "") || strings_match(password, ""))
 	fatal(0, "error: empty username nor password");
@@ -387,8 +386,8 @@ create_config_file(const char *path)
     } else if ((fp = fopen(path, "w")) == NULL) {
 	fatal(errno, "%s create_config_file: fopen", GfxFailure);
     } else {
-	struct config_default_values_tag *cdv;
 	const size_t ar_sz = ARRAY_SIZE(config_default_values);
+	struct config_default_values_tag *cdv;
 
 	for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
@@ -416,8 +415,8 @@ create_config_file(const char *path)
 void
 destroy_config_custom_values(void)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+    struct config_default_values_tag *cdv;
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
 	if (cdv->custom_val) {
@@ -430,8 +429,8 @@ destroy_config_custom_values(void)
 static bool
 is_recognized_setting(const char *setting_name)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+    struct config_default_values_tag *cdv;
 
     if (setting_name == NULL)
 	return false;
@@ -447,8 +446,8 @@ is_recognized_setting(const char *setting_name)
 static int
 install_setting(const char *setting_name, const char *value)
 {
-    struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);
+    struct config_default_values_tag *cdv;
 
     if (setting_name == NULL || value == NULL)
 	return (EINVAL);
@@ -494,9 +493,9 @@ read_config_file(const char *path)
 	long int	line_num = 0;
 
 	while (BZERO(buf, sizeof buf), fgets(buf, sizeof buf, fp) != NULL) {
-	    const char			*ccp	     = &buf[0];
-	    const char			 commentChar = '#';
 	    char			*line	     = NULL;
+	    const char			 commentChar = '#';
+	    const char			*ccp	     = &buf[0];
 	    struct Interpreter_in	 in;
 
 	    adv_while_isspace(&ccp);
