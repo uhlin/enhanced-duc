@@ -5,6 +5,7 @@
 #include <string.h> /* strcmp */
 
 #include "def.h" /* PTR_ARGS_NONNULL etc */
+#include "enhanced-duc-config.h"
 
 typedef enum { ON, OFF } on_off_t;
 
@@ -17,16 +18,13 @@ char   *trim           (char *);
 size_t  size_product   (const size_t elt_count, const size_t elt_size);
 void    toggle_echo    (on_off_t);
 
-#if defined(HAVE_STRLCPY) && defined(HAVE_STRLCAT)
-#define duc_strlcpy strlcpy
-#define duc_strlcat strlcat
+#if HAVE_STRLCPY == 0
+size_t strlcpy(char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 #endif
 
-/* XXX: If the prefix duc_ is removed due to HAVE_STRLCPY and HAVE_STRLCAT these
-        won't conflict the declarations in string.h: because _POSIX_C_SOURCE
-        restricts the visibility... */
-size_t	duc_strlcpy (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
-size_t	duc_strlcat (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
+#if HAVE_STRLCAT == 0
+size_t strlcat(char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
+#endif
 
 static inline bool
 strings_match(const char *str1, const char *str2)

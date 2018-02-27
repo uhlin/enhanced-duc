@@ -190,8 +190,8 @@ net_ssl_send(const char *fmt, ...)
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
-    if (duc_strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_ssl_send: duc_strlcat error");
+    if (strlcat(buffer, message_terminate, newSize) >= newSize)
+	log_die(EOVERFLOW, "net_ssl_send: strlcat error");
 
     for (int total_written = 0, ret = 0; total_written < strlen(buffer); (void) 0)
 	if ((ret = SSL_write(ssl, &buffer[total_written], strlen(buffer) - total_written)) <= 0) {

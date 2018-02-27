@@ -117,8 +117,8 @@ net_send_plain(const char *fmt, ...)
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
-    if (duc_strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_send_plain: duc_strlcat error");
+    if (strlcat(buffer, message_terminate, newSize) >= newSize)
+	log_die(EOVERFLOW, "net_send_plain: strlcat error");
 
     if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
 	log_warn(errno, "net_send_plain: send error");
@@ -282,13 +282,13 @@ net_check_for_ip_change(void)
 	return (IP_HAS_CHANGED);
 
     if ((res = net_addr_resolve(primary_srv, port)) != NULL) {
-	duc_strlcpy(srv, primary_srv, sizeof srv);
+	strlcpy(srv, primary_srv, sizeof srv);
 	address_resolved = true;
 	goto done;
     }
 
     if ((res = net_addr_resolve(backup_srv, port)) != NULL) {
-	duc_strlcpy(srv, backup_srv, sizeof srv);
+	strlcpy(srv, backup_srv, sizeof srv);
 	address_resolved = true;
     }
 
@@ -334,7 +334,7 @@ net_check_for_ip_change(void)
 	log_msg("Not updating  --  the external IP hasn't changed");
 	return (IP_NO_CHANGE);
     } else {
-	duc_strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
+	strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
 	log_msg("IP has changed to %s", cp);
 	return (IP_HAS_CHANGED);
     }
