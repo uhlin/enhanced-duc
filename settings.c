@@ -74,6 +74,8 @@ static struct config_default_values_tag {
       "This setting should be set to YES if ip_addr is not equal to value WAN_address." },
 };
 
+static const size_t CDV_AR_SZ = ARRAY_SIZE(config_default_values);
+
 /**
  * Unparse a setting of type boolean. In either way: if a setting
  * isn't found at all, or the setting found isn't of type boolean, it
