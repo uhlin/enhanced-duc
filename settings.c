@@ -76,6 +76,11 @@ static struct config_default_values_tag {
 
 static const size_t CDV_AR_SZ = ARRAY_SIZE(config_default_values);
 
+#define FOREACH_CDV()\
+    for (struct config_default_values_tag *cdv = &config_default_values[0];\
+	 cdv < &config_default_values[CDV_AR_SZ];\
+	 cdv++)
+
 /**
  * Unparse a setting of type boolean. In either way: if a setting
  * isn't found at all, or the setting found isn't of type boolean, it
