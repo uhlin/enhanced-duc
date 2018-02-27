@@ -48,8 +48,6 @@ $(OUT_NAME): $(OBJS)
 b64_decode.o: b64_decode.c
 b64_encode.o: b64_encode.c
 daemonize.o: daemonize.c
-duc_strlcat.o: duc_strlcat.c
-duc_strlcpy.o: duc_strlcpy.c
 interpreter.o: interpreter.c
 log.o: log.c
 main.o: main.c
