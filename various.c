@@ -98,19 +98,19 @@ is_regularFile(const char *path)
 }
 
 /**
- * Convert a input string to all lowercase characters. Strtolower()
+ * Convert a input string to all lowercase characters. strToLower()
  * modifies the input string and return its result.
  *
  * @param s Input string
  * @return The result
  */
 char *
-Strtolower(char *s)
+strToLower(char *s)
 {
     size_t len = 0;
 
     if (s == NULL) {
-	fatal(EINVAL, "Strtolower");
+	fatal(EINVAL, "strToLower");
     } else if (*s == '\0') {
 	return s;
     } else {

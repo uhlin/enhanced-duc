@@ -474,7 +474,7 @@ server_response(const char *buf)
 	free(dump);
 	return CODE_UNKNOWN;
     }
-    r = Strtolower(xstrdup(++cp));
+    r = strToLower(xstrdup(++cp));
     free(dump);
     log_debug("server_response: r = \"%s\"", r);
 
