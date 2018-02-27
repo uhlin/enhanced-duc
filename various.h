@@ -8,13 +8,11 @@
 
 typedef enum { ON, OFF } on_off_t;
 
-#define strToLower Strtolower
-
 bool    file_exists    (const char *path);
 bool    is_directory   (const char *path);
 bool    is_numeric     (const char *);
 bool    is_regularFile (const char *path);
-char   *Strtolower     (char *);
+char   *strToLower     (char *);
 char   *trim           (char *);
 size_t  size_product   (const size_t elt_count, const size_t elt_size);
 void    toggle_echo    (on_off_t);
