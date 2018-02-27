@@ -110,7 +110,7 @@ Strtolower(char *s)
     size_t len = 0;
 
     if (s == NULL) {
-	log_die(EINVAL, "Strtolower error");
+	fatal(EINVAL, "Strtolower error");
     } else if (*s == '\0') {
 	return s;
     } else {
@@ -135,7 +135,7 @@ char *
 trim(char *string)
 {
     if (string == NULL) {
-	log_die(EINVAL, "trim error");
+	fatal(EINVAL, "trim error");
     } else if (*string == '\0') {
 	return string;
     } else {
@@ -164,7 +164,7 @@ size_t
 size_product(const size_t elt_count, const size_t elt_size)
 {
     if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
-	log_die(ERANGE, "size_product: FATAL: numerical result out of range");
+	fatal(ERANGE, "size_product: FATAL: numerical result out of range");
     return (elt_count * elt_size);
 }
 
@@ -182,7 +182,7 @@ toggle_echo(on_off_t state)
 
     if (!initialized) {
 	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
-	    log_die(errno, "toggle_echo: tcgetattr error");
+	    fatal(errno, "toggle_echo: tcgetattr error");
 	initialized = true;
     }
 
@@ -191,14 +191,14 @@ toggle_echo(on_off_t state)
 	if (! (term_attrs.c_lflag & ECHO)) {
 	    term_attrs.c_lflag |= ECHO;
 	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		log_die(errno, "toggle_echo: tcsetattr error");
+		fatal(errno, "toggle_echo: tcsetattr error");
 	}
 	break;
     case OFF:
 	if (term_attrs.c_lflag & ECHO) {
 	    term_attrs.c_lflag &= ~ECHO;
 	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		log_die(errno, "toggle_echo: tcsetattr error");
+		fatal(errno, "toggle_echo: tcsetattr error");
 	}
 	break;
     default:
