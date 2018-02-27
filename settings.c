@@ -423,7 +423,7 @@ create_config_file(const char *path)
  * function destroys them.
  */
 void
-destroy_config_customValues(void)
+destroy_config_custom_values(void)
 {
     struct config_default_values_tag *cdv;
     const size_t ar_sz = ARRAY_SIZE(config_default_values);

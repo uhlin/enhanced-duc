@@ -122,7 +122,7 @@ program_clean_up(void)
     extern int g_lockfile_fd;
 
     net_deinit();
-    destroy_config_customValues();
+    destroy_config_custom_values();
 
     if (g_conf_read)
 	log_msg("%s %s has exited", g_programName, g_programVersion);

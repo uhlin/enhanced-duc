@@ -18,7 +18,7 @@ const char	*setting                      (const char *setting_name);
 long int	 setting_integer_unparse      (const struct integer_unparse_context *);
 void		 check_some_settings_strictly (void);
 void		 create_config_file           (const char *path);
-void		 destroy_config_customValues  (void);
+void		 destroy_config_custom_values (void);
 void		 read_config_file             (const char *path);
 
 #endif
