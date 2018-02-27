@@ -303,7 +303,7 @@ hostname_array_assign(void)
     const char legal_index[] =
 	"abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
 
-    if (Strings_match(dump, "")) {
+    if (strings_match(dump, "")) {
 	log_die(EINVAL, "hostname_array_assign: no hostnames to update  --  setting empty");
     }
 
@@ -390,7 +390,7 @@ send_update_request(const char *which_host, const char *to_ip)
 
     s = host = unp = NULL;
 
-    if (Strings_match(to_ip, "WAN_address")) {
+    if (strings_match(to_ip, "WAN_address")) {
 	s = strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
     } else {
 	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0", which_host, to_ip);
@@ -452,7 +452,7 @@ server_response(const char *buf)
     const size_t ar_sz = ARRAY_SIZE(responses);
     const struct responses_tag *ar_p = &responses[0];
 
-    if (buf == NULL || Strings_match(buf, "")) {
+    if (buf == NULL || strings_match(buf, "")) {
 	return CODE_UNKNOWN;
     } else {
 	char *buf_copy = xstrdup(buf);
@@ -486,7 +486,7 @@ server_response(const char *buf)
 	return CODE_NOCHG;
     } else {
 	for (; ar_p < &responses[ar_sz]; ar_p++)
-	    if (Strings_match(ar_p->str, r)) {
+	    if (strings_match(ar_p->str, r)) {
 		free(r);
 		return ar_p->code;
 	    }

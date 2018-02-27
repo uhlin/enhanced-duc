@@ -330,7 +330,7 @@ net_check_for_ip_change(void)
     } else if (inet_pton(AF_INET, ++cp, nw_addr) == 0) {
 	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
 	return (IP_NO_CHANGE);
-    } else if (Strings_match(cp, g_last_ip_addr)) {
+    } else if (strings_match(cp, g_last_ip_addr)) {
 	log_msg("Not updating  --  the external IP hasn't changed");
 	return (IP_NO_CHANGE);
     } else {

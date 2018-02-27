@@ -28,6 +28,8 @@ void    toggle_echo    (on_off_t);
 size_t	duc_strlcpy (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 size_t	duc_strlcat (char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 
+#define strings_match Strings_match
+
 static inline bool
 Strings_match(const char *str1, const char *str2)
 {

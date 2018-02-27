@@ -166,7 +166,7 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	if (input_too_big) log_die(0, "get_answer: FATAL: input too big");
 	answer[strcspn(answer, "\n")] = '\0';
 
-	if (Strings_match(answer, "")) {
+	if (strings_match(answer, "")) {
 	    free(answer);
 	    answer = xstrdup(defaultAnswer);
 	}
@@ -188,8 +188,8 @@ is_setting_ok(const char *value, enum setting_type type)
     switch (type) {
     case TYPE_BOOLEAN:
     {
-	if (!Strings_match(value, "yes") && !Strings_match(value, "YES") &&
-	    !Strings_match(value, "no") && !Strings_match(value, "NO")) {
+	if (!strings_match(value, "yes") && !strings_match(value, "YES") &&
+	    !strings_match(value, "no") && !strings_match(value, "NO")) {
 	    log_warn(0, "is_setting_ok: booleans must be either: yes, YES, no or NO");
 	    return false;
 	}
@@ -251,7 +251,7 @@ read_config_file(const char *path)
 	    struct Interpreter_in	 in;
 
 	    adv_while_isspace(&ccp);
-	    if (Strings_match(ccp, "") || *ccp == commentChar) {
+	    if (strings_match(ccp, "") || *ccp == commentChar) {
 		line_num++;
 		continue;
 	    }
@@ -288,7 +288,7 @@ is_recognized_setting(const char *setting_name)
 	return false;
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
-	if (Strings_match(setting_name, cdv->setting_name))
+	if (strings_match(setting_name, cdv->setting_name))
 	    return true;
     }
 
@@ -305,7 +305,7 @@ install_setting(const char *setting_name, const char *value)
 	return (EINVAL);
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
-	if (Strings_match(setting_name, cdv->setting_name)) {
+	if (strings_match(setting_name, cdv->setting_name)) {
 	    if (cdv->custom_val) {
 		return (EBUSY);
 	    } else if (!is_setting_ok(value, cdv->type)) {
@@ -359,7 +359,7 @@ setting(const char *setting_name)
     }
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
-	if (Strings_match(setting_name, cdv->setting_name))
+	if (strings_match(setting_name, cdv->setting_name))
 	    return (cdv->custom_val ? cdv->custom_val : cdv->value);
     }
 
@@ -384,7 +384,7 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     log_assert_arg_nonnull("setting_integer_unparse", "ctx", ctx);
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
-	if (Strings_match(ctx->setting_name, cdv->setting_name)) {
+	if (strings_match(ctx->setting_name, cdv->setting_name)) {
 	    errno = 0;
 	    val	  = strtol(cdv->custom_val ? cdv->custom_val : cdv->value, NULL, 10);
 
@@ -422,15 +422,15 @@ setting_bool_unparse(const char *setting_name, const bool fallback_val)
     }
 
     for (cdv = &config_default_values[0]; cdv < &config_default_values[ar_sz]; cdv++) {
-	if (Strings_match(setting_name, cdv->setting_name)) {
+	if (strings_match(setting_name, cdv->setting_name)) {
 	    const char *value = cdv->custom_val ? cdv->custom_val : cdv->value;
 
 	    if (cdv->type != TYPE_BOOLEAN) {
 		log_warn(0, "setting_bool_unparse: %s: setting not a boolean!", setting_name);
 		break;
-	    } else if (Strings_match(value, "yes") || Strings_match(value, "YES")) {
+	    } else if (strings_match(value, "yes") || strings_match(value, "YES")) {
 		return (true);
-	    } else if (Strings_match(value, "no") || Strings_match(value, "NO")) {
+	    } else if (strings_match(value, "no") || strings_match(value, "NO")) {
 		return (false);
 	    } else {
 		log_warn(0, "setting_bool_unparse: %s: setting has an invalid value!", setting_name);
@@ -457,7 +457,7 @@ check_some_settings_strictly(void)
     const size_t password_maxlen = 120;
     char *reason = "";
 
-    if (Strings_match(username, "") || Strings_match(password, ""))
+    if (strings_match(username, "") || strings_match(password, ""))
 	log_die(0, "error: empty username nor password");
     else if (strlen(username) > username_maxlen)
 	log_die(0, "error: username too long. max=%zu", username_maxlen);
@@ -483,10 +483,10 @@ is_ip_addr_ok(char **reason)
     const char		*ip = setting("ip_addr");
     unsigned char	 buf[sizeof (struct in_addr)];
 
-    if (Strings_match(ip, "")) {
+    if (strings_match(ip, "")) {
 	*reason = "empty setting";
 	return false;
-    } else if (Strings_match(ip, "WAN_address")) {
+    } else if (strings_match(ip, "WAN_address")) {
 	*reason = "";
 	return true;
     } else if (inet_pton(AF_INET, ip, buf) == 0) {
@@ -509,7 +509,7 @@ is_hostname_ok(const char *host, char **reason)
     const char host_chars[] =
 	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    if (Strings_match(host, "")) {
+    if (strings_match(host, "")) {
 	*reason = "empty setting";
 	return false;
     } else if (strlen(host) > host_maxlen) {
@@ -532,11 +532,11 @@ is_port_ok(void)
 {
     const char *port = setting("port");
 
-    if (Strings_match(port, "80"))
+    if (strings_match(port, "80"))
 	return true;
-    else if (Strings_match(port, "443"))
+    else if (strings_match(port, "443"))
 	return true;
-    else if (Strings_match(port, "8245"))
+    else if (strings_match(port, "8245"))
 	return true;
     else
 	return false;
