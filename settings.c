@@ -243,7 +243,7 @@ setting(const char *setting_name)
 long int
 setting_integer_unparse(const struct integer_unparse_context *ctx)
 {
-    long int val;
+    long int val = 0;
 
     log_assert_arg_nonnull("setting_integer_unparse", "ctx", ctx);
 
