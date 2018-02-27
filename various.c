@@ -26,12 +26,11 @@
 #include "various.h"
 
 /**
- * @brief Check if a file exists
- * @param path Path to file
- * @return true or false
- *
  * Check if a file exists. It returns true for any filetype, even a
  * directory.
+ *
+ * @param path Path to file
+ * @return true or false
  */
 bool
 file_exists(const char *path)
@@ -42,12 +41,11 @@ file_exists(const char *path)
 }
 
 /**
- * @brief Check if a file is a directory
- * @param path Path to file
- * @return true or false
- *
  * Check if a file is a directory. If path is either NULL or an empty
  * string it returns false.
+ *
+ * @param path Path to file
+ * @return true or false
  */
 bool
 is_directory(const char *path)
@@ -60,11 +58,10 @@ is_directory(const char *path)
 }
 
 /**
- * @brief Check if a string consists of digits only
+ * Check if a string consists of digits only determined by isdigit().
+ *
  * @param string The string to check
  * @return true or false
- *
- * Check if a string consists of digits only determined by isdigit().
  */
 bool
 is_numeric(const char *string)
@@ -83,12 +80,11 @@ is_numeric(const char *string)
 }
 
 /**
- * @brief Check for a regular file
- * @param path Path to file
- * @return true or false
- *
  * Check for a regular file. If path is either NULL or an empty string
  * it returns false.
+ *
+ * @param path Path to file
+ * @return true or false
  */
 bool
 is_regularFile(const char *path)
@@ -101,12 +97,11 @@ is_regularFile(const char *path)
 }
 
 /**
- * @brief Convert a input string to all lowercase characters
- * @param s Input string
- * @return The result
- *
  * Convert a input string to all lowercase characters. Strtolower()
  * modifies the input string and return its result.
+ *
+ * @param s Input string
+ * @return The result
  */
 char *
 Strtolower(char *s)
@@ -129,11 +124,10 @@ Strtolower(char *s)
 }
 
 /**
- * @brief Delete trailing whitespace characters
+ * Delete trailing whitespace characters determined by isspace().
+ *
  * @param string Input string
  * @return The result
- *
- * Delete trailing whitespace characters determined by isspace().
  */
 char *
 trim(char *string)
@@ -156,13 +150,12 @@ trim(char *string)
 }
 
 /**
- * @brief Calculate multiplication
+ * Calculate elt_count * elt_size and return its result -- but check
+ * for overflow.
+ *
  * @param elt_count	Element count
  * @param elt_size	Element size
  * @return The product
- *
- * Calculate elt_count * elt_size and return its result -- but check
- * for overflow.
  */
 size_t
 size_product(const size_t elt_count, const size_t elt_size)
@@ -174,11 +167,10 @@ size_product(const size_t elt_count, const size_t elt_size)
 }
 
 /**
- * @brief Toggle echo ON/OFF
- * @param state Set echoing to this state
- * @return void
- *
  * Toggle echo ON/OFF.
+ *
+ * @param state Set echoing to this state
+ * @return Void
  */
 void
 toggle_echo(on_off_t state)
