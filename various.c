@@ -52,8 +52,8 @@ is_directory(const char *path)
 {
     struct stat sb;
 
-    if (path == NULL || *path == '\0') return false;
-
+    if (path == NULL || *path == '\0')
+	return false;
     return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
 }
 
@@ -73,7 +73,8 @@ is_numeric(const char *string)
     }
 
     for (p = &string[0]; *p != '\0'; p++) {
-	if (!isdigit(*p)) return false;
+	if (!isdigit(*p))
+	    return false;
     }
 
     return true;
@@ -91,8 +92,8 @@ is_regularFile(const char *path)
 {
     struct stat sb;
 
-    if (path == NULL || *path == '\0') return false;
-
+    if (path == NULL || *path == '\0')
+	return false;
     return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
 }
 
@@ -117,7 +118,8 @@ Strtolower(char *s)
     }
 
     for (char *p = &s[0]; p < &s[len]; p++) {
-	if (isupper(*p)) *p = tolower(*p);
+	if (isupper(*p))
+	    *p = tolower(*p);
     }
 
     return s;
@@ -140,7 +142,8 @@ trim(char *string)
 	char *p;
 
 	for (p = &string[strlen(string) - 1]; p >= &string[0]; p--) {
-	    if (!isspace(*p)) break;
+	    if (!isspace(*p))
+		break;
 	}
 
 	*(p + 1) = '\0';
@@ -162,7 +165,6 @@ size_product(const size_t elt_count, const size_t elt_size)
 {
     if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
 	log_die(ERANGE, "size_product: FATAL: numerical result out of range");
-
     return (elt_count * elt_size);
 }
 
