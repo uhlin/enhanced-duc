@@ -18,7 +18,7 @@ MAN_FILE=educ_noip.1
 
 CONF_FILE=/etc/educ_noip.conf
 
-OBJS=b64_decode.o b64_encode.o daemonize.o duc_strlcat.o duc_strlcpy.o
+OBJS=b64_decode.o b64_encode.o daemonize.o
 OBJS+=interpreter.o log.o main.o my_vasprintf.o network.o
 OBJS+=network-openssl.o settings.o sig.o various.o wrapper.o
 OBJS+=strlcpy.o
