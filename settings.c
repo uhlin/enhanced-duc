@@ -32,46 +32,102 @@ bool g_conf_read = false;
 static const char GfxFailure[] = "[\x1b[1;31m*\x1b[0m]";
 static const char GfxSuccess[] = "[\x1b[1;32m*\x1b[0m]";
 
+static const char USERNAME_DESC[] =
+    "Your username.";
+static const char PASSWORD_DESC[] =
+    "Your password. (Will not echo!)";
+static const char HOSTNAME_DESC[] =
+    "The hostname to be updated. Multiple hosts are separated with a\n"
+    "vertical bar.";
+static const char IP_ADDR_DESC[] =
+    "Associate the hostname(s) with this IP address. If the special value\n"
+    "WAN_address is specified: the WAN address from which the update\n"
+    "request is sent from is used.";
+static const char SP_HOSTNAME_DESC[] =
+    "Service provider hostname. The HTTP GET request is sent to this\n"
+    "hostname.";
+static const char PORT_DESC[] =
+    "Connect to sp_hostname + this port. 443 = enable SSL.";
+static const char UPDATE_INTERVAL_SECONDS_DESC[] =
+    "Update interval specified in seconds. If a value less than 600 is\n"
+    "entered, the underlying code will fallback to 1800 to avoid flooding\n"
+    "the server with requests.";
+static const char PRIMARY_IP_LOOKUP_SRV_DESC[] =
+    "Server used to determine your external IP.";
+static const char BACKUP_IP_LOOKUP_SRV_DESC[] =
+    "Backup server for IP lookups.";
+static const char FORCE_UPDATE_DESC[] =
+    "Even if your external IP address hasn't changed between update\n"
+    "intervals, or if the program cannot determine your external IP -- in\n"
+    "either way: force update.  This setting should be set to YES if\n"
+    "ip_addr is not equal to value WAN_address.";
+
 static struct config_default_values_tag {
     char		*setting_name;
     enum setting_type	 type;
     char		*value;
     char		*custom_val;
-    char		*description;
+    const char		*description;
 } config_default_values[] = {
-    { "username", TYPE_STRING, "ChangeMe", NULL,
-      "Your username." },
+    { "username",
+      TYPE_STRING,
+      "ChangeMe",
+      NULL,
+      USERNAME_DESC },
 
-    { "password", TYPE_STRING, "ChangeMe", NULL,
-      "Your password. (Will not echo!)" },
+    { "password",
+      TYPE_STRING,
+      "ChangeMe",
+      NULL,
+      PASSWORD_DESC },
 
-    { "hostname", TYPE_STRING, "host1.domain.com|host2.domain.com", NULL,
-      "The hostname to be updated. Multiple hosts are separated with a vertical bar." },
+    { "hostname",
+      TYPE_STRING,
+      "host1.domain.com|host2.domain.com",
+      NULL,
+      HOSTNAME_DESC },
 
-    { "ip_addr", TYPE_STRING, "WAN_address", NULL,
-      "Associate the hostname(s) with this IP address. If the special value WAN_address\n"
-      "is specified: the WAN address from which the update request is sent from is used." },
+    { "ip_addr",
+      TYPE_STRING,
+      "WAN_address",
+      NULL,
+      IP_ADDR_DESC },
 
-    { "sp_hostname", TYPE_STRING, "dynupdate.no-ip.com", NULL,
-      "Service provider hostname. The http GET request is sent to this hostname." },
+    { "sp_hostname",
+      TYPE_STRING,
+      "dynupdate.no-ip.com",
+      NULL,
+      SP_HOSTNAME_DESC },
 
-    { "port", TYPE_INTEGER, "80", NULL,
-      "Connect to sp_hostname + this port. 443 = enable SSL." },
+    { "port",
+      TYPE_INTEGER,
+      "80",
+      NULL,
+      PORT_DESC },
 
-    { "update_interval_seconds", TYPE_INTEGER, "1800", NULL,
-      "Update interval specified in seconds. If a value less than 600 is entered, the\n"
-      "underlying code will fallback to 1800 to avoid flooding the server with requests." },
+    { "update_interval_seconds",
+      TYPE_INTEGER,
+      "1800",
+      NULL,
+      UPDATE_INTERVAL_SECONDS_DESC },
 
-    { "primary_ip_lookup_srv", TYPE_STRING, "ip1.dynupdate.no-ip.com", NULL,
-      "Server used to determine your external IP." },
+    { "primary_ip_lookup_srv",
+      TYPE_STRING,
+      "ip1.dynupdate.no-ip.com",
+      NULL,
+      PRIMARY_IP_LOOKUP_SRV_DESC },
 
-    { "backup_ip_lookup_srv", TYPE_STRING, "ip2.dynupdate.no-ip.com", NULL,
-      "Backup server for IP lookups." },
+    { "backup_ip_lookup_srv",
+      TYPE_STRING,
+      "ip2.dynupdate.no-ip.com",
+      NULL,
+      BACKUP_IP_LOOKUP_SRV_DESC },
 
-    { "force_update", TYPE_BOOLEAN, "YES", NULL,
-      "Even if your external IP address hasn't changed between update intervals, or if\n"
-      "the program cannot determine your external IP  --  in either way: force update.\n"
-      "This setting should be set to YES if ip_addr is not equal to value WAN_address." },
+    { "force_update",
+      TYPE_BOOLEAN,
+      "YES",
+      NULL,
+      FORCE_UPDATE_DESC },
 };
 
 static const size_t CDV_AR_SZ = ARRAY_SIZE(config_default_values);
@@ -102,14 +158,18 @@ setting_bool_unparse(const char *setting_name, const bool fallback_val)
 	    const char *value = cdv->custom_val ? cdv->custom_val : cdv->value;
 
 	    if (cdv->type != TYPE_BOOLEAN) {
-		log_warn(0, "setting_bool_unparse: %s: setting not a boolean!", setting_name);
+		log_warn(0, "setting_bool_unparse: %s: "
+			 "setting not a boolean!", setting_name);
 		break;
-	    } else if (strings_match(value, "yes") || strings_match(value, "YES")) {
+	    } else if (strings_match(value, "yes") ||
+		       strings_match(value, "YES")) {
 		return (true);
-	    } else if (strings_match(value, "no") || strings_match(value, "NO")) {
+	    } else if (strings_match(value, "no") ||
+		       strings_match(value, "NO")) {
 		return (false);
 	    } else {
-		log_warn(0, "setting_bool_unparse: %s: setting has an invalid value!", setting_name);
+		log_warn(0, "setting_bool_unparse: %s: "
+			 "setting has an invalid value!", setting_name);
 		break;
 	    }
 	} /* if */
@@ -130,7 +190,8 @@ is_setting_ok(const char *value, enum setting_type type)
     {
 	if (!strings_match(value, "yes") && !strings_match(value, "YES") &&
 	    !strings_match(value, "no") && !strings_match(value, "NO")) {
-	    log_warn(0, "is_setting_ok: booleans must be either: yes, YES, no or NO");
+	    log_warn(0, "is_setting_ok: booleans must be either: "
+		     "yes, YES, no or NO");
 	    return false;
 	}
 	break;
@@ -196,7 +257,8 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
     } else {
 	const bool input_too_big = strchr(answer, '\n') == NULL;
 
-	if (input_too_big) fatal(0, "get_answer: fatal: input too big");
+	if (input_too_big)
+	    fatal(0, "get_answer: fatal: input too big");
 	answer[strcspn(answer, "\n")] = '\0';
 
 	if (strings_match(answer, "")) {
@@ -250,11 +312,13 @@ setting_integer_unparse(const struct integer_unparse_context *ctx)
     FOREACH_CDV() {
 	if (strings_match(ctx->setting_name, cdv->setting_name)) {
 	    errno = 0;
-	    val	  = strtol(cdv->custom_val ? cdv->custom_val : cdv->value, NULL, 10);
+	    val	= strtol(cdv->custom_val?cdv->custom_val:cdv->value,NULL,10);
 
 	    if (errno != 0 || (val < ctx->lo_limit || val > ctx->hi_limit)) {
-		log_warn(ERANGE, "warning: setting %s out of range %ld-%ld: fallback value is %ld",
-			 ctx->setting_name, ctx->lo_limit, ctx->hi_limit, ctx->fallback_val);
+		log_warn(ERANGE, "warning: setting %s out of range %ld-%ld: "
+			 "fallback value is %ld",
+			 ctx->setting_name, ctx->lo_limit, ctx->hi_limit,
+			 ctx->fallback_val);
 		break;
 	    } else {
 		return (val);
@@ -292,7 +356,8 @@ is_ip_addr_ok(char **reason)
 static bool
 is_hostname_ok(const char *host, char **reason)
 {
-    const char host_chars[] = "abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const char host_chars[] =
+	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const size_t host_maxlen = 253;
 
     if (strings_match(host, "")) {
@@ -375,13 +440,14 @@ check_some_settings_strictly(void)
 void
 create_config_file(const char *path)
 {
-    FILE		*fp   = NULL;
-    const mode_t	 mode = S_IRUSR | S_IWUSR;	/* Read and write for the owner. */
+    FILE *fp = NULL;
+    const mode_t mode = S_IRUSR | S_IWUSR; /* Read and write for the owner. */
 
     log_assert_arg_nonnull("create_config_file", "path", path);
 
     if (file_exists(path)) {
-	fatal(EEXIST, "%s create_config_file: can't create config file  --  it's already existent", GfxFailure);
+	fatal(EEXIST, "%s create_config_file: can't create config file"
+	      "  --  it's already existent", GfxFailure);
     } else if ((fp = fopen(path, "w")) == NULL) {
 	fatal(errno, "%s create_config_file: fopen", GfxFailure);
     } else {
@@ -389,7 +455,8 @@ create_config_file(const char *path)
 	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
 
 	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
-		fatal(0, "%s create_config_file: failed to write to the file stream", GfxFailure);
+		fatal(0, "%s create_config_file: "
+		      "failed to write to the file stream", GfxFailure);
 
 	    free(ans);
 	}
@@ -472,7 +539,8 @@ read_config_file(const char *path)
     if (g_conf_read) {
 	return;
     } else if (!is_regularFile(path)) {
-	fatal(0, "read_config_file: either the config file is nonexistent  --  or it isn't a regular file");
+	fatal(0, "read_config_file: either the config file is nonexistent"
+	      "  --  or it isn't a regular file");
     } else if ((fp = fopen(path, "r")) == NULL) {
 	fatal(errno, "read_config_file: fopen");
     } else {
@@ -505,9 +573,11 @@ read_config_file(const char *path)
     if (feof(fp)) {
 	fclose(fp);
     } else if (ferror(fp)) {
-	fatal(0, "read_config_file: fatal: fgets returned null and the error indicator is set");
+	fatal(0, "read_config_file: fatal: fgets returned null "
+	      "and the error indicator is set");
     } else {
-	fatal(0, "read_config_file: fatal: fgets returned null and the reason cannot be determined");
+	fatal(0, "read_config_file: fatal: fgets returned null "
+	      "and the reason cannot be determined");
     }
 
     g_conf_read = true;
