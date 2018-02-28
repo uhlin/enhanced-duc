@@ -357,7 +357,7 @@ static bool
 is_hostname_ok(const char *host, char **reason)
 {
     const char host_chars[] =
-	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ:";
     const size_t host_maxlen = 253;
 
     if (strings_match(host, "")) {
