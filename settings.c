@@ -358,7 +358,7 @@ is_hostname_ok(const char *host, char **reason)
 {
     const char host_chars[] =
 	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ:";
-    const size_t host_maxlen = 253;
+    const size_t host_maxlen = 255;
 
     if (strings_match(host, "")) {
 	*reason = "empty setting";
