@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 ### Changed ###
 - All C sources to be 80 columns max
 - Certain error messages
+- In settings.c: constraints of `is_hostname_ok()`
+- Multiple log messages
 - Name of `Strdup_printf` to `strdup_printf`
 - Name of `Strings_match()` to `strings_match()`
 - Name of `Strtolower` to `strToLower`
