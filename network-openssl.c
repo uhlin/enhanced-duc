@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -30,7 +30,7 @@
 static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
 
-static const char cipher_list[] = "HIGH:@STRENGTH";
+static const char cipher_list[] = "HIGH:!aNULL";
 
 static int
 verify_callback(int ok, X509_STORE_CTX *ctx)
