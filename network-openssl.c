@@ -145,7 +145,7 @@ int
 net_ssl_start(void)
 {
     const int VALUE_HANDSHAKE_OK = 1;
-    
+
     if ((ssl = SSL_new(ssl_ctx)) == NULL)
 	fatal(ENOMEM, "net_ssl_start: Unable to create a new SSL object");
     else if (!SSL_set_fd(ssl, g_socket))
@@ -154,7 +154,7 @@ net_ssl_start(void)
 	log_warn(0, "net_ssl_start: Handshake NOT ok!");
     else
 	return (0);
-    
+
     return (-1);
 }
 
