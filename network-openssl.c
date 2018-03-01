@@ -68,7 +68,7 @@ net_ssl_init()
     SSL_library_init();
 
     if (RAND_load_file("/dev/urandom", 1024) <= 0) {
-	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG! LibreSSL?");
+	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG!");
     }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
@@ -102,7 +102,7 @@ net_ssl_init()
     net_send = net_ssl_send;
     net_recv = net_ssl_recv;
 
-    log_msg("SSL enabled");
+    log_msg("TLS/SSL enabled");
 }
 
 /**
@@ -176,14 +176,14 @@ net_ssl_send(const char *fmt, ...)
 
     va_start(ap, fmt);
     if (my_vasprintf(&buffer, fmt, ap) < 0)
-	fatal(errno, "net_ssl_send: my_vasprintf error");
+	fatal(errno, "net_ssl_send: my_vasprintf");
     va_end(ap);
 
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
     if (strlcat(buffer, message_terminate, newSize) >= newSize)
-	fatal(EOVERFLOW, "net_ssl_send: strlcat error");
+	fatal(EOVERFLOW, "net_ssl_send: strlcat");
 
     for (int total_written = 0, ret = 0; total_written < strlen(buffer); (void) 0)
 	if ((ret = SSL_write(ssl, &buffer[total_written], strlen(buffer) - total_written)) <= 0) {
@@ -220,7 +220,7 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
     tv.tv_usec = 0;
 
     if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-	log_warn(errno, "net_ssl_recv: select error");
+	log_warn(errno, "net_ssl_recv: select");
 	return -1;
     } else if (!FD_ISSET(g_socket, &readset)) {
 	log_warn(0, "net_ssl_recv: no data to receive  --  timed out!");
