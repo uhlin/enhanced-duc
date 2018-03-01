@@ -73,7 +73,7 @@ net_ssl_init()
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
     if (( ssl_ctx = SSL_CTX_new(TLS_client_method()) ) == NULL) {
-	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
+	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
@@ -82,7 +82,7 @@ net_ssl_init()
     }
 #else
     if (( ssl_ctx = SSL_CTX_new(SSLv23_client_method()) ) == NULL) {
-	log_die(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
+	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
@@ -146,7 +146,7 @@ net_ssl_start(void)
     const int VALUE_HANDSHAKE_OK = 1;
     
     if ((ssl = SSL_new(ssl_ctx)) == NULL)
-	log_die(ENOMEM, "net_ssl_start: Unable to create a new SSL object");
+	fatal(ENOMEM, "net_ssl_start: Unable to create a new SSL object");
     else if (!SSL_set_fd(ssl, g_socket))
 	log_warn(0, "net_ssl_start: Unable to associate the global socket fd with the SSL object");
     else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
@@ -176,14 +176,14 @@ net_ssl_send(const char *fmt, ...)
 
     va_start(ap, fmt);
     if (my_vasprintf(&buffer, fmt, ap) < 0)
-	log_die(errno, "net_ssl_send: my_vasprintf error");
+	fatal(errno, "net_ssl_send: my_vasprintf error");
     va_end(ap);
 
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
     if (strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_ssl_send: strlcat error");
+	fatal(EOVERFLOW, "net_ssl_send: strlcat error");
 
     for (int total_written = 0, ret = 0; total_written < strlen(buffer); (void) 0)
 	if ((ret = SSL_write(ssl, &buffer[total_written], strlen(buffer) - total_written)) <= 0) {
