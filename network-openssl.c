@@ -16,6 +16,7 @@
 
 #include <sys/select.h>
 
+#include <openssl/err.h>
 #include <openssl/opensslv.h>
 #include <openssl/rand.h>
 #include <openssl/ssl.h>
@@ -207,17 +208,19 @@ net_ssl_send(const char *fmt, ...)
 int
 net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 {
-    fd_set		readset;
-    struct timeval	tv;
-    const int		maxfdp1 = g_socket + 1;
+    const int maxfdp1 = g_socket + 1;
+    fd_set readset;
+    struct timeval tv = {
+	.tv_sec  = 10,
+	.tv_usec = 0,
+    };
 
     log_assert_arg_nonnull("net_ssl_recv", "recvbuf", recvbuf);
 
     FD_ZERO(&readset);
     FD_SET(g_socket, &readset);
 
-    tv.tv_sec  = 10;
-    tv.tv_usec = 0;
+    errno = 0;
 
     if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
 	log_warn(errno, "net_ssl_recv: select");
@@ -225,20 +228,21 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
     } else if (!FD_ISSET(g_socket, &readset)) {
 	log_warn(0, "net_ssl_recv: no data to receive  --  timed out!");
 	return -1;
-    } else {
-	int ret = 0, total_read = 0;
-
-	do {
-	    while (total_read < recvbuf_size)
-		if ((ret = SSL_read(ssl, &recvbuf[total_read], recvbuf_size - total_read)) <= 0) {
-		    break;
-		} else {
-		    total_read += ret;
-		}
-	} while (ret > 0);
-
-	log_debug("net_ssl_recv: ret=%d and total_read=%d", ret, total_read);
     }
 
-    return 0;
+    int bytes_received = 0;
+    ERR_clear_error();
+
+    if ((bytes_received = SSL_read(ssl, recvbuf, recvbuf_size)) > 0)
+	return 0;
+    switch (SSL_get_error(ssl, bytes_received)) {
+    case SSL_ERROR_NONE:
+	return 0;
+    case SSL_ERROR_WANT_READ:
+    case SSL_ERROR_WANT_WRITE:
+	log_warn(0, "net_ssl_recv: want read / want write");
+	return 0;
+    }
+
+    return -1;
 }
