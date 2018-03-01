@@ -167,35 +167,52 @@ net_ssl_start(void)
 int
 net_ssl_send(const char *fmt, ...)
 {
-    extern int my_vasprintf(char **ret, const char *format, va_list ap);
-    va_list     ap;
-    char       *buffer;
-    const char  message_terminate[] = "\r\n\r\n";
-    bool        ok = true;
+    char *buf = NULL;
+    extern int my_vasprintf(char **, const char *, va_list);
+    int buflen = 0;
+    int n_sent = 0;
+    size_t newSize = 0;
+    static const char message_terminate[] = "\r\n\r\n";
+    va_list ap = { 0 };
 
     log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
 
     va_start(ap, fmt);
-    if (my_vasprintf(&buffer, fmt, ap) < 0)
+    if (my_vasprintf(&buf, fmt, ap) < 0)
 	fatal(errno, "net_ssl_send: my_vasprintf");
     va_end(ap);
 
-    size_t newSize = strlen(buffer) + sizeof message_terminate;
-    buffer = xrealloc(buffer, newSize);
+    newSize = strlen(buf) + sizeof message_terminate;
+    buf = xrealloc(buf, newSize);
 
-    if (strlcat(buffer, message_terminate, newSize) >= newSize)
+    if (strlcat(buf, message_terminate, newSize) >= newSize)
 	fatal(EOVERFLOW, "net_ssl_send: strlcat");
 
-    for (int total_written = 0, ret = 0; total_written < strlen(buffer); (void) 0)
-	if ((ret = SSL_write(ssl, &buffer[total_written], strlen(buffer) - total_written)) <= 0) {
-	    ok = false;
-	    break;
-	} else {
-	    total_written += ret;
-	}
+    if (strlen(buf) > INT_MAX) {
+	free(buf);
+	return -1;
+    }
 
-    free(buffer);
-    return ok ? 0 : -1;
+    buflen = (int) strlen(buf);
+    ERR_clear_error();
+
+    if ((n_sent = SSL_write(ssl, buf, buflen)) > 0) {
+	free(buf);
+	return 0;
+    }
+
+    free(buf);
+
+    switch (SSL_get_error(ssl, n_sent)) {
+    case SSL_ERROR_NONE:
+	return 0;
+    case SSL_ERROR_WANT_READ:
+    case SSL_ERROR_WANT_WRITE:
+	log_warn(0, "net_ssl_send: operation did not complete");
+	return 0;
+    }
+
+    return -1;
 }
 
 /**
