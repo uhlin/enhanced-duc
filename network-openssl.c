@@ -72,7 +72,7 @@ net_ssl_init()
     }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    if (( ssl_ctx = SSL_CTX_new(TLS_client_method()) ) == NULL) {
+    if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
 	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
@@ -81,7 +81,7 @@ net_ssl_init()
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
     }
 #else
-    if (( ssl_ctx = SSL_CTX_new(SSLv23_client_method()) ) == NULL) {
+    if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
 	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
