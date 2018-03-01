@@ -148,7 +148,8 @@ net_ssl_start(void)
     if ((ssl = SSL_new(ssl_ctx)) == NULL)
 	fatal(ENOMEM, "net_ssl_start: unable to create a new ssl object");
     else if (!SSL_set_fd(ssl, g_socket))
-	log_warn(0, "net_ssl_start: unable to associate the global socket fd with the ssl object");
+	log_warn(0, "net_ssl_start: "
+	    "unable to associate the global socket fd with the ssl object");
     else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
 	log_warn(0, "net_ssl_start: handshake not ok!");
     else
