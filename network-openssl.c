@@ -59,10 +59,7 @@ verify_callback(int ok, X509_STORE_CTX *ctx)
 }
 
 /**
- * @brief	Initialize the TLS/SSL library
- * @return	void
- *
- * Initialize the TLS/SSL library.
+ * Initialize the TLS/SSL library
  */
 void
 net_ssl_init()
@@ -106,10 +103,7 @@ net_ssl_init()
 }
 
 /**
- * @brief	Deinitialize the TLS/SSL library
- * @return	void
- *
- * Deinitialize the TLS/SSL library.
+ * Deinitialize the TLS/SSL library
  */
 void
 net_ssl_deinit()
@@ -126,10 +120,7 @@ net_ssl_deinit()
 }
 
 /**
- * @brief	Shut down a TLS/SSL connection
- * @return	void
- *
- * Shut down a TLS/SSL connection.
+ * Shut down a TLS/SSL connection
  */
 void
 net_ssl_close(void)
@@ -142,10 +133,9 @@ net_ssl_close(void)
 }
 
 /**
- * @brief	Initiate the TLS/SSL handshake with an TLS/SSL server
- * @return	0 on success, -1 on error
+ * Initiate the TLS/SSL handshake with an TLS/SSL server
  *
- * Initiate the TLS/SSL handshake with an TLS/SSL server.
+ * @return 0 on success, -1 on error
  */
 int
 net_ssl_start(void)
@@ -165,11 +155,10 @@ net_ssl_start(void)
 }
 
 /**
- * @brief Write bytes to a TLS/SSL connection
+ * Write bytes to a TLS/SSL connection
+ *
  * @param fmt Format control
  * @return 0 on success, and -1 on failure
- *
- * Write bytes to a TLS/SSL connection.
  */
 int
 net_ssl_send(const char *fmt, ...)
@@ -206,12 +195,11 @@ net_ssl_send(const char *fmt, ...)
 }
 
 /**
- * @brief Read bytes from a TLS/SSL connection
+ * Read bytes from a TLS/SSL connection
+ *
  * @param recvbuf	Receive buffer
  * @param recvbuf_size	Receive buffer size
  * @return 0 on success, and -1 on failure
- *
- * Read bytes from a TLS/SSL connection.
  */
 int
 net_ssl_recv(char *recvbuf, size_t recvbuf_size)
