@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -339,7 +339,6 @@ net_check_for_ip_change(void)
 	return (IP_HAS_CHANGED);
     }
 
-    /*NOTREACHED*/
-    assert(false);
-    return (IP_NO_CHANGE);
+    /*NOTREACHED*/ assert(false);
+    /*NOTREACHED*/ return (IP_NO_CHANGE);
 }
