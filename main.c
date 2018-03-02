@@ -63,6 +63,11 @@ static const char educ_noip_dir[]  = "/tmp";
 
 static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 
+#define FOREACH_HOSTNAME()\
+	for (char **ar_p = &hostname_array[0];\
+	     ar_p < &hostname_array[ARRAY_SIZE(hostname_array)];\
+	     ar_p++)
+
 static void
 process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
 {
