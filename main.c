@@ -379,7 +379,6 @@ hostname_array_destroy()
 static void
 start_update_cycle()
 {
-    extern int pledge(const char *promises, const char **paths);
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
 
     hostname_array_init();
@@ -388,8 +387,6 @@ start_update_cycle()
     if (pledge("stdio inet dns", NULL) == -1)
 	fatal(errno, "pledge");
     log_msg("forced into a restricted service operating mode (good)");
-#else
-    (void) pledge;
 #endif
 
     do {
