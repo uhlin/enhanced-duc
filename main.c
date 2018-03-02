@@ -26,6 +26,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "base64.h"
 #include "log.h"
 #include "main.h"
 #include "network.h"
@@ -198,7 +199,6 @@ hostname_array_assign()
 static int
 send_update_request(const char *which_host, const char *to_ip)
 {
-    extern int b64_encode(uint8_t const *src, size_t srclength, char *target, size_t targsize);
     char	*s, *host, *unp;
     char	 buf[500] = "";
     char	*auth	  = NULL;
