@@ -102,7 +102,7 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar, si
     }
 }
 
-static void
+static NORETURN void
 usage()
 {
     extern char		*__progname;
