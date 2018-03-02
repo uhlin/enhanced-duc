@@ -43,10 +43,7 @@ static struct addrinfo	*net_addr_resolve (const char *host, const char *port);
 static inline bool	 is_ssl_enabled   (void);
 
 /**
- * @brief	Initialize networking
- * @return	void
- *
- * Initialize networking.
+ * Initialize networking
  */
 void
 net_init(void)
@@ -56,10 +53,7 @@ net_init(void)
 }
 
 /**
- * @brief	Deinitialize networking
- * @return	void
- *
- * Deinitialize networking.
+ * Deinitialize networking
  */
 void
 net_deinit(void)
@@ -74,10 +68,7 @@ net_deinit(void)
 }
 
 /**
- * @brief	Network disconnect
- * @return	void
- *
- * Network disconnect.
+ * Network disconnect
  */
 void
 net_disconnect(void)
@@ -92,11 +83,10 @@ net_disconnect(void)
 }
 
 /**
- * @brief Send a message on a regular socket
+ * Send a message on a regular socket
+ *
  * @param fmt Format control
  * @return 0 on success, and -1 on failure
- *
- * Send a message on a regular socket.
  */
 int
 net_send_plain(const char *fmt, ...)
@@ -130,12 +120,11 @@ net_send_plain(const char *fmt, ...)
 }
 
 /**
- * @brief Receive a message from a regular socket
+ * Receive a message from a regular socket
+ *
  * @param recvbuf	Receive buffer
  * @param recvbuf_size	Receive buffer size
  * @return 0 on success, and -1 on failure
- *
- * Receive a message from a regular socket.
  */
 int
 net_recv_plain(char *recvbuf, size_t recvbuf_size)
@@ -205,11 +194,10 @@ net_addr_resolve(const char *host, const char *port)
 }
 
 /**
- * @brief	Connect to the service provider
- * @return	0 on success, and -1 on failure
- *
  * Connect to the service provider with or without TLS/SSL depending
  * on the port number.
+ *
+ * @return 0 on success, and -1 on failure
  */
 int
 net_connect(void)
@@ -256,14 +244,13 @@ is_ssl_enabled(void)
 }
 
 /**
- * @brief	Check for IP change
- * @return	IP_HAS_CHANGED or IP_NO_CHANGE
- *
  * Check for IP change. The function may return IP_HAS_CHANGED even
  * though the IP hasn't changed, but that is mainly for error
- * conditions to enforce an update to occur.  In the same manner: it
+ * conditions to enforce an update to occur. In the same manner: it
  * might return IP_NO_CHANGE if, for example, the received data
  * contains a bogus ipv4 address.
+ *
+ * @return IP_HAS_CHANGED or IP_NO_CHANGE
  */
 ip_chg_t
 net_check_for_ip_change(void)
