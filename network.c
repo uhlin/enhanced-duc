@@ -86,20 +86,20 @@ net_connect(void)
     struct addrinfo	*res, *rp;
     bool		 connected = false;
 
-    log_debug("Connecting to %s/%s...", host, port);
+    log_debug("connecting to %s (%s)...", host, port);
 
     if ((res = net_addr_resolve(host, port)) == NULL) {
-	log_warn(0, "Unable to get a list of IP addresses. Bogus hostname?");
+	log_warn(0, "unable to get a list of ip addresses. bogus hostname?");
 	return -1;
     } else {
-	log_debug("Get a list of IP addresses complete");
+	log_debug("get a list of ip addresses complete");
     }
 
     for (rp = res; rp; rp = rp->ai_next)
 	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
-	    log_debug("Connected!");
+	    log_debug("connected!");
 	    connected = true;
 	    break;
 	} else {
@@ -109,7 +109,7 @@ net_connect(void)
     freeaddrinfo(res);
 
     if (!connected) {
-	log_warn(0, "Failed to establish a connection");
+	log_warn(0, "failed to establish a connection");
 	return -1;
     }
 
@@ -138,7 +138,7 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
     tv.tv_usec = 0;
 
     if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-	log_warn(errno, "net_recv_plain: select error");
+	log_warn(errno, "net_recv_plain: select");
 	return -1;
     } else if (!FD_ISSET(g_socket, &readset)) {
 	log_warn(0, "net_recv_plain: no data to receive  --  timed out!");
@@ -152,7 +152,7 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
 
     switch (recv(g_socket, recvbuf, recvbuf_size, 0)) {
     case -1:
-	log_warn(errno, "net_recv_plain: recv error");
+	log_warn(errno, "net_recv_plain: recv");
 	return -1;
     case 0:
 	log_warn(0, "net_recv_plain: fatal: connection lost");
@@ -183,17 +183,17 @@ net_send_plain(const char *fmt, ...)
 
     va_start(ap, fmt);
     if (my_vasprintf(&buffer, fmt, ap) < 0)
-	log_die(errno, "net_send_plain: my_vasprintf error");
+	log_die(errno, "net_send_plain: my_vasprintf");
     va_end(ap);
 
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
     if (strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_send_plain: strlcat error");
+	log_die(EOVERFLOW, "net_send_plain: strlcat");
 
     if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
-	log_warn(errno, "net_send_plain: send error");
+	log_warn(errno, "net_send_plain: send");
 	ok = false;
     }
 
@@ -276,11 +276,11 @@ net_check_for_ip_change(void)
 	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
 	return (IP_NO_CHANGE);
     } else if (strings_match(cp, g_last_ip_addr)) {
-	log_msg("Not updating  --  the external IP hasn't changed");
+	log_msg("not updating (the external ip hasn't changed)");
 	return (IP_NO_CHANGE);
     } else {
 	strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
-	log_msg("IP has changed to %s", cp);
+	log_msg("ip has changed to %s", cp);
 	return (IP_HAS_CHANGED);
     }
 
