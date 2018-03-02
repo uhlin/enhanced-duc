@@ -144,8 +144,6 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
     } else if (!FD_ISSET(g_socket, &readset)) {
 	log_warn(0, "net_recv_plain: no data to receive  --  timed out!");
 	return -1;
-    } else {
-	;
     }
 #endif /* IO_MULTIPLEXING */
 
