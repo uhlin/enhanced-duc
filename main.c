@@ -69,7 +69,8 @@ static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 	     ar_p++)
 
 static void
-process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
+process_options(int argc, char *argv[], struct program_options *po,
+		char *ar, size_t ar_sz)
 {
     int opt = -1;
     const char opt_string[] = ":hcx:DoB";
@@ -110,10 +111,12 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar, si
 static NORETURN void
 usage()
 {
-    extern char		*__progname;
-    char		*msgVersion = strdup_printf("%s %s by %s\n", g_programName, g_programVersion, g_programAuthor);
-    char		*msgUsage   = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
-    const size_t	 ar_sz	    = ARRAY_SIZE(help_text);
+    extern char *__progname;
+    char *msgVersion =
+	strdup_printf("%s %s by %s\n",
+		      g_programName, g_programVersion, g_programAuthor);
+    char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
+    const size_t ar_sz = ARRAY_SIZE(help_text);
 
     fputs(msgVersion, stderr);
     fputs(msgUsage, stderr);
@@ -176,12 +179,14 @@ hostname_array_assign()
 	"abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
 
     if (strings_match(dump, "")) {
-	fatal(EINVAL, "hostname_array_assign: no hostnames to update  --  setting empty");
+	fatal(EINVAL, "hostname_array_assign: no hostnames to update"
+	    "  --  setting empty");
     }
 
     for (const char *cp = dump; *cp; cp++) {
 	if (strchr(legal_index, *cp) == NULL)
-	    fatal(0, "hostname_array_assign: invalid chars in setting: first invalid char was '%c'...", *cp);
+	    fatal(0, "hostname_array_assign: invalid chars in setting: "
+		  "first invalid char was '%c'...", *cp);
     }
 
     for (size_t hosts_assigned = 0;; hosts_assigned++) {
@@ -192,7 +197,8 @@ hostname_array_assign()
 	else if (hosts_assigned == 0)
 	    fatal(0, "hostname_array_assign: fatal: zero assigned hosts!");
 	else {
-	    log_debug("hostname_array_assign: a total of %zu hosts were assigned!", hosts_assigned);
+	    log_debug("hostname_array_assign: "
+		      "a total of %zu hosts were assigned!", hosts_assigned);
 	    break;
 	}
     }
@@ -214,7 +220,8 @@ send_update_request(const char *which_host, const char *to_ip)
     if (strings_match(to_ip, "WAN_address")) {
 	s = strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
     } else {
-	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0", which_host, to_ip);
+	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0",
+			  which_host, to_ip);
     }
 
     host = strdup_printf("Host: %s", setting("sp_hostname"));
@@ -225,7 +232,8 @@ send_update_request(const char *which_host, const char *to_ip)
 	goto err;
     }
     auth  = strdup_printf("Authorization: Basic %s", buf);
-    agent = strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
+    agent = strdup_printf("User-Agent: %s/%s %s",
+			  g_programName, g_programVersion, g_maintainerEmail);
 
     log_debug("sending http get request");
     if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;
@@ -322,7 +330,8 @@ server_response(const char *buf)
 }
 
 static bool
-update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter30Min)
+update_host(const char *which_host, const char *to_ip,
+	    bool *updateRequestAfter30Min)
 {
     char	*buf = NULL;
     bool	 ok  = true;
@@ -330,7 +339,8 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
     if (which_host == NULL || to_ip == NULL || updateRequestAfter30Min == NULL)
 	fatal(EINVAL, "update_host() fatal error!");
 
-    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
+    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 ||
+	store_server_resp_in_buffer(&buf) == -1) {
 	ok = false;
 	goto err;
     }
@@ -347,14 +357,16 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
     case CODE_BADAUTH:
 	fatal(0, "Invalid username password combination.");
     case CODE_BADAGENT:
-	fatal(0, "Bad agent? I don't think so! But the server is always right. Dying...");
+	fatal(0, "Bad agent? I don't think so! "
+	    "But the server is always right. Dying...");
     case CODE_NOTDONATOR:
 	fatal(0, "Bad update request. Feature not available.");
     case CODE_ABUSE:
 	fatal(0, "Username blocked due to abuse.");
     case CODE_EMERG:
 	if (Cycle)
-	    log_warn(0, "fatal error on the server side (will retry update after 30 minutes)");
+	    log_warn(0, "fatal error on the server side "
+		"(will retry update after 30 minutes)");
 	else
 	    log_warn(0, "fatal error on the server side");
 	*updateRequestAfter30Min = true;
@@ -405,7 +417,8 @@ start_update_cycle()
 
 		log_msg("trying to update %s", *ar_p);
 
-		if (!update_host(*ar_p, setting("ip_addr"), &updateRequestAfter30Min))
+		if (!update_host(*ar_p, setting("ip_addr"),
+				 &updateRequestAfter30Min))
 		    break; /* Stop updating on the first unsuccessful try. */
 	    }
 
@@ -420,7 +433,9 @@ start_update_cycle()
 		.fallback_val = 1800,	/* 30 minutes */
 	    };
 	    struct timespec ts = {
-		.tv_sec	 = updateRequestAfter30Min ? 1800 : setting_integer_unparse(&ctx),
+		.tv_sec	 = ((updateRequestAfter30Min)
+			    ? 1800
+			    : setting_integer_unparse(&ctx)),
 		.tv_nsec = 0,
 	    };
 
@@ -441,7 +456,7 @@ main(int argc, char *argv[])
 	.want_daemon		 = false,
     };
     char conf[DUC_PATH_MAX] =
-	"/etc/enhanced-duc.conf"; /* process_options change the value if -x is passed. */
+	"/etc/enhanced-duc.conf";
 
     if (sigHand_init() == -1)
 	log_warn(0, "Initialization of signal handling failed");
@@ -449,7 +464,7 @@ main(int argc, char *argv[])
 	log_warn(errno, "Failed to register a clean up function");
 
     setlocale(LC_ALL, "");
-    process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
+    process_options(argc,argv,&opt,&conf[0],sizeof conf); /*Always successful*/
 
     if (opt.want_usage)
 	usage(); /* Doesn't return. */
@@ -467,7 +482,10 @@ main(int argc, char *argv[])
     if (opt.want_daemon) {
 	extern void Daemonize(void);
 
-	/* Detach the program from the controlling terminal and continue execution... */
+	/*
+	 * Detach the program from the controlling terminal and continue
+	 * execution...
+	 */
 	Daemonize();
     }
 
