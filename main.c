@@ -163,10 +163,9 @@ force_priv_drop()
 static void
 hostname_array_init()
 {
-    const size_t ar_sz = ARRAY_SIZE(hostname_array);
-
-    /* Initialize all ptrs to NULL. */
-    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) *ar_p = NULL;
+    FOREACH_HOSTNAME() {
+	*ar_p = NULL;
+    }
 }
 
 static void
@@ -375,9 +374,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
 static void
 hostname_array_destroy()
 {
-    const size_t ar_sz = ARRAY_SIZE(hostname_array);
-
-    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) {
+    FOREACH_HOSTNAME() {
 	free_not_null(*ar_p);
 	*ar_p = NULL;
     }
@@ -386,8 +383,6 @@ hostname_array_destroy()
 static void
 start_update_cycle()
 {
-    const size_t ar_sz = ARRAY_SIZE(hostname_array);
-
     hostname_array_init();
 
 #if defined(OpenBSD) && OpenBSD >= 201605
@@ -402,7 +397,12 @@ start_update_cycle()
 	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
 	    hostname_array_assign();
 
-	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequestAfter30Min; ar_p++) {
+	    FOREACH_HOSTNAME() {
+		if (! (*ar_p))
+		    break;
+		if (updateRequestAfter30Min)
+		    break;
+
 		log_msg("trying to update %s", *ar_p);
 
 		if (!update_host(*ar_p, setting("ip_addr"), &updateRequestAfter30Min))
