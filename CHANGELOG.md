@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Configuration file `enhanced-duc-config.h` where customizations can
   be made
 - An enhanced version of the interpreter
+- Many enhancements to the networking routines
 
 ### Changed ###
 - All C sources to be 80 columns max
