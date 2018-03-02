@@ -72,9 +72,9 @@ static void
 process_options(int argc, char *argv[], struct program_options *po,
 		char *ar, size_t ar_sz)
 {
-    int opt = -1;
     const char opt_string[] = ":hcx:DoB";
     enum { MISSING_OPTARG = ':', UNRECOGNIZED_OPTION = '?' };
+    int opt = -1;
 
     while ((opt = getopt(argc, argv, opt_string)) != -1) {
 	switch (opt) {
@@ -209,11 +209,11 @@ hostname_array_assign()
 static int
 send_update_request(const char *which_host, const char *to_ip)
 {
-    char	*s, *host, *unp;
-    char	 buf[500] = "";
-    char	*auth	  = NULL;
-    char	*agent	  = NULL;
-    bool	 ok	  = true;
+    bool ok = true;
+    char *agent = NULL;
+    char *auth = NULL;
+    char *s, *host, *unp;
+    char buf[500] = "";
 
     s = host = unp = NULL;
 
@@ -333,8 +333,8 @@ static bool
 update_host(const char *which_host, const char *to_ip,
 	    bool *updateRequestAfter30Min)
 {
-    char	*buf = NULL;
-    bool	 ok  = true;
+    bool ok = true;
+    char *buf = NULL;
 
     if (which_host == NULL || to_ip == NULL || updateRequestAfter30Min == NULL)
 	fatal(EINVAL, "update_host() fatal error!");
@@ -448,6 +448,8 @@ start_update_cycle()
 int
 main(int argc, char *argv[])
 {
+    char conf[DUC_PATH_MAX] =
+	"/etc/enhanced-duc.conf";
     struct program_options opt = {
 	.want_usage		 = false,
 	.want_create_config_file = false,
@@ -455,8 +457,6 @@ main(int argc, char *argv[])
 	.want_update_once	 = false,
 	.want_daemon		 = false,
     };
-    char conf[DUC_PATH_MAX] =
-	"/etc/enhanced-duc.conf";
 
     if (sigHand_init() == -1)
 	log_warn(0, "Initialization of signal handling failed");
