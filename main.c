@@ -61,7 +61,7 @@ static bool Cycle = true;
 static const char educ_noip_user[] = "nobody";
 static const char educ_noip_dir[]  = "/tmp";
 
-static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = {};
+static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 
 static void
 process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
@@ -138,11 +138,11 @@ set_cycle_off()
 static void
 force_priv_drop()
 {
-    struct passwd *pw;
+    struct passwd *pw = getpwnam(educ_noip_user);
 
     log_msg("Dropping root privileges...");
 
-    if ((pw = getpwnam(educ_noip_user)) == NULL)
+    if (pw == NULL)
 	fatal(0, "getpwnam: no such user %s", educ_noip_user);
     else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
 	fatal(errno, "chdir %s", educ_noip_dir);
@@ -269,11 +269,13 @@ server_response(const char *buf)
     const size_t ar_sz = ARRAY_SIZE(responses);
     const struct responses_tag *ar_p = &responses[0];
 
+    dump = cp = r = NULL;
+
     if (buf == NULL || strings_match(buf, "")) {
 	return CODE_UNKNOWN;
     } else {
 	char *buf_copy = xstrdup(buf);
-	char *buf_ptr;
+	char *buf_ptr = NULL;
 
 	while ((buf_ptr = strpbrk(buf_copy, "\r\n")) != NULL)
 	    if (*buf_ptr == '\r') {
