@@ -59,7 +59,7 @@ static const char *help_text[] = {
 static bool Cycle = true;
 
 static const char enhanced_duc_user[] = "nobody";
-static const char educ_noip_dir[]  = "/tmp";
+static const char enhanced_duc_dir[]  = "/tmp";
 
 static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 
@@ -149,8 +149,8 @@ force_priv_drop()
 
     if (pw == NULL)
 	fatal(0, "getpwnam: no such user %s", enhanced_duc_user);
-    else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
-	fatal(errno, "chdir %s", educ_noip_dir);
+    else if (is_directory(enhanced_duc_dir) && chdir(enhanced_duc_dir) != 0)
+	fatal(errno, "chdir %s", enhanced_duc_dir);
     else if (setgid(pw->pw_gid)  == -1) fatal(errno, "setgid");
     else if (setegid(pw->pw_gid) == -1) fatal(errno, "setegid");
     else if (setuid(pw->pw_uid)  == -1) fatal(errno, "setuid");
