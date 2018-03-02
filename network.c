@@ -95,7 +95,7 @@ net_connect(void)
 	log_debug("get a list of ip addresses complete");
     }
 
-    for (rp = res; rp; rp = rp->ai_next)
+    for (rp = res; rp; rp = rp->ai_next) {
 	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
@@ -105,6 +105,7 @@ net_connect(void)
 	} else {
 	    close(g_socket);
 	}
+    }
 
     freeaddrinfo(res);
 
