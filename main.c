@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -35,7 +35,7 @@
 #include "wrapper.h"
 
 const char g_programName[]     = "Enhanced DUC";
-const char g_programVersion[]  = "v1.6";
+const char g_programVersion[]  = "v2.0-dev";
 const char g_programAuthor[]   = "Markus Uhlin";
 const char g_maintainerEmail[] = "markus.uhlin@bredband.net";
 
