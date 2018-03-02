@@ -277,12 +277,13 @@ server_response(const char *buf)
 	char *buf_copy = xstrdup(buf);
 	char *buf_ptr = NULL;
 
-	while ((buf_ptr = strpbrk(buf_copy, "\r\n")) != NULL)
+	while ((buf_ptr = strpbrk(buf_copy, "\r\n")) != NULL) {
 	    if (*buf_ptr == '\r') {
 		*buf_ptr = 'R';
 	    } else {
 		*buf_ptr = 'N';
 	    }
+	}
 
 	log_debug("server_response: the buffer looks like this: %s", buf_copy);
 	free(buf_copy);
