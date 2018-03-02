@@ -305,11 +305,12 @@ server_response(const char *buf)
 	free(r);
 	return CODE_NOCHG;
     } else {
-	for (; ar_p < &responses[ar_sz]; ar_p++)
+	for (; ar_p < &responses[ar_sz]; ar_p++) {
 	    if (strings_match(ar_p->str, r)) {
 		free(r);
 		return ar_p->code;
 	    }
+	}
     }
 
     free(r);
