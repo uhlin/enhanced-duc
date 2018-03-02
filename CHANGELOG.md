@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Changed ###
 - All C sources to be 80 columns max
 - Certain error messages
+- Global configuration file from `/etc/educ_noip.conf` to `/etc/enhanced-duc.conf`
 - In settings.c: constraints of `is_hostname_ok()`
 - Multiple log messages
 - Name of `Strdup_printf` to `strdup_printf`
