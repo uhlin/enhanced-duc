@@ -228,11 +228,11 @@ net_ssl_init()
     SSL_library_init();
 
     if (RAND_load_file("/dev/urandom", 1024) <= 0)
-	log_warn(ENOSYS, "net_ssl_init: Error seeding the PRNG!");
+	log_warn(ENOSYS, "net_ssl_init: error seeding the prng!");
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
     if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
-	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
+	fatal(ENOMEM, "net_ssl_init: unable to create a new ssl_ctx object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
@@ -241,7 +241,7 @@ net_ssl_init()
     }
 #else
     if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
-	fatal(ENOMEM, "net_ssl_init: Unable to create a new SSL_CTX object");
+	fatal(ENOMEM, "net_ssl_init: unable to create a new ssl_ctx object");
     } else {
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
 	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
@@ -252,11 +252,11 @@ net_ssl_init()
 	SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER, verify_callback);
 	SSL_CTX_set_verify_depth(ssl_ctx, 4);
     } else {
-	log_warn(ENOSYS, "net_ssl_init: Certificate verification is disabled");
+	log_warn(ENOSYS, "net_ssl_init: certificate verification is disabled");
     }
 
     if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
-	log_warn(EINVAL, "net_ssl_init: Bogus cipher list");
+	log_warn(EINVAL, "net_ssl_init: bogus cipher list");
 
     net_send = net_ssl_send;
     net_recv = net_ssl_recv;
