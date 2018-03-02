@@ -441,7 +441,7 @@ main(int argc, char *argv[])
 	.want_daemon		 = false,
     };
     char conf[DUC_PATH_MAX] =
-	"/etc/educ_noip.conf"; /* process_options change the value if -x is passed. */
+	"/etc/enhanced-duc.conf"; /* process_options change the value if -x is passed. */
 
     if (sigHand_init() == -1)
 	log_warn(0, "Initialization of signal handling failed");
