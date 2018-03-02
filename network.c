@@ -183,14 +183,14 @@ net_send_plain(const char *fmt, ...)
 
     va_start(ap, fmt);
     if (my_vasprintf(&buffer, fmt, ap) < 0)
-	log_die(errno, "net_send_plain: my_vasprintf");
+	fatal(errno, "net_send_plain: my_vasprintf");
     va_end(ap);
 
     size_t newSize = strlen(buffer) + sizeof message_terminate;
     buffer = xrealloc(buffer, newSize);
 
     if (strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_send_plain: strlcat");
+	fatal(EOVERFLOW, "net_send_plain: strlcat");
 
     if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
 	log_warn(errno, "net_send_plain: send");
