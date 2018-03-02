@@ -96,7 +96,8 @@ net_connect(void)
     }
 
     for (rp = res; rp; rp = rp->ai_next) {
-	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
+	if (g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol),
+	    g_socket == SOCKET_CREATION_FAILED) {
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
 	    log_debug("connected!");
@@ -243,7 +244,8 @@ net_check_for_ip_change(void)
 	return (IP_HAS_CHANGED); /* force update */
 
     for (rp = res; rp; rp = rp->ai_next) {
-	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
+	if (g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol),
+	    g_socket == SOCKET_CREATION_FAILED) {
 	    continue;
 	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
 	    connected = true;
@@ -261,7 +263,8 @@ net_check_for_ip_change(void)
 	return (IP_HAS_CHANGED);
     }
 
-    net_send_plain("GET /index.html HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s/%s %s",
+    net_send_plain("GET /index.html HTTP/1.0\r\nHost: %s\r\n"
+		   "User-Agent: %s/%s %s",
 		   srv, g_programName, g_programVersion, g_maintainerEmail);
     net_recv_plain(buf, sizeof buf);
     close(g_socket);
@@ -270,7 +273,8 @@ net_check_for_ip_change(void)
     const char *cp = strrchr(buf, '\n');
 
     if (!cp) {
-	log_warn(0, "net_check_for_ip_change: warning: cannot locate last occurrance of a newline");
+	log_warn(0, "net_check_for_ip_change: warning: "
+	    "cannot locate last occurrance of a newline");
 	return (IP_NO_CHANGE);
     } else if (inet_pton(AF_INET, ++cp, nw_addr) == 0) {
 	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
