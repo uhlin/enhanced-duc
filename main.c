@@ -216,14 +216,14 @@ send_update_request(const char *which_host, const char *to_ip)
     host = strdup_printf("Host: %s", setting("sp_hostname"));
     unp	 = strdup_printf("%s:%s", setting("username"), setting("password"));
     if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
-	log_warn(EMSGSIZE, "In send_update_request: b64_encode() error");
+	log_warn(EMSGSIZE, "send_update_request: b64_encode");
 	ok = false;
 	goto err;
     }
     auth  = strdup_printf("Authorization: Basic %s", buf);
     agent = strdup_printf("User-Agent: %s/%s %s", g_programName, g_programVersion, g_maintainerEmail);
 
-    log_debug("Sending http GET request...");
+    log_debug("sending http get request");
     if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;
   err:
     free_not_null(s);
@@ -329,10 +329,10 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
 
     switch (server_response(buf)) {
     case CODE_GOOD:
-	log_msg("*** DNS hostname update successful! ***");
+	log_msg("dns hostname update successful");
 	break;
     case CODE_NOCHG:
-	log_msg("*** IP address is current! ***");
+	log_msg("ip address is current");
 	break;
     case CODE_NOHOST:
 	fatal(0, "Hostname supplied does not exist under specified account.");
@@ -346,9 +346,9 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
 	fatal(0, "Username blocked due to abuse.");
     case CODE_EMERG:
 	if (Cycle)
-	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
+	    log_warn(0, "fatal error on the server side (will retry update after 30 minutes)");
 	else
-	    log_warn(0, "Fatal error on the server side.");
+	    log_warn(0, "fatal error on the server side");
 	*updateRequestAfter30Min = true;
 	break;
     default:
@@ -385,10 +385,7 @@ start_update_cycle(void)
 #if defined(OpenBSD) && OpenBSD >= 201605
     if (pledge("stdio inet dns", NULL) == -1)
 	fatal(errno, "pledge");
-    else {
-	log_msg("An OpenBSD computer and it has pledge(). Exciting!");
-	log_msg("Forced %s into a restricted service operating mode.", g_programName);
-    }
+    log_msg("forced into a restricted service operating mode (good)");
 #else
     (void) pledge;
 #endif
@@ -400,7 +397,7 @@ start_update_cycle(void)
 	    hostname_array_assign();
 
 	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequestAfter30Min; ar_p++) {
-		log_msg("Trying to update %s...", *ar_p);
+		log_msg("trying to update %s", *ar_p);
 
 		if (!update_host(*ar_p, setting("ip_addr"), &updateRequestAfter30Min))
 		    break; /* Stop updating on the first unsuccessful try. */
@@ -421,7 +418,7 @@ start_update_cycle(void)
 		.tv_nsec = 0,
 	    };
 
-	    log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
+	    log_debug("sleeping for %ld seconds", (long int) ts.tv_sec);
 	    nanosleep(&ts, NULL);
 	}
     } while (Cycle);
@@ -468,8 +465,8 @@ main(int argc, char *argv[])
 	Daemonize();
     }
 
-    log_msg("%s %s has started.", g_programName, g_programVersion);
-    log_msg("Reading %s...", conf);
+    log_msg("%s %s has started", g_programName, g_programVersion);
+    log_msg("reading %s...", conf);
     read_config_file(conf);
     check_some_settings_strictly();
 
