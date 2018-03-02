@@ -62,77 +62,6 @@ static const char educ_noip_dir[]  = "/tmp";
 
 static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = {};
 
-static void             process_options             (int, char *[], struct program_options *, char *, size_t);
-static void             usage                       (void) NORETURN;
-static void             turn_on_debug_mode          (void);
-static void             set_cycle_off               (void);
-static void             force_priv_drop             (void);
-static void             start_update_cycle          (void);
-static void             hostname_array_init         (void);
-static void             hostname_array_destroy      (void);
-static void             hostname_array_assign       (void);
-static bool             update_host                 (const char *which_host, const char *to_ip, bool *);
-static int              send_update_request         (const char *which_host, const char *to_ip);
-static int              store_server_resp_in_buffer (char **);
-static response_code_t  server_response             (const char *buf);
-
-int
-main(int argc, char *argv[])
-{
-    struct program_options opt = {
-	.want_usage		 = false,
-	.want_create_config_file = false,
-	.want_debug		 = false,
-	.want_update_once	 = false,
-	.want_daemon		 = false,
-    };
-    char conf[DUC_PATH_MAX] =
-	"/etc/educ_noip.conf"; /* process_options change the value if -x is passed. */
-
-    if (sigHand_init() == -1)
-	log_warn(0, "Initialization of signal handling failed");
-    if (atexit(program_clean_up) == -1)
-	log_warn(errno, "Failed to register a clean up function");
-
-    setlocale(LC_ALL, "");
-    process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
-
-    if (opt.want_usage)
-	usage(); /* Doesn't return. */
-    if (opt.want_create_config_file) {
-	char *path = get_answer("Create where?", TYPE_STRING, &conf[0]);
-
-	create_config_file(path);
-	free(path);
-	exit(0);
-    }
-    if (opt.want_debug)
-	turn_on_debug_mode();
-    if (opt.want_update_once)
-	set_cycle_off();
-    if (opt.want_daemon) {
-	extern void Daemonize(void);
-
-	/* Detach the program from the controlling terminal and continue execution... */
-	Daemonize();
-    }
-
-    log_msg("%s %s has started.", g_programName, g_programVersion);
-    log_msg("Reading %s...", conf);
-    read_config_file(conf);
-    check_some_settings_strictly();
-
-    /* Drop root privileges. */
-    if (geteuid() == UID_SUPER_USER) {
-	force_priv_drop();
-    }
-
-    net_init();
-    start_update_cycle();
-
-    return 0;
-}
-
 static void
 process_options(int argc, char *argv[], struct program_options *po, char *ar, size_t ar_sz)
 {
@@ -223,58 +152,7 @@ force_priv_drop(void)
     else return;
 }
 
-static void
-start_update_cycle(void)
-{
-    extern int pledge(const char *promises, const char **paths);
-    const size_t ar_sz = ARRAY_SIZE(hostname_array);
-
-    hostname_array_init();
-
-#if defined(OpenBSD) && OpenBSD >= 201605
-    if (pledge("stdio inet dns", NULL) == -1)
-	log_die(errno, "pledge");
-    else {
-	log_msg("An OpenBSD computer and it has pledge(). Exciting!");
-	log_msg("Forced %s into a restricted service operating mode.", g_programName);
-    }
-#else
-    (void) pledge;
-#endif
-
-    do {
-	bool updateRequest_after_30m = false;
-
-	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
-	    hostname_array_assign();
-
-	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
-		log_msg("Trying to update %s...", *ar_p);
-
-		if (!update_host(*ar_p, setting("ip_addr"), &updateRequest_after_30m))
-		    break; /* Stop updating on the first unsuccessful try. */
-	    }
-
-	    hostname_array_destroy();
-	}
-
-	if (Cycle) {
-	    struct integer_unparse_context ctx = {
-		.setting_name = "update_interval_seconds",
-		.lo_limit     = 600,	/* 10 minutes */
-		.hi_limit     = 172800,	/* 2 days */
-		.fallback_val = 1800,	/* 30 minutes */
-	    };
-	    struct timespec ts = {
-		.tv_sec	 = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx),
-		.tv_nsec = 0,
-	    };
-
-	    log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
-	    nanosleep(&ts, NULL);
-	}
-    } while (Cycle);
-}
+/* ----------------------------------------------------------------- */
 
 static void
 hostname_array_init(void)
@@ -283,17 +161,6 @@ hostname_array_init(void)
 
     /* Initialize all ptrs to NULL. */
     for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) *ar_p = NULL;
-}
-
-static void
-hostname_array_destroy(void)
-{
-    const size_t ar_sz = ARRAY_SIZE(hostname_array);
-
-    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) {
-	free_not_null(*ar_p);
-	*ar_p = NULL;
-    }
 }
 
 static void
@@ -326,56 +193,6 @@ hostname_array_assign(void)
     }
 
     free(dump);
-}
-
-static bool
-update_host(const char *which_host, const char *to_ip, bool *updateRequest_after_30m)
-{
-    char	*buf = NULL;
-    bool	 ok  = true;
-
-    if (which_host == NULL || to_ip == NULL || updateRequest_after_30m == NULL)
-	log_die(EINVAL, "update_host() fatal error!");
-
-    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
-	ok = false;
-	goto err;
-    }
-
-    switch (server_response(buf)) {
-    case CODE_GOOD:
-	log_msg("*** DNS hostname update successful! ***");
-	break;
-    case CODE_NOCHG:
-	log_msg("*** IP address is current! ***");
-	break;
-    case CODE_NOHOST:
-	log_die(0, "Hostname supplied does not exist under specified account.");
-    case CODE_BADAUTH:
-	log_die(0, "Invalid username password combination.");
-    case CODE_BADAGENT:
-	log_die(0, "Bad agent? I don't think so! But the server is always right. Dying...");
-    case CODE_NOTDONATOR:
-	log_die(0, "Bad update request. Feature not available.");
-    case CODE_ABUSE:
-	log_die(0, "Username blocked due to abuse.");
-    case CODE_EMERG:
-	if (Cycle)
-	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
-	else
-	    log_warn(0, "Fatal error on the server side.");
-	*updateRequest_after_30m = true;
-	break;
-    default:
-    case CODE_UNKNOWN:
-	log_die(0, "Unknown server response!");
-    }
-
-  err:
-    net_disconnect();
-    free_not_null(buf);
-
-    return (ok);
 }
 
 static int
@@ -495,3 +312,175 @@ server_response(const char *buf)
     free(r);
     return CODE_UNKNOWN;
 }
+
+static bool
+update_host(const char *which_host, const char *to_ip, bool *updateRequest_after_30m)
+{
+    char	*buf = NULL;
+    bool	 ok  = true;
+
+    if (which_host == NULL || to_ip == NULL || updateRequest_after_30m == NULL)
+	log_die(EINVAL, "update_host() fatal error!");
+
+    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
+	ok = false;
+	goto err;
+    }
+
+    switch (server_response(buf)) {
+    case CODE_GOOD:
+	log_msg("*** DNS hostname update successful! ***");
+	break;
+    case CODE_NOCHG:
+	log_msg("*** IP address is current! ***");
+	break;
+    case CODE_NOHOST:
+	log_die(0, "Hostname supplied does not exist under specified account.");
+    case CODE_BADAUTH:
+	log_die(0, "Invalid username password combination.");
+    case CODE_BADAGENT:
+	log_die(0, "Bad agent? I don't think so! But the server is always right. Dying...");
+    case CODE_NOTDONATOR:
+	log_die(0, "Bad update request. Feature not available.");
+    case CODE_ABUSE:
+	log_die(0, "Username blocked due to abuse.");
+    case CODE_EMERG:
+	if (Cycle)
+	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
+	else
+	    log_warn(0, "Fatal error on the server side.");
+	*updateRequest_after_30m = true;
+	break;
+    default:
+    case CODE_UNKNOWN:
+	log_die(0, "Unknown server response!");
+    }
+
+  err:
+    net_disconnect();
+    free_not_null(buf);
+
+    return (ok);
+}
+
+static void
+hostname_array_destroy(void)
+{
+    const size_t ar_sz = ARRAY_SIZE(hostname_array);
+
+    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz]; ar_p++) {
+	free_not_null(*ar_p);
+	*ar_p = NULL;
+    }
+}
+
+static void
+start_update_cycle(void)
+{
+    extern int pledge(const char *promises, const char **paths);
+    const size_t ar_sz = ARRAY_SIZE(hostname_array);
+
+    hostname_array_init();
+
+#if defined(OpenBSD) && OpenBSD >= 201605
+    if (pledge("stdio inet dns", NULL) == -1)
+	log_die(errno, "pledge");
+    else {
+	log_msg("An OpenBSD computer and it has pledge(). Exciting!");
+	log_msg("Forced %s into a restricted service operating mode.", g_programName);
+    }
+#else
+    (void) pledge;
+#endif
+
+    do {
+	bool updateRequest_after_30m = false;
+
+	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
+	    hostname_array_assign();
+
+	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
+		log_msg("Trying to update %s...", *ar_p);
+
+		if (!update_host(*ar_p, setting("ip_addr"), &updateRequest_after_30m))
+		    break; /* Stop updating on the first unsuccessful try. */
+	    }
+
+	    hostname_array_destroy();
+	}
+
+	if (Cycle) {
+	    struct integer_unparse_context ctx = {
+		.setting_name = "update_interval_seconds",
+		.lo_limit     = 600,	/* 10 minutes */
+		.hi_limit     = 172800,	/* 2 days */
+		.fallback_val = 1800,	/* 30 minutes */
+	    };
+	    struct timespec ts = {
+		.tv_sec	 = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx),
+		.tv_nsec = 0,
+	    };
+
+	    log_debug("Sleeping for %ld seconds...", (long int) ts.tv_sec);
+	    nanosleep(&ts, NULL);
+	}
+    } while (Cycle);
+}
+
+int
+main(int argc, char *argv[])
+{
+    struct program_options opt = {
+	.want_usage		 = false,
+	.want_create_config_file = false,
+	.want_debug		 = false,
+	.want_update_once	 = false,
+	.want_daemon		 = false,
+    };
+    char conf[DUC_PATH_MAX] =
+	"/etc/educ_noip.conf"; /* process_options change the value if -x is passed. */
+
+    if (sigHand_init() == -1)
+	log_warn(0, "Initialization of signal handling failed");
+    if (atexit(program_clean_up) == -1)
+	log_warn(errno, "Failed to register a clean up function");
+
+    setlocale(LC_ALL, "");
+    process_options(argc, argv, &opt, &conf[0], sizeof conf); /* Always successful. */
+
+    if (opt.want_usage)
+	usage(); /* Doesn't return. */
+    if (opt.want_create_config_file) {
+	char *path = get_answer("Create where?", TYPE_STRING, &conf[0]);
+
+	create_config_file(path);
+	free(path);
+	exit(0);
+    }
+    if (opt.want_debug)
+	turn_on_debug_mode();
+    if (opt.want_update_once)
+	set_cycle_off();
+    if (opt.want_daemon) {
+	extern void Daemonize(void);
+
+	/* Detach the program from the controlling terminal and continue execution... */
+	Daemonize();
+    }
+
+    log_msg("%s %s has started.", g_programName, g_programVersion);
+    log_msg("Reading %s...", conf);
+    read_config_file(conf);
+    check_some_settings_strictly();
+
+    /* Drop root privileges. */
+    if (geteuid() == UID_SUPER_USER) {
+	force_priv_drop();
+    }
+
+    net_init();
+    start_update_cycle();
+
+    return 0;
+}
+/* EOF */
