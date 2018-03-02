@@ -102,7 +102,7 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar, si
 }
 
 static void
-usage(void)
+usage()
 {
     extern char		*__progname;
     char		*msgVersion = strdup_printf("%s %s by %s\n", g_programName, g_programVersion, g_programAuthor);
@@ -123,19 +123,19 @@ usage(void)
 }
 
 static void
-turn_on_debug_mode(void)
+turn_on_debug_mode()
 {
     g_debug_mode = true;
 }
 
 static void
-set_cycle_off(void)
+set_cycle_off()
 {
     Cycle = false;
 }
 
 static void
-force_priv_drop(void)
+force_priv_drop()
 {
     struct passwd *pw;
 
@@ -155,7 +155,7 @@ force_priv_drop(void)
 /* ----------------------------------------------------------------- */
 
 static void
-hostname_array_init(void)
+hostname_array_init()
 {
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
 
@@ -164,7 +164,7 @@ hostname_array_init(void)
 }
 
 static void
-hostname_array_assign(void)
+hostname_array_assign()
 {
     char *dump = xstrdup(setting("hostname"));
     const char legal_index[] =
@@ -364,7 +364,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter3
 }
 
 static void
-hostname_array_destroy(void)
+hostname_array_destroy()
 {
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
 
@@ -375,7 +375,7 @@ hostname_array_destroy(void)
 }
 
 static void
-start_update_cycle(void)
+start_update_cycle()
 {
     extern int pledge(const char *promises, const char **paths);
     const size_t ar_sz = ARRAY_SIZE(hostname_array);
