@@ -128,15 +128,15 @@ int
 net_recv_plain(char *recvbuf, size_t recvbuf_size)
 {
 #if IO_MULTIPLEXING
-    const int		maxfdp1 = g_socket + 1;
-    fd_set		readset;
-    struct timeval	tv;
+    const int maxfdp1 = g_socket + 1;
+    fd_set readset = { 0 };
+    struct timeval tv = {
+	.tv_sec  = 10,
+	.tv_usec = 0,
+    };
 
     FD_ZERO(&readset);
     FD_SET(g_socket, &readset);
-
-    tv.tv_sec  = 10;
-    tv.tv_usec = 0;
 
     if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
 	log_warn(errno, "net_recv_plain: select");
