@@ -58,7 +58,7 @@ static const char *help_text[] = {
 
 static bool Cycle = true;
 
-static const char educ_noip_user[] = "nobody";
+static const char enhanced_duc_user[] = "nobody";
 static const char educ_noip_dir[]  = "/tmp";
 
 static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
@@ -143,12 +143,12 @@ set_cycle_off()
 static void
 force_priv_drop()
 {
-    struct passwd *pw = getpwnam(educ_noip_user);
+    struct passwd *pw = getpwnam(enhanced_duc_user);
 
     log_msg("Dropping root privileges...");
 
     if (pw == NULL)
-	fatal(0, "getpwnam: no such user %s", educ_noip_user);
+	fatal(0, "getpwnam: no such user %s", enhanced_duc_user);
     else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
 	fatal(errno, "chdir %s", educ_noip_dir);
     else if (setgid(pw->pw_gid)  == -1) fatal(errno, "setgid");
