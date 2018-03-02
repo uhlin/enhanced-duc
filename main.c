@@ -145,7 +145,7 @@ force_priv_drop()
 {
     struct passwd *pw = getpwnam(enhanced_duc_user);
 
-    log_msg("Dropping root privileges...");
+    log_msg("dropping root privileges...");
 
     if (pw == NULL)
 	fatal(0, "getpwnam: no such user %s", enhanced_duc_user);
