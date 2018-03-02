@@ -314,12 +314,12 @@ server_response(const char *buf)
 }
 
 static bool
-update_host(const char *which_host, const char *to_ip, bool *updateRequest_after_30m)
+update_host(const char *which_host, const char *to_ip, bool *updateRequestAfter30Min)
 {
     char	*buf = NULL;
     bool	 ok  = true;
 
-    if (which_host == NULL || to_ip == NULL || updateRequest_after_30m == NULL)
+    if (which_host == NULL || to_ip == NULL || updateRequestAfter30Min == NULL)
 	fatal(EINVAL, "update_host() fatal error!");
 
     if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
@@ -349,7 +349,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
 	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
 	else
 	    log_warn(0, "Fatal error on the server side.");
-	*updateRequest_after_30m = true;
+	*updateRequestAfter30Min = true;
 	break;
     default:
     case CODE_UNKNOWN:
@@ -394,15 +394,15 @@ start_update_cycle(void)
 #endif
 
     do {
-	bool updateRequest_after_30m = false;
+	bool updateRequestAfter30Min = false;
 
 	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
 	    hostname_array_assign();
 
-	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequest_after_30m; ar_p++) {
+	    for (char **ar_p = &hostname_array[0]; ar_p < &hostname_array[ar_sz] && *ar_p && !updateRequestAfter30Min; ar_p++) {
 		log_msg("Trying to update %s...", *ar_p);
 
-		if (!update_host(*ar_p, setting("ip_addr"), &updateRequest_after_30m))
+		if (!update_host(*ar_p, setting("ip_addr"), &updateRequestAfter30Min))
 		    break; /* Stop updating on the first unsuccessful try. */
 	    }
 
@@ -417,7 +417,7 @@ start_update_cycle(void)
 		.fallback_val = 1800,	/* 30 minutes */
 	    };
 	    struct timespec ts = {
-		.tv_sec	 = updateRequest_after_30m ? 1800 : setting_integer_unparse(&ctx),
+		.tv_sec	 = updateRequestAfter30Min ? 1800 : setting_integer_unparse(&ctx),
 		.tv_nsec = 0,
 	    };
 
