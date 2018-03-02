@@ -142,13 +142,13 @@ force_priv_drop(void)
     log_msg("Dropping root privileges...");
 
     if ((pw = getpwnam(educ_noip_user)) == NULL)
-	log_die(0, "getpwnam: no such user %s", educ_noip_user);
+	fatal(0, "getpwnam: no such user %s", educ_noip_user);
     else if (is_directory(educ_noip_dir) && chdir(educ_noip_dir) != 0)
-	log_die(errno, "chdir %s", educ_noip_dir);
-    else if (setgid(pw->pw_gid)  == -1) log_die(errno, "setgid");
-    else if (setegid(pw->pw_gid) == -1) log_die(errno, "setegid");
-    else if (setuid(pw->pw_uid)  == -1) log_die(errno, "setuid");
-    else if (seteuid(pw->pw_uid) == -1) log_die(errno, "seteuid");
+	fatal(errno, "chdir %s", educ_noip_dir);
+    else if (setgid(pw->pw_gid)  == -1) fatal(errno, "setgid");
+    else if (setegid(pw->pw_gid) == -1) fatal(errno, "setegid");
+    else if (setuid(pw->pw_uid)  == -1) fatal(errno, "setuid");
+    else if (seteuid(pw->pw_uid) == -1) fatal(errno, "seteuid");
     else return;
 }
 
@@ -171,12 +171,12 @@ hostname_array_assign(void)
 	"abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
 
     if (strings_match(dump, "")) {
-	log_die(EINVAL, "hostname_array_assign: no hostnames to update  --  setting empty");
+	fatal(EINVAL, "hostname_array_assign: no hostnames to update  --  setting empty");
     }
 
     for (const char *cp = dump; *cp; cp++) {
 	if (strchr(legal_index, *cp) == NULL)
-	    log_die(0, "hostname_array_assign: invalid chars in setting: first invalid char was '%c'...", *cp);
+	    fatal(0, "hostname_array_assign: invalid chars in setting: first invalid char was '%c'...", *cp);
     }
 
     for (size_t hosts_assigned = 0;; hosts_assigned++) {
@@ -185,7 +185,7 @@ hostname_array_assign(void)
 	if (token && hosts_assigned < ARRAY_SIZE(hostname_array))
 	    hostname_array[hosts_assigned] = xstrdup(token);
 	else if (hosts_assigned == 0)
-	    log_die(0, "hostname_array_assign: fatal: zero assigned hosts!");
+	    fatal(0, "hostname_array_assign: fatal: zero assigned hosts!");
 	else {
 	    log_debug("hostname_array_assign: a total of %zu hosts were assigned!", hosts_assigned);
 	    break;
@@ -320,7 +320,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
     bool	 ok  = true;
 
     if (which_host == NULL || to_ip == NULL || updateRequest_after_30m == NULL)
-	log_die(EINVAL, "update_host() fatal error!");
+	fatal(EINVAL, "update_host() fatal error!");
 
     if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 || store_server_resp_in_buffer(&buf) == -1) {
 	ok = false;
@@ -335,15 +335,15 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
 	log_msg("*** IP address is current! ***");
 	break;
     case CODE_NOHOST:
-	log_die(0, "Hostname supplied does not exist under specified account.");
+	fatal(0, "Hostname supplied does not exist under specified account.");
     case CODE_BADAUTH:
-	log_die(0, "Invalid username password combination.");
+	fatal(0, "Invalid username password combination.");
     case CODE_BADAGENT:
-	log_die(0, "Bad agent? I don't think so! But the server is always right. Dying...");
+	fatal(0, "Bad agent? I don't think so! But the server is always right. Dying...");
     case CODE_NOTDONATOR:
-	log_die(0, "Bad update request. Feature not available.");
+	fatal(0, "Bad update request. Feature not available.");
     case CODE_ABUSE:
-	log_die(0, "Username blocked due to abuse.");
+	fatal(0, "Username blocked due to abuse.");
     case CODE_EMERG:
 	if (Cycle)
 	    log_warn(0, "Fatal error on the server side. Will retry update after 30 minutes.");
@@ -353,7 +353,7 @@ update_host(const char *which_host, const char *to_ip, bool *updateRequest_after
 	break;
     default:
     case CODE_UNKNOWN:
-	log_die(0, "Unknown server response!");
+	fatal(0, "Unknown server response!");
     }
 
   err:
@@ -384,7 +384,7 @@ start_update_cycle(void)
 
 #if defined(OpenBSD) && OpenBSD >= 201605
     if (pledge("stdio inet dns", NULL) == -1)
-	log_die(errno, "pledge");
+	fatal(errno, "pledge");
     else {
 	log_msg("An OpenBSD computer and it has pledge(). Exciting!");
 	log_msg("Forced %s into a restricted service operating mode.", g_programName);
