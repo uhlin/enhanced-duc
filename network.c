@@ -39,84 +39,81 @@ NET_RECV_FUNCPTR net_recv = net_recv_plain;
 
 int g_socket = -1;
 
-static struct addrinfo	*net_addr_resolve (const char *host, const char *port);
-static inline bool	 is_ssl_enabled   (void);
-
-/**
- * Initialize networking
- */
-void
-net_init(void)
+/*lint -sem(net_addr_resolve, r_null) */
+static struct addrinfo *
+net_addr_resolve(const char *host, const char *port)
 {
-    if (is_ssl_enabled())
-	net_ssl_init();
-}
+    struct addrinfo	 hints;
+    struct addrinfo	*res;
 
-/**
- * Deinitialize networking
- */
-void
-net_deinit(void)
-{
-    if (is_ssl_enabled())
-	net_ssl_deinit();
-
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
+    if (host == NULL || port == NULL) {
+	return (NULL);
     }
-}
 
-/**
- * Network disconnect
- */
-void
-net_disconnect(void)
-{
-    if (is_ssl_enabled())
-	net_ssl_close();
+    hints.ai_flags     = AI_CANONNAME;
+    hints.ai_family    = AF_UNSPEC;
+    hints.ai_socktype  = SOCK_STREAM;
+    hints.ai_protocol  = 0;
+    hints.ai_addrlen   = 0;
+    hints.ai_addr      = NULL;
+    hints.ai_canonname = NULL;
+    hints.ai_next      = NULL;
 
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
+    if (getaddrinfo(host, port, &hints, &res) != 0) {
+	return (NULL);
     }
+
+    return (res);
+}
+
+static inline bool
+is_ssl_enabled(void)
+{
+    return (strcmp(setting("port"), "443") == 0);
 }
 
 /**
- * Send a message on a regular socket
+ * Connect to the service provider with or without TLS/SSL depending
+ * on the port number.
  *
- * @param fmt Format control
  * @return 0 on success, and -1 on failure
  */
 int
-net_send_plain(const char *fmt, ...)
+net_connect(void)
 {
-    extern int my_vasprintf(char **ret, const char *format, va_list ap);
-    va_list     ap;
-    char       *buffer;
-    const char  message_terminate[] = "\r\n\r\n";
-    bool        ok = true;
+    const char		*host	   = setting("sp_hostname");
+    const char		*port	   = setting("port");
+    struct addrinfo	*res, *rp;
+    bool		 connected = false;
 
-    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
+    log_debug("Connecting to %s/%s...", host, port);
 
-    va_start(ap, fmt);
-    if (my_vasprintf(&buffer, fmt, ap) < 0)
-	log_die(errno, "net_send_plain: my_vasprintf error");
-    va_end(ap);
-
-    size_t newSize = strlen(buffer) + sizeof message_terminate;
-    buffer = xrealloc(buffer, newSize);
-
-    if (strlcat(buffer, message_terminate, newSize) >= newSize)
-	log_die(EOVERFLOW, "net_send_plain: strlcat error");
-
-    if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
-	log_warn(errno, "net_send_plain: send error");
-	ok = false;
+    if ((res = net_addr_resolve(host, port)) == NULL) {
+	log_warn(0, "Unable to get a list of IP addresses. Bogus hostname?");
+	return -1;
+    } else {
+	log_debug("Get a list of IP addresses complete");
     }
 
-    free(buffer);
-    return ok ? 0 : -1;
+    for (rp = res; rp; rp = rp->ai_next)
+	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
+	    continue;
+	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
+	    log_debug("Connected!");
+	    connected = true;
+	    break;
+	} else {
+	    close(g_socket);
+	}
+
+    freeaddrinfo(res);
+
+    if (!connected) {
+	log_warn(0, "Failed to establish a connection");
+	return -1;
+    }
+
+    return (is_ssl_enabled() ? net_ssl_start() : 0);
 }
 
 /**
@@ -167,80 +164,41 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
     return 0;
 }
 
-static struct addrinfo *
-net_addr_resolve(const char *host, const char *port)
-{
-    struct addrinfo	 hints;
-    struct addrinfo	*res;
-
-    if (host == NULL || port == NULL) {
-	return (NULL);
-    }
-
-    hints.ai_flags     = AI_CANONNAME;
-    hints.ai_family    = AF_UNSPEC;
-    hints.ai_socktype  = SOCK_STREAM;
-    hints.ai_protocol  = 0;
-    hints.ai_addrlen   = 0;
-    hints.ai_addr      = NULL;
-    hints.ai_canonname = NULL;
-    hints.ai_next      = NULL;
-
-    if (getaddrinfo(host, port, &hints, &res) != 0) {
-	return (NULL);
-    }
-
-    return (res);
-}
-
 /**
- * Connect to the service provider with or without TLS/SSL depending
- * on the port number.
+ * Send a message on a regular socket
  *
+ * @param fmt Format control
  * @return 0 on success, and -1 on failure
  */
 int
-net_connect(void)
+net_send_plain(const char *fmt, ...)
 {
-    const char		*host	   = setting("sp_hostname");
-    const char		*port	   = setting("port");
-    struct addrinfo	*res, *rp;
-    bool		 connected = false;
+    extern int my_vasprintf(char **ret, const char *format, va_list ap);
+    va_list     ap;
+    char       *buffer;
+    const char  message_terminate[] = "\r\n\r\n";
+    bool        ok = true;
 
-    log_debug("Connecting to %s/%s...", host, port);
+    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
 
-    if ((res = net_addr_resolve(host, port)) == NULL) {
-	log_warn(0, "Unable to get a list of IP addresses. Bogus hostname?");
-	return -1;
-    } else {
-	log_debug("Get a list of IP addresses complete");
+    va_start(ap, fmt);
+    if (my_vasprintf(&buffer, fmt, ap) < 0)
+	log_die(errno, "net_send_plain: my_vasprintf error");
+    va_end(ap);
+
+    size_t newSize = strlen(buffer) + sizeof message_terminate;
+    buffer = xrealloc(buffer, newSize);
+
+    if (strlcat(buffer, message_terminate, newSize) >= newSize)
+	log_die(EOVERFLOW, "net_send_plain: strlcat error");
+
+    if (send(g_socket, buffer, strlen(buffer), 0) == -1) {
+	log_warn(errno, "net_send_plain: send error");
+	ok = false;
     }
 
-    for (rp = res; rp; rp = rp->ai_next)
-	if ((g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == SOCKET_CREATION_FAILED) {
-	    continue;
-	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
-	    log_debug("Connected!");
-	    connected = true;
-	    break;
-	} else {
-	    close(g_socket);
-	}
-
-    freeaddrinfo(res);
-
-    if (!connected) {
-	log_warn(0, "Failed to establish a connection");
-	return -1;
-    }
-
-    return (is_ssl_enabled() ? net_ssl_start() : 0);
-}
-
-static inline bool
-is_ssl_enabled(void)
-{
-    return (strcmp(setting("port"), "443") == 0);
+    free(buffer);
+    return ok ? 0 : -1;
 }
 
 /**
@@ -328,4 +286,44 @@ net_check_for_ip_change(void)
 
     /*NOTREACHED*/ assert(false);
     /*NOTREACHED*/ return (IP_NO_CHANGE);
+}
+
+/**
+ * Deinitialize networking
+ */
+void
+net_deinit(void)
+{
+    if (is_ssl_enabled())
+	net_ssl_deinit();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
+}
+
+/**
+ * Network disconnect
+ */
+void
+net_disconnect(void)
+{
+    if (is_ssl_enabled())
+	net_ssl_close();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
+}
+
+/**
+ * Initialize networking
+ */
+void
+net_init(void)
+{
+    if (is_ssl_enabled())
+	net_ssl_init();
 }
