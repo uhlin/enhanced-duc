@@ -81,10 +81,10 @@ is_ssl_enabled(void)
 int
 net_connect(void)
 {
+    bool		 connected = false;
     const char		*host	   = setting("sp_hostname");
     const char		*port	   = setting("port");
     struct addrinfo	*res, *rp;
-    bool		 connected = false;
 
     log_debug("connecting to %s (%s)...", host, port);
 
@@ -128,9 +128,9 @@ int
 net_recv_plain(char *recvbuf, size_t recvbuf_size)
 {
 #if IO_MULTIPLEXING
+    const int		maxfdp1 = g_socket + 1;
     fd_set		readset;
     struct timeval	tv;
-    const int		maxfdp1 = g_socket + 1;
 
     FD_ZERO(&readset);
     FD_SET(g_socket, &readset);
@@ -213,14 +213,14 @@ net_send_plain(const char *fmt, ...)
 ip_chg_t
 net_check_for_ip_change(void)
 {
-    struct addrinfo *res, *rp;
-    const char    *primary_srv      = setting("primary_ip_lookup_srv");
-    const char    *backup_srv       = setting("backup_ip_lookup_srv");
-    const char    *port             = "80";
-    char           srv[255]         = "";
     bool           address_resolved = false;
     bool           connected        = false;
     char           buf[1000]        = "";
+    char           srv[255]         = "";
+    const char    *backup_srv       = setting("backup_ip_lookup_srv");
+    const char    *port             = "80";
+    const char    *primary_srv      = setting("primary_ip_lookup_srv");
+    struct addrinfo *res, *rp;
     unsigned char  nw_addr[sizeof (struct in_addr)];
 
     if (setting_bool_unparse("force_update", true))
