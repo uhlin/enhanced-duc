@@ -32,7 +32,7 @@ int g_lockfile_fd = -1;
 static bool
 is_already_running()
 {
-    const char *file_path = "/var/run/educ_noip.pid";
+    const char *file_path = "/var/run/enhanced-duc.pid";
     const mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH; /* -rw-r--r-- */
     int errno_save = 0;
     int fd = -1;
