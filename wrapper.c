@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "log.h"
+#include "various.h"
 #include "wrapper.h"
 
 /**
