@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -45,14 +45,14 @@ is_already_running()
     int		errno_save	= 0;
 
     if ((fd = open(file_path, O_RDWR | O_CREAT, mode)) == -1)
-	log_die(errno, "is_already_running: can't open %s", file_path);
+	fatal(errno, "is_already_running: can't open %s", file_path);
     if (fcntl(fd, F_SETLK, &lock_ctx) == OBTAIN_LOCK_ERR) {
 	errno_save = errno;
 	close(fd);
 	if (errno_save == EACCES || errno_save == EAGAIN)
 	    return (true);
 	else
-	    log_die(errno_save, "is_already_running: can't lock %s", file_path);
+	    fatal(errno_save, "is_already_running: can't lock %s", file_path);
     }
     ftruncate(fd, 0);
     dprintf(fd, "%ld\n", (long int) getpid());
@@ -72,10 +72,10 @@ Daemonize()
 {
     switch (fork()) {
     case FORK_FAILED:
-	log_die(errno, "Daemonize: Cannot fork");
+	fatal(errno, "Daemonize: Cannot fork");
     case VALUE_CHILD_PROCESS:
 	if (setsid() == -1)
-	    log_die(errno, "Daemonize: Trouble in becoming the session leader");
+	    fatal(errno, "Daemonize: Trouble in becoming the session leader");
 	break;
     default:
 	_exit(0);
@@ -100,5 +100,5 @@ Daemonize()
     }
 
     if (is_already_running())
-	log_die(0, "Daemonize: FATAL: A copy of the daemon is already running!");
+	fatal(0, "Daemonize: FATAL: A copy of the daemon is already running!");
 }
