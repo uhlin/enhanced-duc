@@ -33,7 +33,8 @@ log_doit(int errCode, int priority, const char *fmt, va_list ap)
     vsnprintf(buf, sizeof buf, fmt, ap);
 
     if (errCode) {
-	snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf), ": %s", strerror(errCode));
+	snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf), ": %s",
+		 strerror(errCode));
     }
 
     if (g_log_to_syslog)
@@ -63,12 +64,12 @@ redirect_standard_streams(void)
 {
     const char dev_null[] = "/dev/null";
 
-    if (freopen(dev_null, "r+", stderr) == NULL)      return (REDIR_STDERR_FAIL);
-    else if (freopen(dev_null, "r+", stdin) == NULL)  return (REDIR_STDIN_FAIL);
-    else if (freopen(dev_null, "r+", stdout) == NULL) return (REDIR_STDOUT_FAIL);
-    else return (REDIR_OK);
-
-    /*NOTREACHED*/
+    if (freopen(dev_null, "r+", stderr) == NULL)
+	return (REDIR_STDERR_FAIL);
+    else if (freopen(dev_null, "r+", stdin) == NULL)
+	return (REDIR_STDIN_FAIL);
+    else if (freopen(dev_null, "r+", stdout) == NULL)
+	return (REDIR_STDOUT_FAIL);
     return (REDIR_OK);
 }
 
@@ -113,10 +114,11 @@ log_debug(const char *fmt, ...)
 void
 log_init(void)
 {
-    static bool initialized = false;
     extern char *__progname;
+    static bool initialized = false;
 
-    if (initialized) return;
+    if (initialized)
+	return;
     openlog(__progname, LOG_PID, LOG_DAEMON);
     g_log_to_syslog = initialized = true;
 }
