@@ -19,12 +19,13 @@ typedef enum {
 
 #define fatal log_die
 
-redir_res_t redirect_standard_streams (void);
-void        log_init                  (void);
-void        log_die                   (int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
-void        log_warn                  (int code, const char *fmt, ...) PRINTFLIKE(2);
-void        log_msg                   (const char *fmt, ...) PRINTFLIKE(1);
-void        log_debug                 (const char *fmt, ...) PRINTFLIKE(1);
+redir_res_t redirect_standard_streams(void);
+
+void log_debug (const char *fmt, ...) PRINTFLIKE(1);
+void log_die   (int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
+void log_init  (void);
+void log_msg   (const char *fmt, ...) PRINTFLIKE(1);
+void log_warn  (int code, const char *fmt, ...) PRINTFLIKE(2);
 
 /*lint -sem(log_die, r_no) */
 
