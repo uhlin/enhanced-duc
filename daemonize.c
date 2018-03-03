@@ -24,6 +24,7 @@
 #include "log.h"
 
 #define FORK_FAILED -1
+#define OBTAIN_LOCK_ERR -1
 #define VALUE_CHILD_PROCESS 0
 
 int g_lockfile_fd = -1;
@@ -31,9 +32,10 @@ int g_lockfile_fd = -1;
 static bool
 is_already_running()
 {
-    int			 fd	   = -1;
-    const char		*file_path = "/var/run/educ_noip.pid";
-    const mode_t	 mode	   = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;	/* -rw-r--r-- */
+    const char *file_path = "/var/run/educ_noip.pid";
+    const mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH; /* -rw-r--r-- */
+    int errno_save = 0;
+    int fd = -1;
     struct flock lock_ctx = {
 	.l_type	  = F_WRLCK,
 	.l_whence = SEEK_SET,
@@ -41,8 +43,6 @@ is_already_running()
 	.l_len	  = 0,
 	.l_pid	  = -1,
     };
-    const int	OBTAIN_LOCK_ERR = -1;
-    int		errno_save	= 0;
 
     if ((fd = open(file_path, O_RDWR | O_CREAT, mode)) == -1)
 	fatal(errno, "is_already_running: can't open %s", file_path);
@@ -78,7 +78,8 @@ Daemonize()
 	_exit(0);
     }
 
-    log_init(); /* Calls to the log functions before this log to stderr/stdout. */
+    /* Calls to the log functions before this log to stderr/stdout. */
+    log_init();
 
     switch (redirect_standard_streams()) {
     case REDIR_STDERR_FAIL:
