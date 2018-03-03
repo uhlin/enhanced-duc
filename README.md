@@ -33,12 +33,15 @@ you need to install a package with name `libssl-dev` before building:
 
 ## Program options ##
 
-    -c           Create a config file and exit. Will prompt.
-    -x <path>    Load a config file from a custom location.
-    -o           Don't cycle. Update the host(s) only once.
-    -B           Run in the background.
-
-Example: `educ_noip -c`
+    -h           Print help
+    -c           Create a config file by asking the user for input.
+                 The user will be given the opportunity to choose a
+                 location for the config file, i.e. where to create it.
+    -x <path>    Start the DUC with the config file specified by path
+    -D           Turn on debug mode
+    -o           Don't cycle, i.e. don't periodically check for IP
+                 changes. Only update the hostname(s) once.
+    -B           Run in the background and act as a daemon
 
 ## Good to know ##
 
