@@ -1,0 +1,72 @@
+.\"
+.\" Public domain
+.\"
+.Dd March 3, 2018
+.Dt ENHANCED-DUC 1
+.Os
+.Sh NAME
+.Nm enhanced-duc
+.Nd secure ddns update client
+.Sh SYNOPSIS
+.Nm enhanced-duc
+.Bk -words
+.Op OPTION
+.Op ...
+.Ek
+.Sh DESCRIPTION
+.Nm
+is a dynamic dns update client and can act as a daemon.
+Focus is on providing a DUC with high quality not least in the aspect
+of security.
+.Sh OPTIONS
+.Bl -tag -width Ds
+.It Fl h
+Print help
+.It Fl c
+Create a config file by asking the user for input.
+The user will be given the opportunity to choose a location for the
+config file, i.e. where to create it.
+.It Fl x Ar path
+Start
+.Nm
+with the config file specified by path
+.It Fl D
+Turn on debug mode
+.It Fl o
+Don't cycle, i.e. don't periodically check for IP changes.
+Only update the hostname(s) only once.
+.It Fl B
+Run in the background and act as a daemon
+.El
+.Sh GOOD TO KNOW
+.Bl -bullet -compact
+.It
+If the program isn't running as a daemon it can be terminated with
+CTRL+C
+.It
+If port 443 is specified TLS/SSL will be enabled
+.It
+Valid ports are 80, 443 and 8245
+.El
+.Sh MITIGATIONS
+On OpenBSD
+.Xr pledge 2
+is used per default in order to force
+.Nm
+into a restricted service operating mode.
+.Sh FILES
+.Bl -tag -width "                         " -compact
+.It Pa /etc/enhanced-duc.conf
+.Nm
+config file
+.It Pa /var/run/enhanced-duc.pid
+.Nm
+PID file
+.El
+.Sh AUTHORS
+.Nm
+was written by
+.An Markus Uhlin
+.Aq Mt markus.uhlin@bredband.net
+.Sh BUGS
+.Lk https://github.com/uhlin/enhanced-duc/issues
