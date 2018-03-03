@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] ##
 ### Added ###
 - An enhanced version of the interpreter
+- An enhanced version of the man page
 - Better initialization of variables
 - Configuration file `enhanced-duc-config.h` where customizations can be made
 - Many enhancements to the networking routines
