@@ -45,14 +45,15 @@ char g_last_ip_addr[100] = "";
 static const char *help_text[] = {
     "\n",
     "Options:\n",
-    "  -h           Print this help text.\n",
-    "  -c           Create a config file and exit. Will prompt.\n",
-    "  -x <path>    Load a config file from a custom location.\n",
-#if SHOW_OPTIONS_FOR_MAINTAINERS
-    "  -D           D for debug log/messages.\n",
-#endif
-    "  -o           Don't cycle. Update the host(s) only once.\n",
-    "  -B           Run in the background.\n",
+    "  -h           Print help\n",
+    "  -c           Create a config file by asking the user for input.\n",
+    "               The user will be given the opportunity to choose a\n",
+    "               location for the config file, i.e. where to create it.\n",
+    "  -x <path>    Start the DUC with the config file specified by path\n",
+    "  -D           Turn on debug mode\n",
+    "  -o           Don't cycle, i.e. don't periodically check for IP\n",
+    "               changes. Only update the hostname(s) once.\n",
+    "  -B           Run in the background and act as a daemon\n",
     "\n",
 };
 
