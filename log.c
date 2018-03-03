@@ -54,10 +54,9 @@ log_doit(int errCode, int priority, const char *fmt, va_list ap)
 }
 
 /**
- * @brief	Redirect standard IO streams
- * @return	REDIR_OK, REDIR_STDERR_FAIL, REDIR_STDIN_FAIL or REDIR_STDOUT_FAIL
- *
  * Redirect standard IO streams stderr, stdin and stdout to /dev/null.
+ *
+ * @return REDIR_OK, REDIR_STDERR_FAIL, REDIR_STDIN_FAIL or REDIR_STDOUT_FAIL
  */
 redir_res_t
 redirect_standard_streams(void)
@@ -74,11 +73,7 @@ redirect_standard_streams(void)
 }
 
 /**
- * @brief Log debug-level message
- * @param fmt Format control
- * @return void
- *
- * Log debug-level message.
+ * Log debug-level message
  */
 void
 log_debug(const char *fmt, ...)
@@ -93,12 +88,11 @@ log_debug(const char *fmt, ...)
 }
 
 /**
- * @brief Log error conditions
+ * Handle fatal errors. This function calls exit(), i.e. it never
+ * returns.
+ *
  * @param code	Code passed to strerror()
  * @param fmt	Format control
- * @return void
- *
- * Log error conditions. This function calls exit().
  */
 void
 log_die(int code, const char *fmt, ...)
@@ -113,9 +107,6 @@ log_die(int code, const char *fmt, ...)
 }
 
 /**
- * @brief	Initialize logging
- * @return	void
- *
  * Initialize logging. Calls to the log functions before this log to
  * stderr/stdout.
  */
@@ -131,11 +122,7 @@ log_init(void)
 }
 
 /**
- * @brief Log informational message
- * @param fmt Format control
- * @return void
- *
- * Log informational message.
+ * Log informational message
  */
 void
 log_msg(const char *fmt, ...)
@@ -148,12 +135,10 @@ log_msg(const char *fmt, ...)
 }
 
 /**
- * @brief Log warning conditions
+ * Log warning conditions
+ *
  * @param code	Code passed to strerror()
  * @param fmt	Format control
- * @return void
- *
- * Log warning conditions.
  */
 void
 log_warn(int code, const char *fmt, ...)
