@@ -223,7 +223,6 @@ send_update_request(const char *which_host, const char *to_ip)
 	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0",
 			  which_host, to_ip);
     }
-
     host = strdup_printf("Host: %s", setting("sp_hostname"));
     unp	 = strdup_printf("%s:%s", setting("username"), setting("password"));
     if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
@@ -236,7 +235,9 @@ send_update_request(const char *which_host, const char *to_ip)
 			  g_programName, g_programVersion, g_maintainerEmail);
 
     log_debug("sending http get request");
-    if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0) ok = false;
+    if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0)
+	ok = false;
+
   err:
     free_not_null(s);
     free_not_null(host);
@@ -379,7 +380,6 @@ update_host(const char *which_host, const char *to_ip,
   err:
     net_disconnect();
     free_not_null(buf);
-
     return (ok);
 }
 
@@ -480,7 +480,7 @@ main(int argc, char *argv[])
     if (opt.want_update_once)
 	set_cycle_off();
     if (opt.want_daemon) {
-	extern void Daemonize(void);
+	void Daemonize(void);
 
 	/*
 	 * Detach the program from the controlling terminal and continue
@@ -502,6 +502,7 @@ main(int argc, char *argv[])
     net_init();
     start_update_cycle();
 
+    /* Exit program */
     return 0;
 }
 /* EOF */
