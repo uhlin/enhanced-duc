@@ -17,25 +17,23 @@ typedef enum {
     REDIR_STDOUT_FAIL
 } redir_res_t;
 
-#define fatal log_die
+/*lint -sem(fatal, r_no) */
 
 redir_res_t redirect_standard_streams(void);
+void fatal(int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
 
 void log_debug (const char *fmt, ...) PRINTFLIKE(1);
-void log_die   (int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
 void log_init  (void);
 void log_msg   (const char *fmt, ...) PRINTFLIKE(1);
 void log_warn  (int code, const char *fmt, ...) PRINTFLIKE(2);
-
-/*lint -sem(log_die, r_no) */
 
 static inline void
 log_assert_arg_nonnull(const char *in_func, const char *arg_name, const void *arg)
 {
     if (arg == NULL) {
-	log_die(EINVAL, "In %s: Argument \"%s\" is null  --  assertion failed!",
-		in_func  ? in_func  : "(no in_func)",
-		arg_name ? arg_name : "(no arg_name)");
+	fatal(EINVAL, "In %s: Argument \"%s\" is null  --  assertion failed!",
+	      in_func  ? in_func  : "(no in_func)",
+	      arg_name ? arg_name : "(no arg_name)");
     }
 }
 

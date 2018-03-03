@@ -73,6 +73,25 @@ redirect_standard_streams(void)
 }
 
 /**
+ * Handle fatal errors. This function calls exit(), i.e. it never
+ * returns.
+ *
+ * @param code	Code passed to strerror()
+ * @param fmt	Format control
+ */
+void
+fatal(int code, const char *fmt, ...)
+{
+    va_list ap;
+
+    va_start(ap, fmt);
+    log_doit(code, LOG_ERR, fmt, ap);
+    va_end(ap);
+
+    exit(1);
+}
+
+/**
  * Log debug-level message
  */
 void
@@ -85,25 +104,6 @@ log_debug(const char *fmt, ...)
 	log_doit(0, LOG_DEBUG, fmt, ap);
 	va_end(ap);
     }
-}
-
-/**
- * Handle fatal errors. This function calls exit(), i.e. it never
- * returns.
- *
- * @param code	Code passed to strerror()
- * @param fmt	Format control
- */
-void
-log_die(int code, const char *fmt, ...)
-{
-    va_list ap;
-
-    va_start(ap, fmt);
-    log_doit(code, LOG_ERR, fmt, ap);
-    va_end(ap);
-
-    exit(1);
 }
 
 /**
