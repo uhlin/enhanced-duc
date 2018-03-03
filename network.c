@@ -175,7 +175,6 @@ net_send_plain(const char *fmt, ...)
 {
     bool ok = true;
     char *buf = NULL;
-    extern int my_vasprintf(char **, const char *, va_list);
     size_t newSize = 0;
     static const char message_terminate[] = "\r\n\r\n";
     va_list ap = { 0 };

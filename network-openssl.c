@@ -92,7 +92,6 @@ int
 net_ssl_send(const char *fmt, ...)
 {
     char *buf = NULL;
-    extern int my_vasprintf(char **, const char *, va_list);
     int buflen = 0;
     int n_sent = 0;
     size_t newSize = 0;
