@@ -61,11 +61,8 @@ is_already_running()
 }
 
 /**
- * @brief	Run in the background
- * @return	void
- *
- * Detach the program from the controlling terminal and continue
- * execution...
+ * Run in the background. Detach the program from the controlling
+ * terminal and continue execution...
  */
 void
 Daemonize()
