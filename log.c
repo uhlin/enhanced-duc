@@ -1,4 +1,4 @@
-/* Copyright (c) 2015 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015, 2018 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -25,7 +25,33 @@
 bool	g_log_to_syslog = false;
 bool	g_debug_mode	= false;
 
-static void log_doit(int errCode, int priority, const char *, va_list);
+static void
+log_doit(int errCode, int priority, const char *fmt, va_list ap)
+{
+    char buf[2000] = "";
+
+    vsnprintf(buf, sizeof buf, fmt, ap);
+
+    if (errCode) {
+	snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf), ": %s", strerror(errCode));
+    }
+
+    if (g_log_to_syslog)
+	syslog(priority, "%s", buf);
+    else {
+	FILE *stream = stderr;
+
+	switch (priority) {
+	case LOG_INFO:
+	case LOG_DEBUG:
+	    stream = stdout;
+	    break;
+	}
+
+	fputs(buf, stream);
+	fputc('\n', stream);
+    }
+}
 
 /**
  * @brief	Redirect standard IO streams
@@ -48,21 +74,22 @@ redirect_standard_streams(void)
 }
 
 /**
- * @brief	Initialize logging
- * @return	void
+ * @brief Log debug-level message
+ * @param fmt Format control
+ * @return void
  *
- * Initialize logging. Calls to the log functions before this log to
- * stderr/stdout.
+ * Log debug-level message.
  */
 void
-log_init(void)
+log_debug(const char *fmt, ...)
 {
-    static bool initialized = false;
-    extern char *__progname;
+    va_list ap;
 
-    if (initialized) return;
-    openlog(__progname, LOG_PID, LOG_DAEMON);
-    g_log_to_syslog = initialized = true;
+    if (g_debug_mode) {
+	va_start(ap, fmt);
+	log_doit(0, LOG_DEBUG, fmt, ap);
+	va_end(ap);
+    }
 }
 
 /**
@@ -86,21 +113,21 @@ log_die(int code, const char *fmt, ...)
 }
 
 /**
- * @brief Log warning conditions
- * @param code	Code passed to strerror()
- * @param fmt	Format control
- * @return void
+ * @brief	Initialize logging
+ * @return	void
  *
- * Log warning conditions.
+ * Initialize logging. Calls to the log functions before this log to
+ * stderr/stdout.
  */
 void
-log_warn(int code, const char *fmt, ...)
+log_init(void)
 {
-    va_list ap;
+    static bool initialized = false;
+    extern char *__progname;
 
-    va_start(ap, fmt);
-    log_doit(code, LOG_WARNING, fmt, ap);
-    va_end(ap);
+    if (initialized) return;
+    openlog(__progname, LOG_PID, LOG_DAEMON);
+    g_log_to_syslog = initialized = true;
 }
 
 /**
@@ -121,48 +148,19 @@ log_msg(const char *fmt, ...)
 }
 
 /**
- * @brief Log debug-level message
- * @param fmt Format control
+ * @brief Log warning conditions
+ * @param code	Code passed to strerror()
+ * @param fmt	Format control
  * @return void
  *
- * Log debug-level message.
+ * Log warning conditions.
  */
 void
-log_debug(const char *fmt, ...)
+log_warn(int code, const char *fmt, ...)
 {
     va_list ap;
 
-    if (g_debug_mode) {
-	va_start(ap, fmt);
-	log_doit(0, LOG_DEBUG, fmt, ap);
-	va_end(ap);
-    }
-}
-
-static void
-log_doit(int errCode, int priority, const char *fmt, va_list ap)
-{
-    char buf[2000] = "";
-
-    vsnprintf(buf, sizeof buf, fmt, ap);
-
-    if (errCode) {
-	snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf), ": %s", strerror(errCode));
-    }
-
-    if (g_log_to_syslog)
-	syslog(priority, "%s", buf);
-    else {
-	FILE *stream = stderr;
-	
-	switch (priority) {
-	case LOG_INFO:
-	case LOG_DEBUG:
-	    stream = stdout;
-	    break;
-	}
-
-	fputs(buf, stream);
-	fputc('\n', stream);
-    }
+    va_start(ap, fmt);
+    log_doit(code, LOG_WARNING, fmt, ap);
+    va_end(ap);
 }
