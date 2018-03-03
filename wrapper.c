@@ -33,7 +33,6 @@ char *
 strdup_printf(const char *format, ...)
 {
     char	*ret;
-    extern int	 my_vasprintf(char **ret, const char *format, va_list);
     int		 chars_printed;
     va_list	 ap;
 
