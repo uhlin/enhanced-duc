@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - Name of `Strtolower` to `strToLower`
 - Name of `destroy_config_customValues` to `destroy_config_custom_values`
 - Name of `log_die()` to `fatal()`
+- PID file from `/var/run/educ_noip.pid` to `/var/run/enhanced-duc.pid`
 
 ### Fixed ###
 - Only provide `strlcpy()` and `strlcat()` if necessary
