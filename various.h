@@ -1,6 +1,7 @@
 #ifndef VARIOUS_H
 #define VARIOUS_H
 
+#include <stdarg.h>
 #include <stdbool.h>
 #include <string.h> /* strcmp */
 
