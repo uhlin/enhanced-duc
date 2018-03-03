@@ -15,6 +15,7 @@ bool    is_numeric     (const char *);
 bool    is_regularFile (const char *path);
 char   *strToLower     (char *);
 char   *trim           (char *);
+int     my_vasprintf   (char **ret, const char *format, va_list);
 size_t  size_product   (const size_t elt_count, const size_t elt_size);
 void    toggle_echo    (on_off_t);
 
