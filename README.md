@@ -46,7 +46,7 @@ you need to install a package with name `libssl-dev` before building:
 ## Good to know ##
 
 * If the program isn't running as a daemon it can be terminated with CTRL+C.
-* If port 443 is specified SSL will be enabled.
+* If port 443 is specified TLS/SSL will be enabled.
 * Valid ports are 80, 443 and 8245.
 
 ## Other notes ##
