@@ -23,11 +23,15 @@ Enhanced DUC depends on the [OpenSSL](https://www.openssl.org)
 toolkit. Which means that on, for example, a Debian GNU/Linux system
 you need to install a package with name `libssl-dev` before building:
 
-    # aptitude install libssl-dev
+    # apt install libssl-dev
 
 ## Building and installing ##
 
     $ cd /path/to/source
+
+If your system comes with `strlcpy()` and `strlcat()` please edit
+`enhanced-duc-config.h`.
+
     $ make
     $ sudo make install
 
