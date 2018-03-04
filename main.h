@@ -34,7 +34,7 @@ typedef enum {
     CODE_UNKNOWN
 } response_code_t;
 
-#if __OpenBSD__
+#if __OpenBSD__ && !defined(_BSD_SOURCE)
 int pledge(const char *, const char **);
 #endif
 
