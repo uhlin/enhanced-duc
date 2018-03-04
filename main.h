@@ -35,4 +35,8 @@ typedef enum {
     CODE_UNKNOWN
 } response_code_t;
 
+#if __OpenBSD__
+int pledge(const char *, const char **);
+#endif
+
 #endif
