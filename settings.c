@@ -47,7 +47,7 @@ static const char SP_HOSTNAME_DESC[] =
     "Service provider hostname. The HTTP GET request is sent to this\n"
     "hostname.";
 static const char PORT_DESC[] =
-    "Connect to sp_hostname + this port. 443 = enable SSL.";
+    "Connect to sp_hostname + this port. 443 = enable TLS/SSL.";
 static const char UPDATE_INTERVAL_SECONDS_DESC[] =
     "Update interval specified in seconds. If a value less than 600 is\n"
     "entered, the underlying code will fallback to 1800 to avoid flooding\n"
