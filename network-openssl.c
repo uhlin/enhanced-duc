@@ -24,6 +24,7 @@
 #include <openssl/x509_vfy.h>
 
 #include <limits.h>
+#include <string.h>
 
 #include "log.h"
 #include "network.h"
