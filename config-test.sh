@@ -14,11 +14,9 @@ for conf in $TEST_FILES; do
     echo "========== ${PREFIX}${conf} =========="
 
     if test -f "${PREFIX}${conf}"; then
-	./educ_noip -x ${PREFIX}${conf} -o
+	./enhanced-duc -x ${PREFIX}${conf} -o
     else
-	echo "No output."
+	echo "No output"
 	exit 1
     fi
 done
-
-exit 0
