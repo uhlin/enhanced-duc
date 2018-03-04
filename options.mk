@@ -6,3 +6,4 @@ CFLAGS=\
 LDFLAGS=\
 	-lcrypto\
 	-lssl
+RM?=rm -f
