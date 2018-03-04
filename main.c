@@ -356,15 +356,20 @@ update_host(const char *which_host, const char *to_ip,
 	break;
     case CODE_NOHOST:
 	fatal(0, "Hostname supplied does not exist under specified account.");
+	break;
     case CODE_BADAUTH:
 	fatal(0, "Invalid username password combination.");
+	break;
     case CODE_BADAGENT:
 	fatal(0, "Bad agent? I don't think so! "
 	    "But the server is always right. Dying...");
+	break;
     case CODE_NOTDONATOR:
 	fatal(0, "Bad update request. Feature not available.");
+	break;
     case CODE_ABUSE:
 	fatal(0, "Username blocked due to abuse.");
+	break;
     case CODE_EMERG:
 	if (Cycle)
 	    log_warn(0, "fatal error on the server side "
@@ -376,6 +381,7 @@ update_host(const char *which_host, const char *to_ip,
     default:
     case CODE_UNKNOWN:
 	fatal(0, "Unknown server response!");
+	break;
     }
 
   err:
