@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Better initialization of variables
 - Configuration file `enhanced-duc-config.h` where customizations can be made
 - Many enhancements to the networking routines
+- New makefiles
 
 ### Changed ###
 - All C sources to be 80 columns max
