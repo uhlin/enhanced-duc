@@ -23,6 +23,8 @@
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
 
+#include <limits.h>
+
 #include "log.h"
 #include "network.h"
 #include "various.h"
