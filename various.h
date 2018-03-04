@@ -20,11 +20,11 @@ int     my_vasprintf   (char **ret, const char *format, va_list);
 size_t  size_product   (const size_t elt_count, const size_t elt_size);
 void    toggle_echo    (on_off_t);
 
-#if HAVE_STRLCPY == 0
+#if HAVE_STRLCPY == 0 || !defined(_BSD_SOURCE)
 size_t strlcpy(char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 #endif
 
-#if HAVE_STRLCAT == 0
+#if HAVE_STRLCAT == 0 || !defined(_BSD_SOURCE)
 size_t strlcat(char *dst, const char *src, size_t dsize) PTR_ARGS_NONNULL;
 #endif
 
