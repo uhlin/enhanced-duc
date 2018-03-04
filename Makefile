@@ -1,6 +1,8 @@
 include options.mk
 
-all: enhanced-duc
+TGTS=enhanced-duc
+
+all: $(TGTS)
 
 include build.mk
 
