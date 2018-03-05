@@ -19,8 +19,10 @@ OBJS=\
 
 TEST_OBJS=\
 	size_product.o\
+	strToLower.o\
 	trim.o
 
 TESTS=\
 	size_product.run\
+	strToLower.run\
 	trim.run
