@@ -462,7 +462,11 @@ create_config_file(const char *path)
 	fatal(errno, "%s create_config_file: fopen", GfxFailure);
     } else {
 	FOREACH_CDV() {
-	    char *ans = get_answer(cdv->description, cdv->type, cdv->value);
+	    char *ans = NULL;
+
+	    while (ans = get_answer(cdv->description, cdv->type, cdv->value),
+		   ans == NULL)
+		/* continue */;
 
 	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
 		fatal(0, "%s create_config_file: "

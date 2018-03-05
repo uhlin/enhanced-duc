@@ -477,8 +477,11 @@ main(int argc, char *argv[])
     if (opt.want_usage)
 	usage(); /* Doesn't return. */
     if (opt.want_create_config_file) {
-	char *path = get_answer("Create where?", TYPE_STRING, &conf[0]);
+	char *path = NULL;
 
+	while (path = get_answer("Create where?", TYPE_STRING, &conf[0]),
+	       path == NULL)
+	    /* continue */;
 	create_config_file(path);
 	free(path);
 	exit(0);
