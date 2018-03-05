@@ -18,11 +18,13 @@ OBJS=\
 	$(SRC_DIR)wrapper.o
 
 TEST_OBJS=\
+	is_numeric.o\
 	size_product.o\
 	strToLower.o\
 	trim.o
 
 TESTS=\
+	is_numeric.run\
 	size_product.run\
 	strToLower.run\
 	trim.run
