@@ -452,6 +452,7 @@ start_update_cycle()
     } while (Cycle);
 }
 
+#ifndef UNIT_TESTING
 int
 main(int argc, char *argv[])
 {
@@ -512,4 +513,5 @@ main(int argc, char *argv[])
     /* Exit program */
     return 0;
 }
+#endif /* UNIT_TESTING */
 /* EOF */
