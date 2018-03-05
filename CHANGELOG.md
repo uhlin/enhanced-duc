@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 - Configuration file `enhanced-duc-config.h` where customizations can be made
 - Many enhancements to the networking routines
 - New makefiles
+- Unit tests for
+  - `is_numeric()`
+  - `size_product()`
+  - `strToLower()`
+  - `trim()`
 
 ### Changed ###
 - All C sources to be 80 columns max
@@ -22,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Name of `destroy_config_customValues` to `destroy_config_custom_values`
 - Name of `log_die()` to `fatal()`
 - PID file from `/var/run/educ_noip.pid` to `/var/run/enhanced-duc.pid`
+- While creating the config file: don't exit on invalid input
 
 ### Fixed ###
 - Only provide `strlcpy()` and `strlcat()` if necessary
