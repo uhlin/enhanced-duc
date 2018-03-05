@@ -190,8 +190,8 @@ is_setting_ok(const char *value, enum setting_type type)
     {
 	if (!strings_match(value, "yes") && !strings_match(value, "YES") &&
 	    !strings_match(value, "no") && !strings_match(value, "NO")) {
-	    log_warn(0, "is_setting_ok: booleans must be either: "
-		     "yes, YES, no or NO");
+	    log_warn(0, "%s is_setting_ok: booleans must be either: "
+		     "yes, YES, no or NO", GfxFailure);
 	    return false;
 	}
 	break;
@@ -199,7 +199,8 @@ is_setting_ok(const char *value, enum setting_type type)
     case TYPE_INTEGER:
     {
 	if (!is_numeric(value)) {
-	    log_warn(0, "is_setting_ok: integer not all numeric");
+	    log_warn(0, "%s is_setting_ok: integer not all numeric",
+		     GfxFailure);
 	    return false;
 	}
 	break;
@@ -207,7 +208,8 @@ is_setting_ok(const char *value, enum setting_type type)
     case TYPE_STRING:
     {
 	if (strpbrk(value, " \f\n\r\t\v\"") != NULL) {
-	    log_warn(0, "is_setting_ok: illegal characters in string");
+	    log_warn(0, "%s is_setting_ok: illegal characters in string",
+		     GfxFailure);
 	    return false;
 	}
 	break;
@@ -259,7 +261,7 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	int c = EOF;
 
 	if (input_too_big) {
-	    puts("input too big");
+	    fprintf(stderr, "%s get_answer: input too big!\n", GfxFailure);
 	    while (c = getchar(), c != '\n' && c != EOF)
 		/* discard */;
 	    free(answer);
