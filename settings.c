@@ -228,7 +228,7 @@ is_setting_ok(const char *value, enum setting_type type)
  * @param desc		Setting description
  * @param type		Setting type
  * @param defaultAnswer	Value used on empty input
- * @return The answer
+ * @return The answer (or NULL on error)
  */
 char *
 get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
@@ -256,9 +256,17 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	fatal(errno_save, "get_answer: fatal: fgets fail");
     } else {
 	const bool input_too_big = strchr(answer, '\n') == NULL;
+	int c = EOF;
 
-	if (input_too_big)
-	    fatal(0, "get_answer: fatal: input too big");
+	if (input_too_big) {
+	    puts("input too big");
+	    while (c = getchar(), c != '\n' && c != EOF)
+		/* discard */;
+	    free(answer);
+	    return (NULL);
+	}
+
+	/* trim newline */
 	answer[strcspn(answer, "\n")] = '\0';
 
 	if (strings_match(answer, "")) {
@@ -267,8 +275,10 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	}
     }
 
-    if (!is_setting_ok(answer, type))
-	exit(1);
+    if (!is_setting_ok(answer, type)) {
+	free(answer);
+	return (NULL);
+    }
 
     return (answer);
 }
