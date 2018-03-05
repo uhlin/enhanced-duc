@@ -4,6 +4,8 @@ include $(ROOT)/options.mk
 
 CFLAGS+=-DUNIT_TESTING=1
 CFLAGS+=-I$(ROOT)
+CFLAGS+=-I/usr/local/include
+LDFLAGS+=-L/usr/local/lib
 LDFLAGS+=-lcmocka
 
 include build.mk
