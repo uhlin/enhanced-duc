@@ -280,7 +280,7 @@ net_check_for_ip_change(void)
 	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
 	return (IP_NO_CHANGE);
     } else if (strings_match(cp, g_last_ip_addr)) {
-	log_msg("not updating (the external ip hasn't changed)");
+	log_debug("not updating (the external ip hasn't changed)");
 	return (IP_NO_CHANGE);
     } else {
 	strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
