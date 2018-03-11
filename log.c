@@ -74,7 +74,7 @@ redirect_standard_streams(void)
 }
 
 /**
- * Handle fatal errors. This function calls exit(), i.e. it never
+ * Handle fatal errors. This function calls abort(), i.e. it never
  * returns.
  *
  * @param code	Code passed to strerror()
@@ -89,7 +89,7 @@ fatal(int code, const char *fmt, ...)
     log_doit(code, LOG_ERR, fmt, ap);
     va_end(ap);
 
-    exit(1);
+    abort();
 }
 
 /**
