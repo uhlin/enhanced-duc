@@ -56,3 +56,5 @@ If your system comes with `strlcpy()` and `strlcat()` please edit
 ## Other notes ##
 
 * Building for GNU/Linux was broken in v1.2 - v1.3.1.
+* Please read the system log, possibly `/var/log/daemon.log` or
+  `/var/log/daemon` (depending on your UNIX variant).
