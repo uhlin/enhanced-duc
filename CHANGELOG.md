@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
   - `size_product()`
   - `strToLower()`
   - `trim()`
+  - `xstrdup()`
 
 ### Changed ###
 - All C sources to be 80 columns max
