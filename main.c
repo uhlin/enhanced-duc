@@ -508,6 +508,7 @@ main(int argc, char *argv[])
     /* Drop root privileges. */
     if (geteuid() == UID_SUPER_USER) {
 	force_priv_drop();
+	log_msg("EUID = %ld", (long int) geteuid());
     }
 
     net_init();
