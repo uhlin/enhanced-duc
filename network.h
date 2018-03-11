@@ -11,6 +11,11 @@ typedef enum {
     IP_NO_CHANGE
 } ip_chg_t;
 
+typedef enum {
+    HOSTNAME_MATCH,
+    HOSTNAME_MISMATCH
+} chkhost_res_t;
+
 typedef int (*NET_SEND_FUNCPTR)(const char *, ...);
 typedef int (*NET_RECV_FUNCPTR)(char *, size_t);
 
@@ -27,11 +32,12 @@ void		net_deinit(void);
 void		net_disconnect(void);
 void		net_init(void);
 
-int	net_ssl_recv   (char *recvbuf, size_t recvbuf_size);
-int	net_ssl_send   (const char *fmt, ...) PRINTFLIKE(1);
-int	net_ssl_start  (void);
-void	net_ssl_close  (void);
-void	net_ssl_deinit (void);
-void	net_ssl_init   (void);
+chkhost_res_t	net_ssl_check_hostname(const char *host, unsigned int flags);
+int		net_ssl_recv(char *recvbuf, size_t recvbuf_size);
+int		net_ssl_send(const char *fmt, ...) PRINTFLIKE(1);
+int		net_ssl_start(void);
+void		net_ssl_close(void);
+void		net_ssl_deinit(void);
+void		net_ssl_init(void);
 
 #endif

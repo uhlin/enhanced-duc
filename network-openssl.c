@@ -22,6 +22,7 @@
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
+#include <openssl/x509v3.h>
 
 #include <limits.h>
 #include <string.h>
@@ -35,6 +36,31 @@ static SSL_CTX	*ssl_ctx = NULL;
 static SSL	*ssl	 = NULL;
 
 static const char cipher_list[] = "HIGH:!aNULL";
+
+chkhost_res_t
+net_ssl_check_hostname(const char *host, unsigned int flags)
+{
+#if HAVE_X509_CHECK_HOST
+    X509 *cert = NULL;
+    chkhost_res_t ret = HOSTNAME_MISMATCH;
+
+    if (ssl == NULL || (cert = SSL_get_peer_certificate(ssl)) == NULL ||
+	host == NULL) {
+	if (cert)
+	    X509_free(cert);
+	return HOSTNAME_MISMATCH;
+    }
+    ret = ((X509_check_host(cert, host, 0, flags, NULL) > 0)
+	   ? HOSTNAME_MATCH
+	   : HOSTNAME_MATCH);
+    X509_free(cert);
+    return ret;
+#else
+    log_warn(ENOSYS, "net_ssl_check_hostname: warning: "
+	"function not implemented (returning HOSTNAME_MATCH anyway...)");
+    return HOSTNAME_MATCH;
+#endif
+}
 
 /**
  * Read bytes from a TLS/SSL connection
