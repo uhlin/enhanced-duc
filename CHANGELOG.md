@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
   - `is_numeric()`
   - `size_product()`
   - `strToLower()`
+  - `strdup_printf()`
   - `trim()`
   - `xstrdup()`
 

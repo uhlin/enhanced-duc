@@ -21,6 +21,7 @@ TEST_OBJS=\
 	is_numeric.o\
 	size_product.o\
 	strToLower.o\
+	strdup_printf.o\
 	trim.o\
 	xstrdup.o
 
@@ -28,5 +29,6 @@ TESTS=\
 	is_numeric.run\
 	size_product.run\
 	strToLower.run\
+	strdup_printf.run\
 	trim.run\
 	xstrdup.run
