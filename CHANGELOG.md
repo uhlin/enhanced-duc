@@ -1,7 +1,7 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] ##
+## [2.0] - 2018-03-12 ##
 ### Added ###
 - An enhanced version of the interpreter
 - An enhanced version of the man page
