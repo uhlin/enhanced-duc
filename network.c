@@ -111,12 +111,21 @@ net_connect(void)
 
     freeaddrinfo(res);
 
-    if (!connected) {
+    if (!connected || (is_ssl_enabled() && net_ssl_start() == -1)) {
 	log_warn(0, "failed to establish a connection");
 	return -1;
     }
 
-    return (is_ssl_enabled() ? net_ssl_start() : 0);
+    if (is_ssl_enabled() &&
+	net_ssl_check_hostname(host, 0) == HOSTNAME_MISMATCH) {
+	log_warn(0, "net_ssl_check_hostname: warning: "
+	    "hostname checking failed: "
+	    "hostname specified by 'sp_hostname' mismatch: "
+	    "failed to establish a connection");
+	return -1;
+    }
+
+    return 0;
 }
 
 /**

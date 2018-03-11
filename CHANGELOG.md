@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed ###
 - Only provide `strlcpy()` and `strlcat()` if necessary
+- TLS/SSL hostname verification
 
 ## [1.6] - 2016-04-04 ##
 - Most recent version before this log file was created. 1.6 is now
