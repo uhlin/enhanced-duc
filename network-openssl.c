@@ -79,7 +79,7 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
     }
     ret = ((X509_check_host(cert, host, 0, flags, NULL) > 0)
 	   ? HOSTNAME_MATCH
-	   : HOSTNAME_MATCH);
+	   : HOSTNAME_MISMATCH);
     X509_free(cert);
     return ret;
 #else
