@@ -37,6 +37,34 @@ static SSL	*ssl	 = NULL;
 
 static const char cipher_list[] = "HIGH:!aNULL";
 
+/*lint -sem(get_cert, r_null) */
+static X509 *
+get_cert()
+{
+#ifndef UNIT_TESTING
+    if (!ssl)
+	return NULL;
+
+    return SSL_get_peer_certificate(ssl);
+#else
+/* ------------ */
+/* UNIT_TESTING */
+/* ------------ */
+    FILE *fp = NULL;
+    X509 *cert = NULL;
+
+    if ((fp = fopen("noip.crt", "r")) == NULL ||
+	(cert = PEM_read_X509(fp, NULL, NULL, NULL)) == NULL) {
+	if (fp)
+	    fclose(fp);
+	return NULL;
+    }
+
+    fclose(fp);
+    return cert;
+#endif
+}
+
 chkhost_res_t
 net_ssl_check_hostname(const char *host, unsigned int flags)
 {
@@ -44,8 +72,7 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
     X509 *cert = NULL;
     chkhost_res_t ret = HOSTNAME_MISMATCH;
 
-    if (ssl == NULL || (cert = SSL_get_peer_certificate(ssl)) == NULL ||
-	host == NULL) {
+    if ((cert = get_cert()) == NULL || host == NULL) {
 	if (cert)
 	    X509_free(cert);
 	return HOSTNAME_MISMATCH;
