@@ -3,6 +3,7 @@
 SUFFIX=.run
 TESTS="
 is_numeric
+net_ssl_check_hostname
 size_product
 strToLower
 strdup_printf

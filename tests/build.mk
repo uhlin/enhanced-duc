@@ -19,6 +19,7 @@ OBJS=\
 
 TEST_OBJS=\
 	is_numeric.o\
+	net_ssl_check_hostname.o\
 	size_product.o\
 	strToLower.o\
 	strdup_printf.o\
@@ -27,6 +28,7 @@ TEST_OBJS=\
 
 TESTS=\
 	is_numeric.run\
+	net_ssl_check_hostname.run\
 	size_product.run\
 	strToLower.run\
 	strdup_printf.run\
