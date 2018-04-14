@@ -474,8 +474,10 @@ main(int argc, char *argv[])
     setlocale(LC_ALL, "");
     process_options(argc,argv,&opt,&conf[0],sizeof conf); /*Always successful*/
 
-    if (opt.want_usage)
-	usage(); /* Doesn't return. */
+    if (opt.want_usage) {
+	usage();
+	/* NOTREACHED */
+    }
     if (opt.want_create_config_file) {
 	char *path = NULL;
 
