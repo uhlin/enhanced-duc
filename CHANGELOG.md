@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 - Unit tests for
   - `net_ssl_check_hostname()`
 
+### Fixed ###
+- TLS/SSL hostname verification
+
 ## [2.0] - 2018-03-12 ##
 ### Added ###
 - An enhanced version of the interpreter
