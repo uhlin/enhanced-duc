@@ -1,6 +1,10 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] ##
+### Changed ###
+- **The config file interpreter**
+
 ## [2.0.1] - 2018-04-14 ##
 ### Added ###
 - Unit tests for
