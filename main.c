@@ -219,10 +219,11 @@ send_update_request(const char *which_host, const char *to_ip)
     s = host = unp = NULL;
 
     if (strings_match(to_ip, "WAN_address")) {
-	s = strdup_printf("GET /nic/update?hostname=%s HTTP/1.0", which_host);
+	s = strdup_printf("GET %s?hostname=%s HTTP/1.0",
+	    UPDATE_SCRIPT, which_host);
     } else {
-	s = strdup_printf("GET /nic/update?hostname=%s&myip=%s HTTP/1.0",
-			  which_host, to_ip);
+	s = strdup_printf("GET %s?hostname=%s&myip=%s HTTP/1.0",
+	    UPDATE_SCRIPT, which_host, to_ip);
     }
     host = strdup_printf("Host: %s", setting("sp_hostname"));
     unp	 = strdup_printf("%s:%s", setting("username"), setting("password"));
