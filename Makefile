@@ -8,6 +8,8 @@ include build.mk
 
 .c.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # install target
 include install.mk
