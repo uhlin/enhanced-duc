@@ -12,6 +12,12 @@
  */
 #define DUC_DIR "/tmp"
 
+/*
+ * Set the update script that's used in the raw HTTP header GET
+ * request
+ */
+#define UPDATE_SCRIPT "/nic/update"
+
 /* Set to 1 if your system has strlcpy() */
 #define HAVE_STRLCPY 0
 
