@@ -1,6 +1,17 @@
 #ifndef ENHANCED_DUC_CONFIG_H
 #define ENHANCED_DUC_CONFIG_H
 
+/*
+ * Which user shall we operate as after dropping superuser (root)
+ * privileges?
+ */
+#define DUC_USER "nobody"
+
+/*
+ * Working directory for DUC_USER
+ */
+#define DUC_DIR "/tmp"
+
 /* Set to 1 if your system has strlcpy() */
 #define HAVE_STRLCPY 0
 
