@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
+### Added ###
+- The possibility to set
+  - DUC user
+  - DUC dir
+
 ### Changed ###
 - **The config file interpreter**
 
