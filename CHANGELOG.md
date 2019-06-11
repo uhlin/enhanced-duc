@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - The possibility to set
   - DUC user
   - DUC dir
+  - Update script
 
 ### Changed ###
 - **The config file interpreter**
