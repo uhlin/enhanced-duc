@@ -23,7 +23,9 @@ struct Interpreter_in {
     Interpreter_instFunc	 install_func;
 };
 
+__BEGIN_DECLS
 void Interpreter(const struct Interpreter_in *) PTR_ARGS_NONNULL;
+__END_DECLS
 
 static inline void
 adv_while_isspace(const char **ptr)
