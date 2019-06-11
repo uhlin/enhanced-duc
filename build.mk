@@ -16,4 +16,4 @@ OBJS=\
 	wrapper.o
 
 enhanced-duc: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
