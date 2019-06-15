@@ -200,17 +200,17 @@ net_ssl_send(const char *fmt, ...)
  * @return 0 on success, -1 on error
  */
 int
-net_ssl_start(void)
+net_ssl_begin(void)
 {
     const int VALUE_HANDSHAKE_OK = 1;
 
     if ((ssl = SSL_new(ssl_ctx)) == NULL)
-	fatal(ENOMEM, "net_ssl_start: unable to create a new ssl object");
+	fatal(ENOMEM, "net_ssl_begin: unable to create a new ssl object");
     else if (!SSL_set_fd(ssl, g_socket))
-	log_warn(0, "net_ssl_start: "
+	log_warn(0, "net_ssl_begin: "
 	    "unable to associate the global socket fd with the ssl object");
     else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
-	log_warn(0, "net_ssl_start: handshake not ok!");
+	log_warn(0, "net_ssl_begin: handshake not ok!");
     else
 	return (0);
 

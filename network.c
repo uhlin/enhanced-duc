@@ -111,7 +111,7 @@ net_connect(void)
 
     freeaddrinfo(res);
 
-    if (!connected || (is_ssl_enabled() && net_ssl_start() == -1)) {
+    if (!connected || (is_ssl_enabled() && net_ssl_begin() == -1)) {
 	log_warn(0, "failed to establish a connection");
 	return -1;
     }
