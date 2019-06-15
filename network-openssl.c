@@ -98,12 +98,13 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
 int
 net_ssl_send(const char *fmt, ...)
 {
-    char *buf = NULL;
-    int buflen = 0;
-    int n_sent = 0;
-    size_t newSize = 0;
-    static const char message_terminate[] = "\r\n\r\n";
-    va_list ap;
+    static const char message_terminate[] =
+	"\r\n\r\n";
+    char	*buf	 = NULL;
+    int		 buflen	 = 0;
+    int		 n_sent	 = 0;
+    size_t	 newSize = 0;
+    va_list	 ap;
 
     log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
 
@@ -112,7 +113,7 @@ net_ssl_send(const char *fmt, ...)
 	fatal(errno, "net_ssl_send: my_vasprintf");
     va_end(ap);
 
-    newSize = strlen(buf) + sizeof message_terminate;
+    newSize = strlen(buf) + ARRAY_SIZE(message_terminate);
     buf = xrealloc(buf, newSize);
 
     if (strlcat(buf, message_terminate, newSize) >= newSize)
