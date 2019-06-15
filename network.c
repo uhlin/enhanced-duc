@@ -152,11 +152,12 @@ net_disconnect(void)
 int
 net_send_plain(const char *fmt, ...)
 {
-    bool ok = true;
-    char *buf = NULL;
-    size_t newSize = 0;
-    static const char message_terminate[] = "\r\n\r\n";
-    va_list ap;
+    static const char message_terminate[] =
+	"\r\n\r\n";
+    bool	 ok	 = true;
+    char	*buf	 = NULL;
+    size_t	 newSize = 0;
+    va_list	 ap;
 
     log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
 
@@ -165,7 +166,7 @@ net_send_plain(const char *fmt, ...)
 	fatal(errno, "net_send_plain: my_vasprintf");
     va_end(ap);
 
-    newSize = strlen(buf) + sizeof message_terminate;
+    newSize = strlen(buf) + ARRAY_SIZE(message_terminate);
     buf = xrealloc(buf, newSize);
 
     if (strlcat(buf, message_terminate, newSize) >= newSize)
