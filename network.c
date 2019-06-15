@@ -302,21 +302,6 @@ net_check_for_ip_change(void)
 }
 
 /**
- * Deinitialize networking
- */
-void
-net_deinit(void)
-{
-    if (ssl_is_enabled())
-	net_ssl_deinit();
-
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
-    }
-}
-
-/**
  * Network disconnect
  */
 void
@@ -339,4 +324,19 @@ net_init(void)
 {
     if (ssl_is_enabled())
 	net_ssl_init();
+}
+
+/**
+ * Deinitialize networking
+ */
+void
+net_deinit(void)
+{
+    if (ssl_is_enabled())
+	net_ssl_deinit();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
 }
