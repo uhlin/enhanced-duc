@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -312,7 +312,7 @@ setting(const char *setting_name)
  * the rules.
  *
  * @param ctx Context structure
- * @return The result of the conversation
+ * @return The result of the conversion
  */
 long int
 setting_integer_unparse(const struct integer_unparse_context *ctx)

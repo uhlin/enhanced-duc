@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed ###
 - **Update hostname bug due to an insufficient approach of storing the
   server response**!
+- Misspelled words
 
 ## [2.0.1] - 2018-04-14 ##
 ### Added ###

@@ -1,4 +1,4 @@
-/* Copyright (c) 2015, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -27,7 +27,7 @@
  * Duplicates a printf style format string. The storage is obtained
  * with malloc() which means that it must be freed.
  *
- * @return The result of the conversation
+ * @return The result of the conversion
  */
 char *
 strdup_printf(const char *format, ...)
