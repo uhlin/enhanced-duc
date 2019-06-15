@@ -16,4 +16,5 @@ OBJS=\
 	wrapper.o
 
 enhanced-duc: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	@echo "  LINK    " $@
+	@$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
