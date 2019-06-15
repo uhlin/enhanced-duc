@@ -90,55 +90,6 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
 }
 
 /**
- * Read bytes from a TLS/SSL connection
- *
- * @param recvbuf	Receive buffer
- * @param recvbuf_size	Receive buffer size
- * @return 0 on success, and -1 on failure
- */
-int
-net_ssl_recv(char *recvbuf, size_t recvbuf_size)
-{
-    const int maxfdp1 = g_socket + 1;
-    fd_set readset;
-    struct timeval tv = {
-	.tv_sec  = 10,
-	.tv_usec = 0,
-    };
-
-    log_assert_arg_nonnull("net_ssl_recv", "recvbuf", recvbuf);
-
-    FD_ZERO(&readset);
-    FD_SET(g_socket, &readset);
-
-    errno = 0;
-
-    if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-	log_warn(errno, "net_ssl_recv: select");
-	return -1;
-    } else if (!FD_ISSET(g_socket, &readset)) {
-	log_warn(0, "net_ssl_recv: no data to receive  --  timed out!");
-	return -1;
-    }
-
-    int bytes_received = 0;
-    ERR_clear_error();
-
-    if ((bytes_received = SSL_read(ssl, recvbuf, recvbuf_size)) > 0)
-	return 0;
-    switch (SSL_get_error(ssl, bytes_received)) {
-    case SSL_ERROR_NONE:
-	return 0;
-    case SSL_ERROR_WANT_READ:
-    case SSL_ERROR_WANT_WRITE:
-	log_warn(0, "net_ssl_recv: want read / want write");
-	return 0;
-    }
-
-    return -1;
-}
-
-/**
  * Write bytes to a TLS/SSL connection
  *
  * @param fmt Format control
@@ -188,6 +139,55 @@ net_ssl_send(const char *fmt, ...)
     case SSL_ERROR_WANT_READ:
     case SSL_ERROR_WANT_WRITE:
 	log_warn(0, "net_ssl_send: operation did not complete");
+	return 0;
+    }
+
+    return -1;
+}
+
+/**
+ * Read bytes from a TLS/SSL connection
+ *
+ * @param recvbuf	Receive buffer
+ * @param recvbuf_size	Receive buffer size
+ * @return 0 on success, and -1 on failure
+ */
+int
+net_ssl_recv(char *recvbuf, size_t recvbuf_size)
+{
+    const int maxfdp1 = g_socket + 1;
+    fd_set readset;
+    struct timeval tv = {
+	.tv_sec  = 10,
+	.tv_usec = 0,
+    };
+
+    log_assert_arg_nonnull("net_ssl_recv", "recvbuf", recvbuf);
+
+    FD_ZERO(&readset);
+    FD_SET(g_socket, &readset);
+
+    errno = 0;
+
+    if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
+	log_warn(errno, "net_ssl_recv: select");
+	return -1;
+    } else if (!FD_ISSET(g_socket, &readset)) {
+	log_warn(0, "net_ssl_recv: no data to receive  --  timed out!");
+	return -1;
+    }
+
+    int bytes_received = 0;
+    ERR_clear_error();
+
+    if ((bytes_received = SSL_read(ssl, recvbuf, recvbuf_size)) > 0)
+	return 0;
+    switch (SSL_get_error(ssl, bytes_received)) {
+    case SSL_ERROR_NONE:
+	return 0;
+    case SSL_ERROR_WANT_READ:
+    case SSL_ERROR_WANT_WRITE:
+	log_warn(0, "net_ssl_recv: want read / want write");
 	return 0;
     }
 
