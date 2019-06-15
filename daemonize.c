@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -65,7 +65,7 @@ is_already_running()
  * terminal and continue execution...
  */
 void
-Daemonize()
+Daemonize(void)
 {
     switch (fork()) {
     case FORK_FAILED:

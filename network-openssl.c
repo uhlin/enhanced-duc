@@ -293,7 +293,7 @@ verify_callback(int ok, X509_STORE_CTX *ctx)
  * Initialize the TLS/SSL library
  */
 void
-net_ssl_init()
+net_ssl_init(void)
 {
     SSL_load_error_strings();
     SSL_library_init();
@@ -328,7 +328,7 @@ net_ssl_init()
  * Deinitialize the TLS/SSL library
  */
 void
-net_ssl_deinit()
+net_ssl_deinit(void)
 {
     if (ssl) {
 	SSL_shutdown(ssl);
