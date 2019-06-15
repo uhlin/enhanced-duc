@@ -323,7 +323,7 @@ void
 net_disconnect(void)
 {
     if (is_ssl_enabled())
-	net_ssl_close();
+	net_ssl_end();
 
     if (g_socket != -1) {
 	close(g_socket);

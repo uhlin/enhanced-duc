@@ -221,7 +221,7 @@ net_ssl_begin(void)
  * Shut down a TLS/SSL connection
  */
 void
-net_ssl_close(void)
+net_ssl_end(void)
 {
     if (ssl) {
 	SSL_shutdown(ssl);
