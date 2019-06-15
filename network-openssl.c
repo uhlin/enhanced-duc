@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -247,6 +247,38 @@ net_ssl_deinit()
     }
 }
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+static void
+create_ssl_context_obj()
+{
+    if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
+	fatal(ENOMEM, "create_ssl_context_obj: "
+	    "unable to create a new ssl_ctx object");
+    } else {
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1);
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
+    }
+}
+#else
+/* -------------------------------- */
+/* OpenSSL version less than v1.1.0 */
+/* -------------------------------- */
+
+static void
+create_ssl_context_obj_insecure()
+{
+    if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
+	fatal(ENOMEM, "create_ssl_context_obj_insecure: "
+	    "unable to create a new ssl_ctx object");
+    } else {
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+    }
+}
+#endif
+
 static int
 verify_callback(int ok, X509_STORE_CTX *ctx)
 {
@@ -286,21 +318,10 @@ net_ssl_init()
 	log_warn(ENOSYS, "net_ssl_init: error seeding the prng!");
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
-	fatal(ENOMEM, "net_ssl_init: unable to create a new ssl_ctx object");
-    } else {
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
-    }
+    create_ssl_context_obj();
 #else
-    if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
-	fatal(ENOMEM, "net_ssl_init: unable to create a new ssl_ctx object");
-    } else {
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
-    }
+#pragma message("Consider updating your TLS/SSL library")
+    create_ssl_context_obj_insecure();
 #endif
 
     if (SSL_CTX_set_default_verify_paths(ssl_ctx)) {
