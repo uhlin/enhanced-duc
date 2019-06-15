@@ -27,8 +27,8 @@ extern int g_socket;
 int		net_connect(void);
 void		net_disconnect(void);
 
-int		net_recv_plain(char *recvbuf, size_t recvbuf_size);
 int		net_send_plain(const char *fmt, ...) PRINTFLIKE(1);
+int		net_recv_plain(char *recvbuf, size_t recvbuf_size);
 ip_chg_t	net_check_for_ip_change(void);
 
 void		net_init(void);

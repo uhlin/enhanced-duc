@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -144,6 +144,43 @@ net_disconnect(void)
 }
 
 /**
+ * Send a message on a regular socket
+ *
+ * @param fmt Format control
+ * @return 0 on success, and -1 on failure
+ */
+int
+net_send_plain(const char *fmt, ...)
+{
+    bool ok = true;
+    char *buf = NULL;
+    size_t newSize = 0;
+    static const char message_terminate[] = "\r\n\r\n";
+    va_list ap;
+
+    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
+
+    va_start(ap, fmt);
+    if (errno = 0, my_vasprintf(&buf, fmt, ap) < 0)
+	fatal(errno, "net_send_plain: my_vasprintf");
+    va_end(ap);
+
+    newSize = strlen(buf) + sizeof message_terminate;
+    buf = xrealloc(buf, newSize);
+
+    if (strlcat(buf, message_terminate, newSize) >= newSize)
+	fatal(EOVERFLOW, "net_send_plain: strlcat");
+
+    if (errno = 0, send(g_socket, buf, strlen(buf), 0) == -1)
+	ok = false;
+    if (!ok)
+	log_warn(errno, "net_send_plain: send");
+
+    free(buf);
+    return ok ? 0 : -1;
+}
+
+/**
  * Receive a message from a regular socket
  *
  * @param recvbuf	Receive buffer
@@ -187,43 +224,6 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
     }
 
     return 0;
-}
-
-/**
- * Send a message on a regular socket
- *
- * @param fmt Format control
- * @return 0 on success, and -1 on failure
- */
-int
-net_send_plain(const char *fmt, ...)
-{
-    bool ok = true;
-    char *buf = NULL;
-    size_t newSize = 0;
-    static const char message_terminate[] = "\r\n\r\n";
-    va_list ap;
-
-    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
-
-    va_start(ap, fmt);
-    if (errno = 0, my_vasprintf(&buf, fmt, ap) < 0)
-	fatal(errno, "net_send_plain: my_vasprintf");
-    va_end(ap);
-
-    newSize = strlen(buf) + sizeof message_terminate;
-    buf = xrealloc(buf, newSize);
-
-    if (strlcat(buf, message_terminate, newSize) >= newSize)
-	fatal(EOVERFLOW, "net_send_plain: strlcat");
-
-    if (errno = 0, send(g_socket, buf, strlen(buf), 0) == -1)
-	ok = false;
-    if (!ok)
-	log_warn(errno, "net_send_plain: send");
-
-    free(buf);
-    return ok ? 0 : -1;
 }
 
 /**
