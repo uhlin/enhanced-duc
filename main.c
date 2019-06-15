@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -261,7 +261,21 @@ store_server_resp_in_buffer(char **buf)
 
     *buf = xcalloc(sz, 1);
 
-    return net_recv(*buf, sz);
+    if (net_recv(*buf, sz) == -1)
+	return -1;
+
+    char concatSource[500] = { '\0' };
+
+    (void) net_recv(concatSource, ARRAY_SIZE(concatSource));
+
+    if (!strings_match(concatSource, "") &&
+	strlcat(*buf, concatSource, sz) >= sz) {
+	log_warn(0, "warning: store_server_resp_in_buffer: strlcat: "
+	    "response truncated!");
+	return -1;
+    }
+
+    return 0;
 }
 
 static response_code_t

@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 ### Changed ###
 - **The config file interpreter**
 
+### Fixed ###
+- **Update hostname bug due to an insufficient approach of storing the
+  server response**!
+
 ## [2.0.1] - 2018-04-14 ##
 ### Added ###
 - Unit tests for
