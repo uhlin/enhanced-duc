@@ -33,9 +33,10 @@ void		net_disconnect(void);
 void		net_init(void);
 
 chkhost_res_t	net_ssl_check_hostname(const char *host, unsigned int flags);
-int		net_ssl_begin(void);
 int		net_ssl_recv(char *recvbuf, size_t recvbuf_size);
 int		net_ssl_send(const char *fmt, ...) PRINTFLIKE(1);
+
+int		net_ssl_begin(void);
 void		net_ssl_end(void);
 
 void		net_ssl_init(void);
