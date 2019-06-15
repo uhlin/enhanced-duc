@@ -70,7 +70,7 @@ net_addr_resolve(const char *host, const char *port)
 static inline bool
 ssl_is_enabled(void)
 {
-    return (strcmp(setting("port"), "443") == 0);
+    return strcmp(setting("port"), "443") == 0;
 }
 
 /**
