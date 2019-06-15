@@ -68,7 +68,7 @@ net_addr_resolve(const char *host, const char *port)
 }
 
 static inline bool
-is_ssl_enabled(void)
+ssl_is_enabled(void)
 {
     return (strcmp(setting("port"), "443") == 0);
 }
@@ -111,12 +111,12 @@ net_connect(void)
 
     freeaddrinfo(res);
 
-    if (!connected || (is_ssl_enabled() && net_ssl_begin() == -1)) {
+    if (!connected || (ssl_is_enabled() && net_ssl_begin() == -1)) {
 	log_warn(0, "failed to establish a connection");
 	return -1;
     }
 
-    if (is_ssl_enabled() &&
+    if (ssl_is_enabled() &&
 	net_ssl_check_hostname(host, 0) == HOSTNAME_MISMATCH) {
 	log_warn(0, "net_ssl_check_hostname: warning: "
 	    "hostname checking failed: "
@@ -307,7 +307,7 @@ net_check_for_ip_change(void)
 void
 net_deinit(void)
 {
-    if (is_ssl_enabled())
+    if (ssl_is_enabled())
 	net_ssl_deinit();
 
     if (g_socket != -1) {
@@ -322,7 +322,7 @@ net_deinit(void)
 void
 net_disconnect(void)
 {
-    if (is_ssl_enabled())
+    if (ssl_is_enabled())
 	net_ssl_end();
 
     if (g_socket != -1) {
@@ -337,6 +337,6 @@ net_disconnect(void)
 void
 net_init(void)
 {
-    if (is_ssl_enabled())
+    if (ssl_is_enabled())
 	net_ssl_init();
 }
