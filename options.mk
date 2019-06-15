@@ -1,9 +1,9 @@
-CC=gcc
+CC=cc
 CFLAGS=\
 	-D_POSIX_C_SOURCE=200809L\
 	-Wall\
 	-std=c99
-CXX=g++
+CXX=c++
 CXXCLAGS=
 LDFLAGS=\
 	-lcrypto\
