@@ -24,7 +24,7 @@ struct Interpreter_in {
 };
 
 __BEGIN_DECLS
-void Interpreter(const struct Interpreter_in *) PTR_ARGS_NONNULL;
+void Interpreter(const struct Interpreter_in *) /* PTR_ARGS_NONNULL */;
 __END_DECLS
 
 static inline void
