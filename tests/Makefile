@@ -16,7 +16,7 @@ include build.mk
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 .o.run:
-	$(CC) $(CFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
 	strip $@
 
 all: $(OBJS) $(TEST_OBJS) $(TESTS)
