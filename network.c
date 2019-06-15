@@ -129,6 +129,21 @@ net_connect(void)
 }
 
 /**
+ * Network disconnect
+ */
+void
+net_disconnect(void)
+{
+    if (ssl_is_enabled())
+	net_ssl_end();
+
+    if (g_socket != -1) {
+	close(g_socket);
+	g_socket = -1;
+    }
+}
+
+/**
  * Receive a message from a regular socket
  *
  * @param recvbuf	Receive buffer
@@ -299,21 +314,6 @@ net_check_for_ip_change(void)
 
     /*NOTREACHED*/ assert(false);
     /*NOTREACHED*/ return (IP_NO_CHANGE);
-}
-
-/**
- * Network disconnect
- */
-void
-net_disconnect(void)
-{
-    if (ssl_is_enabled())
-	net_ssl_end();
-
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
-    }
 }
 
 /**
