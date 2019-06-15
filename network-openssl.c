@@ -230,23 +230,6 @@ net_ssl_end(void)
     }
 }
 
-/**
- * Deinitialize the TLS/SSL library
- */
-void
-net_ssl_deinit()
-{
-    if (ssl) {
-	SSL_shutdown(ssl);
-	SSL_free(ssl);
-	ssl = NULL;
-    }
-    if (ssl_ctx) {
-	SSL_CTX_free(ssl_ctx);
-	ssl_ctx = NULL;
-    }
-}
-
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
 static void
 create_ssl_context_obj()
@@ -338,4 +321,21 @@ net_ssl_init()
     net_recv = net_ssl_recv;
 
     log_msg("TLS/SSL enabled");
+}
+
+/**
+ * Deinitialize the TLS/SSL library
+ */
+void
+net_ssl_deinit()
+{
+    if (ssl) {
+	SSL_shutdown(ssl);
+	SSL_free(ssl);
+	ssl = NULL;
+    }
+    if (ssl_ctx) {
+	SSL_CTX_free(ssl_ctx);
+	ssl_ctx = NULL;
+    }
 }
