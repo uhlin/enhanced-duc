@@ -207,6 +207,13 @@ hostname_array_assign()
     free(dump);
 }
 
+static void
+flag_err_and_output_warning(bool *ok, const char *msg)
+{
+    *ok = false;
+    log_warn(0, "%s", msg);
+}
+
 static int
 send_update_request(const char *which_host, const char *to_ip)
 {
@@ -395,7 +402,7 @@ update_host(const char *which_host, const char *to_ip,
 	break;
     default:
     case CODE_UNKNOWN:
-	fatal(0, "Unknown server response!");
+	flag_err_and_output_warning(&ok, "Unknown server response!");
 	break;
     }
 
