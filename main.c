@@ -448,7 +448,7 @@ start_update_cycle()
 
 		if (!update_host(*ar_p, setting("ip_addr"),
 				 &updateRequestAfter30Min))
-		    break; /* Stop updating on the first unsuccessful try. */
+		    log_warn(0, "failed to update hostname");
 	    }
 
 	    hostname_array_destroy();

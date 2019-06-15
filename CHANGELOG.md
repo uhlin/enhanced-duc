@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
   - Update script
 
 ### Changed ###
+- **Do not stop updating on the first unsuccessful update attempt**!
 - **Do not terminate the DUC on**:
   - Unknown server response
 - **The config file interpreter**
