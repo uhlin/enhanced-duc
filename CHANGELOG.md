@@ -1,7 +1,7 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] ##
+## [2.1] - 2019-06-16 ##
 ### Added ###
 - The possibility to set
   - DUC user
