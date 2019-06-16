@@ -14,6 +14,8 @@ include build.mk
 
 .c.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 .o.run:
 	$(CXX) $(CXXFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
