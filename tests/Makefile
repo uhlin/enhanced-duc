@@ -13,17 +13,20 @@ include build.mk
 .SUFFIXES: .c .o .run
 
 .c.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
+	@echo "  CC      " $@
+	@$(CC) $(CFLAGS) -c -o $@ $<
 .cpp.o:
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
+	@echo "  CXX     " $@
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
 .o.run:
-	$(CXX) $(CXXFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
-	strip $@
+	@echo "  LINK    " $@
+	@$(CXX) $(CXXFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
+	@strip $@
 
 all: $(OBJS) $(TEST_OBJS) $(TESTS)
 
 clean:
-	$(RM) $(OBJS)
-	$(RM) $(TEST_OBJS)
-	$(RM) $(TESTS)
+	@echo "  CLEAN"
+	@$(RM) $(OBJS)
+	@$(RM) $(TEST_OBJS)
+	@$(RM) $(TESTS)
