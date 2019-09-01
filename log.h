@@ -32,7 +32,10 @@ void log_warn  (int code, const char *fmt, ...) PRINTFLIKE(2);
 __END_DECLS
 
 static inline void
-log_assert_arg_nonnull(const char *in_func, const char *arg_name, const void *arg)
+log_assert_arg_nonnull(
+    const char *in_func,
+    const char *arg_name,
+    const void *arg)
 {
     if (arg == NULL) {
 	fatal(EINVAL, "In %s: Argument \"%s\" is null  --  assertion failed!",
