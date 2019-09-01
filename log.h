@@ -22,13 +22,13 @@ typedef enum {
 /*lint -sem(fatal, r_no) */
 
 __BEGIN_DECLS
-redir_res_t redirect_standard_streams(void);
-void fatal(int code, const char *fmt, ...) PRINTFLIKE(2) NORETURN;
+redir_res_t	redirect_standard_streams(void);
+void		fatal(int code, const char *, ...) PRINTFLIKE(2) NORETURN;
 
-void log_debug (const char *fmt, ...) PRINTFLIKE(1);
-void log_init  (void);
-void log_msg   (const char *fmt, ...) PRINTFLIKE(1);
-void log_warn  (int code, const char *fmt, ...) PRINTFLIKE(2);
+void		log_debug(const char *, ...) PRINTFLIKE(1);
+void		log_init(void);
+void		log_msg(const char *, ...) PRINTFLIKE(1);
+void		log_warn(int code, const char *, ...) PRINTFLIKE(2);
 __END_DECLS
 
 static inline void
