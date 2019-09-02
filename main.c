@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include "base64.h"
+#include "colors.h"
 #include "log.h"
 #include "main.h"
 #include "network.h"
@@ -44,7 +45,7 @@ char g_last_ip_addr[100] = "";
 
 static const char *help_text[] = {
     "\n",
-    "Options:\n",
+    REVVID_ON "Options:" REVVID_OFF "\n",
     "  -h           Print help\n",
     "  -c           Create a config file by asking the user for input.\n",
     "               The user will be given the opportunity to choose a\n",
