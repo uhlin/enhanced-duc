@@ -1,4 +1,4 @@
-/* Copyright (c) 2019 Markus Uhlin <markus@dataswamp.org>
+/* Copyright (c) 2019 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
