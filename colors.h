@@ -22,6 +22,9 @@
  */
 #define NORMAL		"\x1b[0m"
 
+#define UNDERLINE_ON	"\x1b[4m"
+#define UNDERLINE_OFF	"\x1b[24m"
+
 #define BLINK_ON	"\x1b[5m"
 #define BLINK_OFF	"\x1b[25m"
 
