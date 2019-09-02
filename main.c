@@ -110,6 +110,16 @@ process_options(int argc, char *argv[], struct program_options *po,
     }
 }
 
+static void
+write_border(const int c, const size_t len)
+{
+    fputs(BOLDRED, stderr);
+    for (size_t count = 0; count < len; count++)
+	fputc(c, stderr);
+    fputs(NORMAL, stderr);
+    fputc('\n', stderr);
+}
+
 static NORETURN void
 usage()
 {
@@ -120,7 +130,11 @@ usage()
     char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
     const size_t ar_sz = ARRAY_SIZE(help_text);
 
+    write_border('-', strlen(msgVersion) - 1);
     fputs(msgVersion, stderr);
+    write_border('-', strlen(msgVersion) - 1);
+
+    fputc('\n', stderr);
     fputs(msgUsage, stderr);
 
     free(msgVersion);
