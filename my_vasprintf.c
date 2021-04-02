@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -20,32 +20,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int my_vasprintf(char **ret, const char *format, va_list ap)
+int
+my_vasprintf(char **ret, const char *format, va_list ap)
 {
-    va_list	ap_copy;
-    int		sz;
+	va_list ap_copy;
+	int sz;
 
-    if (ret == NULL || format == NULL) {
-	errno = EINVAL;
-	return -1;
-    }
+	if (ret == NULL || format == NULL) {
+		errno = EINVAL;
+		return -1;
+	}
 
-    va_copy(ap_copy, ap);
-    sz = vsnprintf(NULL, 0, format, ap_copy);
-    va_end(ap_copy);
+	va_copy(ap_copy, ap);
+	sz = vsnprintf(NULL, 0, format, ap_copy);
+	va_end(ap_copy);
 
-    if (sz < 0) {
-	*ret = NULL;
-	errno = ENOSYS;
-	return -1;
-    } else {
-	sz += 1; /* +1 for `\0'. */
-    }
+	if (sz < 0) {
+		*ret = NULL;
+		errno = ENOSYS;
+		return -1;
+	} else {
+		sz += 1; /* +1 for `\0'. */
+	}
 
-    if ((*ret = malloc(sz)) == NULL) {
-	errno = ENOMEM;
-	return -1;
-    }
+	if ((*ret = malloc(sz)) == NULL) {
+		errno = ENOMEM;
+		return -1;
+	}
 
-    return vsnprintf(*ret, sz, format, ap);
+	return vsnprintf(*ret, sz, format, ap);
 }
