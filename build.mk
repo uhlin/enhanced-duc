@@ -1,5 +1,4 @@
-OBJS=\
-	b64_decode.o\
+OBJS = b64_decode.o\
 	b64_encode.o\
 	daemonize.o\
 	interpreter.o\
