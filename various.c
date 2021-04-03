@@ -35,9 +35,9 @@
 bool
 file_exists(const char *path)
 {
-    struct stat sb;
+	struct stat sb = { 0 };
 
-    return path != NULL && *path != '\0' && stat(path, &sb) == 0;
+	return (path != NULL && *path != '\0' && stat(path, &sb) == 0);
 }
 
 /**
