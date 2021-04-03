@@ -130,7 +130,7 @@ static struct config_default_values_tag {
       FORCE_UPDATE_DESC },
 };
 
-static const size_t CDV_AR_SZ = ARRAY_SIZE(config_default_values);
+static const size_t CDV_AR_SZ = nitems(config_default_values);
 
 #define FOREACH_CDV()\
     for (struct config_default_values_tag *cdv = &config_default_values[0];\

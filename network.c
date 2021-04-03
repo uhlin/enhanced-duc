@@ -166,7 +166,7 @@ net_send_plain(const char *fmt, ...)
 	fatal(errno, "net_send_plain: my_vasprintf");
     va_end(ap);
 
-    newSize = strlen(buf) + ARRAY_SIZE(message_terminate);
+    newSize = strlen(buf) + nitems(message_terminate);
     buf = xrealloc(buf, newSize);
 
     if (strlcat(buf, message_terminate, newSize) >= newSize)

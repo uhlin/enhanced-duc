@@ -51,7 +51,7 @@ static struct sig_message_tag {
 static void
 signal_handler(int signum)
 {
-    const size_t ar_sz = ARRAY_SIZE(sig_message);
+    const size_t ar_sz = nitems(sig_message);
     struct sig_message_tag *ssp;
 
     program_clean_up();
@@ -75,7 +75,7 @@ signal_handler(int signum)
 int
 sigHand_init(void)
 {
-    const size_t		 ar_sz = ARRAY_SIZE(sig_message);
+    const size_t		 ar_sz = nitems(sig_message);
     sigset_t			 set;
     struct sig_message_tag	*ssp;
     struct sigaction		 act;

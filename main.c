@@ -67,7 +67,7 @@ static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 
 #define FOREACH_HOSTNAME()\
 	for (char **ar_p = &hostname_array[0];\
-	     ar_p < &hostname_array[ARRAY_SIZE(hostname_array)];\
+	     ar_p < &hostname_array[nitems(hostname_array)];\
 	     ar_p++)
 
 static void
@@ -128,7 +128,7 @@ usage()
 	strdup_printf("%s %s by %s\n",
 		      g_programName, g_programVersion, g_programAuthor);
     char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
-    const size_t ar_sz = ARRAY_SIZE(help_text);
+    const size_t ar_sz = nitems(help_text);
 
     write_border('-', strlen(msgVersion) - 1);
     fputs(msgVersion, stderr);
@@ -208,7 +208,7 @@ hostname_array_assign()
     for (size_t hosts_assigned = 0;; hosts_assigned++) {
 	char *token = strtok(hosts_assigned == 0 ? dump : NULL, "|");
 
-	if (token && hosts_assigned < ARRAY_SIZE(hostname_array))
+	if (token && hosts_assigned < nitems(hostname_array))
 	    hostname_array[hosts_assigned] = xstrdup(token);
 	else if (hosts_assigned == 0)
 	    fatal(0, "hostname_array_assign: fatal: zero assigned hosts!");
@@ -288,7 +288,7 @@ store_server_resp_in_buffer(char **buf)
 
     char concatSource[500] = { '\0' };
 
-    (void) net_recv(concatSource, ARRAY_SIZE(concatSource));
+    (void) net_recv(concatSource, nitems(concatSource));
 
     if (!strings_match(concatSource, "") &&
 	strlcat(*buf, concatSource, sz) >= sz) {
@@ -317,7 +317,7 @@ server_response(const char *buf)
 	{ "abuse",    CODE_ABUSE      },
 	{ "911",      CODE_EMERG      },
     };
-    const size_t ar_sz = ARRAY_SIZE(responses);
+    const size_t ar_sz = nitems(responses);
     const struct responses_tag *ar_p = &responses[0];
 
     dump = cp = r = NULL;
