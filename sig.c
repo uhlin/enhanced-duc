@@ -25,26 +25,26 @@
 #include "sig.h"
 
 static struct sig_message_tag {
-    int		 num;		/**< Signal number                     */
-    char	*num_str;	/**< Official name                     */
-    bool	 ignore;	/**< Ignore this signal if it arrives? */
-    char	*msg;		/**< Signal description                */
+	int	 num;     /**< Signal number */
+	char	*num_str; /**< Official name */
+	bool	 ignore;  /**< Ignore this signal if it arrives? */
+	char	*msg;     /**< Signal description */
 } sig_message[] = {
-    { SIGABRT,  "SIGABRT",  false, "Abnormal termination"           },
-    { SIGBUS,   "SIGBUS",   false, "Bus error (bad memory access)"  },
-    { SIGFPE,   "SIGFPE",   false, "Floating point exception"       },
-    { SIGILL,   "SIGILL",   false, "Illegal Instruction"            },
-    { SIGINT,   "SIGINT",   false, "Interrupt program"              },
-    { SIGSEGV,  "SIGSEGV",  false, "Invalid memory reference"       },
-    { SIGSYS,   "SIGSYS",   false, "Bad argument to routine"        },
-    { SIGTERM,  "SIGTERM",  false, "Termination signal"             },
-    { SIGXCPU,  "SIGXCPU",  false, "CPU time limit exceeded"        },
-    { SIGXFSZ,  "SIGXFSZ",  false, "File size limit exceeded"       },
-    { SIGHUP,   "SIGHUP",   true,  "Terminal line hangup"           },
-    { SIGPIPE,  "SIGPIPE",  true,  "Write on a pipe with no reader" },
-    { SIGQUIT,  "SIGQUIT",  true,  "Quit program"                   },
+	{ SIGABRT,  "SIGABRT",  false, "Abnormal termination"           },
+	{ SIGBUS,   "SIGBUS",   false, "Bus error (bad memory access)"  },
+	{ SIGFPE,   "SIGFPE",   false, "Floating point exception"       },
+	{ SIGILL,   "SIGILL",   false, "Illegal Instruction"            },
+	{ SIGINT,   "SIGINT",   false, "Interrupt program"              },
+	{ SIGSEGV,  "SIGSEGV",  false, "Invalid memory reference"       },
+	{ SIGSYS,   "SIGSYS",   false, "Bad argument to routine"        },
+	{ SIGTERM,  "SIGTERM",  false, "Termination signal"             },
+	{ SIGXCPU,  "SIGXCPU",  false, "CPU time limit exceeded"        },
+	{ SIGXFSZ,  "SIGXFSZ",  false, "File size limit exceeded"       },
+	{ SIGHUP,   "SIGHUP",   true,  "Terminal line hangup"           },
+	{ SIGPIPE,  "SIGPIPE",  true,  "Write on a pipe with no reader" },
+	{ SIGQUIT,  "SIGQUIT",  true,  "Quit program"                   },
 #ifdef SIGWINCH
-    { SIGWINCH, "SIGWINCH", true,  "Window resize signal"           },
+	{ SIGWINCH, "SIGWINCH", true,  "Window resize signal"           },
 #endif
 };
 
