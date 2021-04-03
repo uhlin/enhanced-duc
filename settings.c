@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -548,53 +548,55 @@ install_setting(const char *setting_name, const char *value)
 void
 read_config_file(const char *path)
 {
-    FILE *fp = NULL;
+	FILE *fp = NULL;
 
-    log_assert_arg_nonnull("read_config_file", "path", path);
+	log_assert_arg_nonnull("read_config_file", "path", path);
 
-    if (g_conf_read) {
-	return;
-    } else if (!is_regularFile(path)) {
-	fatal(0, "read_config_file: either the config file is nonexistent"
-	      "  --  or it isn't a regular file");
-    } else if ((fp = fopen(path, "r")) == NULL) {
-	fatal(errno, "read_config_file: fopen");
-    } else {
-	char		buf[900];
-	long int	line_num = 0;
+	if (g_conf_read) {
+		return;
+	} else if (!is_regularFile(path)) {
+		fatal(0, "read_config_file: either the config file is "
+		    "nonexistent  --  or it isn't a regular file");
+	} else if ((fp = fopen(path, "r")) == NULL) {
+		fatal(errno, "read_config_file: fopen");
+	} else {
+		char buf[900];
+		long int line_num = 0;
 
-	while (BZERO(buf, sizeof buf), fgets(buf, sizeof buf, fp) != NULL) {
-	    char			*line	     = NULL;
-	    const char			 commentChar = '#';
-	    const char			*ccp	     = &buf[0];
-	    struct Interpreter_in	 in;
+		while (BZERO(buf, sizeof buf),
+		       fgets(buf, sizeof buf, fp) != NULL) {
+			char *line = NULL;
+			const char commentChar = '#';
+			const char *ccp = &buf[0];
+			struct Interpreter_in in;
 
-	    adv_while_isspace(&ccp);
-	    if (strings_match(ccp, "") || *ccp == commentChar) {
-		line_num++;
-		continue;
-	    }
+			adv_while_isspace(&ccp);
 
-	    line = trim(xstrdup(ccp));
-	    in.path	      = (char *) path;
-	    in.line	      = line;
-	    in.line_num	      = ++line_num;
-	    in.validator_func = is_recognized_setting;
-	    in.install_func   = install_setting;
-	    Interpreter(&in);
-	    free_not_null(line);
+			if (strings_match(ccp, "") || *ccp == commentChar) {
+				line_num++;
+				continue;
+			}
+
+			line = trim(xstrdup(ccp));
+			in.path     = (char *) path;
+			in.line     = line;
+			in.line_num = ++line_num;
+			in.validator_func = is_recognized_setting;
+			in.install_func   = install_setting;
+			Interpreter(&in);
+			free_not_null(line);
+		}
 	}
-    }
 
-    if (feof(fp)) {
-	fclose(fp);
-    } else if (ferror(fp)) {
-	fatal(0, "read_config_file: fatal: fgets returned null "
-	      "and the error indicator is set");
-    } else {
-	fatal(0, "read_config_file: fatal: fgets returned null "
-	      "and the reason cannot be determined");
-    }
+	if (feof(fp)) {
+		fclose(fp);
+	} else if (ferror(fp)) {
+		fatal(0, "read_config_file: fatal: fgets returned null and "
+		    "the error indicator is set");
+	} else {
+		fatal(0, "read_config_file: fatal: fgets returned null and "
+		    "the reason cannot be determined");
+	}
 
-    g_conf_read = true;
+	g_conf_read = true;
 }
