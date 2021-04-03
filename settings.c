@@ -315,11 +315,11 @@ setting(const char *setting_name)
  * @return The result of the conversion
  */
 long int
-setting_integer_unparse(const struct integer_unparse_context *ctx)
+setting_integer(const struct integer_unparse_context *ctx)
 {
     long int val = 0;
 
-    log_assert_arg_nonnull("setting_integer_unparse", "ctx", ctx);
+    log_assert_arg_nonnull("setting_integer", "ctx", ctx);
 
     FOREACH_CDV() {
 	if (strings_match(ctx->setting_name, cdv->setting_name)) {

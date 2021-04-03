@@ -479,7 +479,7 @@ start_update_cycle()
 	    struct timespec ts = {
 		.tv_sec	 = ((updateRequestAfter30Min)
 			    ? 1800
-			    : setting_integer_unparse(&ctx)),
+			    : setting_integer(&ctx)),
 		.tv_nsec = 0,
 	    };
 
