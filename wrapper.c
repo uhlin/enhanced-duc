@@ -32,19 +32,18 @@
 char *
 strdup_printf(const char *format, ...)
 {
-    char	*ret;
-    int		 chars_printed;
-    va_list	 ap;
+	char *ret;
+	int chars_printed;
+	va_list ap;
 
-    va_start(ap, format);
-    chars_printed = my_vasprintf(&ret, format, ap);
-    va_end(ap);
+	va_start(ap, format);
+	chars_printed = my_vasprintf(&ret, format, ap);
+	va_end(ap);
 
-    if (chars_printed < 0) {
-	fatal(errno, "strdup_printf: fatal error");
-    }
+	if (chars_printed < 0)
+		fatal(errno, "strdup_printf");
 
-    return (ret);
+	return ret;
 }
 
 /**
