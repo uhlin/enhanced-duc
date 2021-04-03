@@ -73,7 +73,7 @@ signal_handler(int signum)
  * @return 0 on success, and -1 on failure
  */
 int
-sigHand_init(void)
+sighand_init(void)
 {
     const size_t		 ar_sz = nitems(sig_message);
     sigset_t			 set;
@@ -82,7 +82,7 @@ sigHand_init(void)
 
     (void) sigfillset(&set);
     if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sigHand_init: SIG_SETMASK");
+	log_warn(errno, "sighand_init: SIG_SETMASK");
 	return -1;
     }
 
@@ -97,7 +97,7 @@ sigHand_init(void)
 	}
 
 	if (sigaction(ssp->num, &act, NULL) != 0) {
-	    log_warn(errno, "sigHand_init: sigaction failed on signal %d (%s)",
+	    log_warn(errno, "sighand_init: sigaction failed on signal %d (%s)",
 		     ssp->num, ssp->num_str);
 	    return -1;
 	}
@@ -105,7 +105,7 @@ sigHand_init(void)
 
     (void) sigemptyset(&set);
     if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sigHand_init: SIG_SETMASK");
+	log_warn(errno, "sighand_init: SIG_SETMASK");
 	return -1;
     }
 

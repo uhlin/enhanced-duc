@@ -503,7 +503,7 @@ main(int argc, char *argv[])
 	.want_daemon		 = false,
     };
 
-    if (sigHand_init() == -1)
+    if (sighand_init() == -1)
 	log_warn(0, "Initialization of signal handling failed");
     if (atexit(program_clean_up) == -1)
 	log_warn(errno, "Failed to register a clean up function");
