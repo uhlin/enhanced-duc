@@ -66,18 +66,14 @@ is_directory(const char *path)
 bool
 is_numeric(const char *string)
 {
-    const char *p;
-
-    if (string == NULL || *string == '\0') {
-	return false;
-    }
-
-    for (p = &string[0]; *p != '\0'; p++) {
-	if (!isdigit(*p))
-	    return false;
-    }
-
-    return true;
+	if (string == NULL || *string == '\0') {
+		return false;
+	}
+	for (const char *p = &string[0]; *p != '\0'; p++) {
+		if (!isdigit(*p))
+			return false;
+	}
+	return true;
 }
 
 /**
