@@ -75,41 +75,40 @@ signal_handler(int signum)
 int
 sighand_init(void)
 {
-    const size_t		 ar_sz = nitems(sig_message);
-    sigset_t			 set;
-    struct sig_message_tag	*ssp;
-    struct sigaction		 act;
+	sigset_t set;
+	struct sigaction act = { 0 };
 
-    (void) sigfillset(&set);
-    if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sighand_init: SIG_SETMASK");
-	return -1;
-    }
+	(void) sigfillset(&set);
+	(void) sigfillset(&act.sa_mask);
+	act.sa_flags = 0;
 
-    (void) sigfillset(&act.sa_mask);
-    for (act.sa_flags = 0, ssp = &sig_message[0];
-	 ssp < &sig_message[ar_sz];
-	 ssp++) {
-	if (ssp->ignore) {
-	    act.sa_handler = SIG_IGN;
-	} else {
-	    act.sa_handler = signal_handler;
+	if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
+		log_warn(errno, "sighand_init: SIG_SETMASK");
+		return -1;
 	}
 
-	if (sigaction(ssp->num, &act, NULL) != 0) {
-	    log_warn(errno, "sighand_init: sigaction failed on signal %d (%s)",
-		     ssp->num, ssp->num_str);
-	    return -1;
+	for (struct sig_message_tag *ssp = &sig_message[0];
+	     ssp < &sig_message[nitems(sig_message)]; ssp++) {
+		if (ssp->ignore) {
+			act.sa_handler = SIG_IGN;
+		} else {
+			act.sa_handler = signal_handler;
+		}
+		if (sigaction(ssp->num, &act, NULL) != 0) {
+			log_warn(errno, "sighand_init: sigaction failed on "
+			    "signal %d (%s)", ssp->num, ssp->num_str);
+			return -1;
+		}
 	}
-    }
 
-    (void) sigemptyset(&set);
-    if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-	log_warn(errno, "sighand_init: SIG_SETMASK");
-	return -1;
-    }
+	(void) sigemptyset(&set);
 
-    return 0; /* All ok! */
+	if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
+		log_warn(errno, "sighand_init: SIG_SETMASK");
+		return -1;
+	}
+
+	return 0;
 }
 
 /**
