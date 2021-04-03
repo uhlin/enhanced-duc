@@ -90,11 +90,11 @@ is_numeric(const char *string)
 bool
 is_regularFile(const char *path)
 {
-    struct stat sb;
+	struct stat sb = { 0 };
 
-    if (path == NULL || *path == '\0')
-	return false;
-    return stat(path, &sb) == 0 && S_ISREG(sb.st_mode);
+	if (path == NULL || *path == '\0')
+		return false;
+	return (stat(path, &sb) == 0 && S_ISREG(sb.st_mode));
 }
 
 /**
