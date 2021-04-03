@@ -107,22 +107,20 @@ is_regularFile(const char *path)
 char *
 strToLower(char *s)
 {
-    size_t len = 0;
+	size_t len = 0;
 
-    if (s == NULL) {
-	fatal(EINVAL, "strToLower");
-    } else if (*s == '\0') {
+	if (s == NULL) {
+		fatal(EINVAL, "strToLower");
+	} else if (*s == '\0') {
+		return s;
+	} else {
+		len = strlen(s);
+	}
+	for (char *p = &s[0]; p < &s[len]; p++) {
+		if (isupper(*p))
+			*p = tolower(*p);
+	}
 	return s;
-    } else {
-	len = strlen(s);
-    }
-
-    for (char *p = &s[0]; p < &s[len]; p++) {
-	if (isupper(*p))
-	    *p = tolower(*p);
-    }
-
-    return s;
 }
 
 /**
