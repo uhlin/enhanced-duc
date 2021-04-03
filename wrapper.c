@@ -118,17 +118,17 @@ xcalloc(size_t elt_count, size_t elt_size)
 void *
 xmalloc(size_t size)
 {
-    void *vp = NULL;
+	void *vp = NULL;
 
-    if (size == 0) {
-	fatal(EINVAL, "xmalloc: invalid argument -- zero size");
-    }
+	if (size == 0) {
+		fatal(EINVAL, "xmalloc: invalid argument -- zero size");
+	}
 
-    if ((vp = malloc(size)) == NULL) {
-	fatal(ENOMEM, "xmalloc: error allocating %zu bytes", size);
-    }
+	if ((vp = malloc(size)) == NULL) {
+		fatal(ENOMEM, "xmalloc: error allocating %zu bytes", size);
+	}
 
-    return (vp);
+	return (vp);
 }
 
 /**
