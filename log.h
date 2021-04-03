@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "def.h"
+#include "ducdef.h"
 
 __BEGIN_DECLS
 extern bool g_log_to_syslog;

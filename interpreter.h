@@ -4,7 +4,7 @@
 #include <ctype.h> /* isspace */
 #include <stdbool.h>
 
-#include "def.h"
+#include "ducdef.h"
 
 enum setting_type {
     TYPE_BOOLEAN,

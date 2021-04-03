@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "def.h"
+#include "ducdef.h"
 
 typedef enum {
     IP_HAS_CHANGED,

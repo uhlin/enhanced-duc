@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <string.h> /* strcmp */
 
-#include "def.h" /* PTR_ARGS_NONNULL etc */
+#include "ducdef.h" /* PTR_ARGS_NONNULL etc */
 #include "enhanced-duc-config.h"
 
 typedef enum { ON, OFF } on_off_t;
