@@ -3,7 +3,7 @@
 
 #include "interpreter.h"
 
-struct integer_unparse_context {
+struct integer_context {
     char	*setting_name;
     long int	 lo_limit;
     long int	 hi_limit;
@@ -17,7 +17,7 @@ bool		 setting_bool(const char *setting_name,
 char		*get_answer(const char *desc, enum setting_type,
 		     const char *defaultAnswer);
 const char	*setting(const char *setting_name);
-long int	 setting_integer(const struct integer_unparse_context *);
+long int	 setting_integer(const struct integer_context *);
 void		 check_some_settings_strictly(void);
 void		 create_config_file(const char *path);
 void		 destroy_config_custom_values(void);

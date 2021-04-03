@@ -470,7 +470,7 @@ start_update_cycle()
 	}
 
 	if (Cycle) {
-	    struct integer_unparse_context ctx = {
+	    struct integer_context ctx = {
 		.setting_name = "update_interval_seconds",
 		.lo_limit     = 600,	/* 10 minutes */
 		.hi_limit     = 172800,	/* 2 days */

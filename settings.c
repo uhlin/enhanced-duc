@@ -315,7 +315,7 @@ setting(const char *setting_name)
  * @return The result of the conversion
  */
 long int
-setting_integer(const struct integer_unparse_context *ctx)
+setting_integer(const struct integer_context *ctx)
 {
     long int val = 0;
 
