@@ -57,27 +57,26 @@ strdup_printf(const char *format, ...)
 char *
 xstrdup(const char *s)
 {
-    char *s_copy = NULL;
-    int chars_printed = -1;
-    size_t sz = 0;
+	char *newstr = NULL;
+	int chars_printed = -1;
+	size_t sz = 0;
 
-    if (s == NULL) {
-	fatal(EINVAL, "xstrdup: invalid argument");
-    } else {
-	sz = strlen(s) + 1;
-    }
+	if (s == NULL) {
+		fatal(EINVAL, "xstrdup: invalid argument");
+	} else {
+		sz = strlen(s) + 1;
+	}
 
-    if ((s_copy = malloc(sz)) == NULL) {
-	fatal(ENOMEM, "xstrdup: error allocating %zu bytes", sz);
-    }
+	if ((newstr = malloc(sz)) == NULL)
+		fatal(ENOMEM, "xstrdup: error allocating %zu bytes", sz);
 
-    if ((chars_printed = snprintf(s_copy, sz, "%s", s)) == -1 ||
-	chars_printed >= sz) {
-	fatal(errno, "xstrdup: snprintf error (chars_printed = %d)",
-	      chars_printed);
-    }
+	if ((chars_printed = snprintf(newstr, sz, "%s", s)) < 0 ||
+	    ((size_t) chars_printed) >= sz) {
+		fatal(errno, "xstrdup: snprintf error (chars_printed = %d)",
+		    chars_printed);
+	}
 
-    return (s_copy);
+	return (newstr);
 }
 
 /**
