@@ -147,7 +147,7 @@ static const size_t CDV_AR_SZ = nitems(config_default_values);
  * @return true or false
  */
 bool
-setting_bool_unparse(const char *setting_name, const bool fallback_val)
+setting_bool(const char *setting_name, const bool fallback_val)
 {
     if (setting_name == NULL) {
 	return (fallback_val);
@@ -158,7 +158,7 @@ setting_bool_unparse(const char *setting_name, const bool fallback_val)
 	    const char *value = cdv->custom_val ? cdv->custom_val : cdv->value;
 
 	    if (cdv->type != TYPE_BOOLEAN) {
-		log_warn(0, "setting_bool_unparse: %s: "
+		log_warn(0, "setting_bool: %s: "
 			 "setting not a boolean!", setting_name);
 		break;
 	    } else if (strings_match(value, "yes") ||
@@ -168,7 +168,7 @@ setting_bool_unparse(const char *setting_name, const bool fallback_val)
 		       strings_match(value, "NO")) {
 		return (false);
 	    } else {
-		log_warn(0, "setting_bool_unparse: %s: "
+		log_warn(0, "setting_bool: %s: "
 			 "setting has an invalid value!", setting_name);
 		break;
 	    }

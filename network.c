@@ -249,7 +249,7 @@ net_check_for_ip_change(void)
     struct addrinfo *res, *rp;
     unsigned char  nw_addr[sizeof (struct in_addr)];
 
-    if (setting_bool_unparse("force_update", true))
+    if (setting_bool("force_update", true))
 	return (IP_HAS_CHANGED);
 
     if ((res = net_addr_resolve(primary_srv, port)) != NULL) {

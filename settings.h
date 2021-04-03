@@ -12,7 +12,7 @@ struct integer_unparse_context {
 
 extern bool g_conf_read;
 
-bool		 setting_bool_unparse(const char *setting_name,
+bool		 setting_bool(const char *setting_name,
 		     const bool fallback_val);
 char		*get_answer(const char *desc, enum setting_type,
 		     const char *defaultAnswer);
