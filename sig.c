@@ -51,18 +51,17 @@ static struct sig_message_tag {
 static void
 signal_handler(int signum)
 {
-    const size_t ar_sz = nitems(sig_message);
-    struct sig_message_tag *ssp;
+	program_clean_up();
 
-    program_clean_up();
+	for (struct sig_message_tag *ssp = &sig_message[0];
+	     ssp < &sig_message[nitems(sig_message)]; ssp++) {
+		if (ssp->num == signum) {
+			log_warn(0, "Received signal %d (%s): %s", ssp->num,
+			    ssp->num_str, ssp->msg);
+		}
+	}
 
-    for (ssp = &sig_message[0]; ssp < &sig_message[ar_sz]; ssp++) {
-	if (ssp->num == signum)
-	    log_warn(0, "Received signal %d (%s): %s",
-		     ssp->num, ssp->num_str, ssp->msg);
-    }
-
-    _exit(1);
+	_exit(1);
 }
 
 /**
