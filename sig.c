@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018, 2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -119,15 +119,15 @@ sighand_init(void)
 void
 program_clean_up(void)
 {
-    extern int g_lockfile_fd;
+	extern int g_lockfile_fd;
 
-    net_deinit();
-    destroy_config_custom_values();
+	net_deinit();
+	destroy_config_custom_values();
 
-    if (g_conf_read)
-	log_msg("%s %s has exited", g_programName, g_programVersion);
-    if (g_lockfile_fd != -1)
-	close(g_lockfile_fd);
-    if (g_log_to_syslog)
-	closelog();
+	if (g_conf_read)
+		log_msg("%s %s has exited", g_programName, g_programVersion);
+	if (g_lockfile_fd != -1)
+		close(g_lockfile_fd);
+	if (g_log_to_syslog)
+		closelog();
 }
