@@ -1,4 +1,4 @@
-/* Copyright (c) 2015-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -142,17 +142,20 @@ xmalloc(size_t size)
 void *
 xrealloc(void *ptr, size_t newSize)
 {
-    void *newPtr = NULL;
+	void *newPtr = NULL;
 
-    if (ptr == NULL) {
-	fatal(EINVAL, "xrealloc: invalid argument: a null pointer was passed");
-    } else if (newSize == 0) {
-	fatal(EINVAL, "xrealloc: invalid argument: zero size  --  use free");
-    } else {
-	if ((newPtr = realloc(ptr, newSize)) == NULL)
-	    fatal(errno, "xrealloc: error changing memory block to %zu bytes",
-		  newSize);
-    }
+	if (ptr == NULL) {
+		fatal(EINVAL, "xrealloc: invalid argument: "
+		    "a null pointer was passed");
+	} else if (newSize == 0) {
+		fatal(EINVAL, "xrealloc: invalid argument: "
+		    "zero size  --  use free");
+	} else {
+		if ((newPtr = realloc(ptr, newSize)) == NULL) {
+			fatal(errno, "xrealloc: error changing memory block "
+			    "to %zu bytes", newSize);
+		}
+	}
 
-    return (newPtr);
+	return (newPtr);
 }
