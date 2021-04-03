@@ -134,22 +134,21 @@ strToLower(char *s)
 char *
 trim(char *string)
 {
-    if (string == NULL) {
-	fatal(EINVAL, "trim");
-    } else if (*string == '\0') {
-	return string;
-    } else {
-	char *p;
+	if (string == NULL) {
+		fatal(EINVAL, "trim");
+	} else if (*string == '\0') {
+		return string;
+	} else {
+		char *p;
 
-	for (p = &string[strlen(string) - 1]; p >= &string[0]; p--) {
-	    if (!isspace(*p))
-		break;
+		for (p = &string[strlen(string) - 1]; p >= &string[0]; p--) {
+			if (!isspace(*p))
+				break;
+		}
+
+		*(p + 1) = '\0';
 	}
-
-	*(p + 1) = '\0';
-    }
-
-    return string;
+	return string;
 }
 
 /**
