@@ -91,21 +91,24 @@ xstrdup(const char *s)
 void *
 xcalloc(size_t elt_count, size_t elt_size)
 {
-    void *vp = NULL;
+	void *vp = NULL;
 
-    if (elt_count == 0) {
-	fatal(EINVAL, "xcalloc: invalid argument: element count is zero");
-    } else if (elt_size == 0) {
-	fatal(EINVAL, "xcalloc: invalid argument: element size is zero");
-    } else if (SIZE_MAX / elt_count < elt_size) {
-	fatal(0, "xcalloc: integer overflow");
-    } else {
-	if ((vp = calloc(elt_count, elt_size)) == NULL)
-	    fatal(ENOMEM, "xcalloc: out of memory (allocating %zu bytes)",
-		  (elt_count * elt_size));
-    }
+	if (elt_count == 0) {
+		fatal(EINVAL, "xcalloc: invalid argument: "
+		    "element count is zero");
+	} else if (elt_size == 0) {
+		fatal(EINVAL, "xcalloc: invalid argument: "
+		    "element size is zero");
+	} else if (SIZE_MAX / elt_count < elt_size) {
+		fatal(0, "xcalloc: integer overflow");
+	} else {
+		if ((vp = calloc(elt_count, elt_size)) == NULL) {
+			fatal(ENOMEM, "xcalloc: out of memory "
+			    "(allocating %zu bytes)", (elt_count * elt_size));
+		}
+	}
 
-    return (vp);
+	return (vp);
 }
 
 /**
