@@ -120,7 +120,7 @@ write_border(const int c, const size_t len)
     fputc('\n', stderr);
 }
 
-static NORETURN void
+static __dead void
 usage()
 {
     extern char *__progname;
