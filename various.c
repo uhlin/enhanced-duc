@@ -163,9 +163,11 @@ trim(char *string)
 size_t
 size_product(const size_t elt_count, const size_t elt_size)
 {
-    if (elt_count > 0 && SIZE_MAX / elt_count < elt_size)
-	fatal(ERANGE, "size_product: fatal: numerical result out of range");
-    return (elt_count * elt_size);
+	if (elt_count > 0 && SIZE_MAX / elt_count < elt_size) {
+		fatal(ERANGE, "size_product: fatal: numerical result "
+		    "out of range");
+	}
+	return (elt_count * elt_size);
 }
 
 /**
