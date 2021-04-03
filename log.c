@@ -1,4 +1,4 @@
-/* Copyright (c) 2015, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015, 2018, 2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -80,7 +80,7 @@ redirect_standard_streams(void)
  * @param code	Code passed to strerror()
  * @param fmt	Format control
  */
-void
+__dead void
 fatal(int code, const char *fmt, ...)
 {
     va_list ap;

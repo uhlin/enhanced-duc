@@ -23,7 +23,7 @@ typedef enum {
 
 __BEGIN_DECLS
 redir_res_t	redirect_standard_streams(void);
-void		fatal(int code, const char *, ...) PRINTFLIKE(2) __dead;
+__dead void	fatal(int code, const char *, ...) PRINTFLIKE(2);
 
 void		log_debug(const char *, ...) PRINTFLIKE(1);
 void		log_init(void);
