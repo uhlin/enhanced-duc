@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016, 2018, 2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -177,31 +177,32 @@ size_product(const size_t elt_count, const size_t elt_size)
 void
 toggle_echo(on_off_t state)
 {
-    static bool initialized = false;
-    static struct termios term_attrs = { 0 };
+	static bool initialized = false;
+	static struct termios term_attrs = { 0 };
 
-    if (!initialized) {
-	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
-	    fatal(errno, "toggle_echo: tcgetattr");
-	initialized = true;
-    }
+	if (!initialized) {
+		if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
+			fatal(errno, "toggle_echo: tcgetattr");
+		initialized = true;
+	}
 
-    switch (state) {
-    case ON:
-	if (! (term_attrs.c_lflag & ECHO)) {
-	    term_attrs.c_lflag |= ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		fatal(errno, "toggle_echo: tcsetattr");
+	switch (state) {
+	case ON:
+		if (! (term_attrs.c_lflag & ECHO)) {
+			term_attrs.c_lflag |= ECHO;
+			if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+				fatal(errno, "toggle_echo: tcsetattr");
+		}
+		break;
+	case OFF:
+		if (term_attrs.c_lflag & ECHO) {
+			term_attrs.c_lflag &= ~ECHO;
+			if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
+				fatal(errno, "toggle_echo: tcsetattr");
+		}
+		break;
+	default:
+		fatal(0, "toggle_echo: statement reached unexpectedly");
+		break;
 	}
-	break;
-    case OFF:
-	if (term_attrs.c_lflag & ECHO) {
-	    term_attrs.c_lflag &= ~ECHO;
-	    if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-		fatal(errno, "toggle_echo: tcsetattr");
-	}
-	break;
-    default:
-	assert(false); /* Shouldn't be reached. */
-    }
 }
