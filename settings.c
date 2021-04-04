@@ -519,23 +519,21 @@ is_recognized_setting(const char *setting_name)
 static int
 install_setting(const char *setting_name, const char *value)
 {
-    if (setting_name == NULL || value == NULL)
-	return (EINVAL);
-
-    FOREACH_CDV() {
-	if (strings_match(setting_name, cdv->setting_name)) {
-	    if (cdv->custom_val) {
-		return (EBUSY);
-	    } else if (!is_setting_ok(value, cdv->type)) {
-		return (EINVAL);
-	    } else {
-		cdv->custom_val = xstrdup(value);
-		return (0);
-	    }
+	if (setting_name == NULL || value == NULL)
+		return EINVAL;
+	FOREACH_CDV() {
+		if (strings_match(setting_name, cdv->setting_name)) {
+			if (cdv->custom_val) {
+				return EBUSY;
+			} else if (!is_setting_ok(value, cdv->type)) {
+				return EINVAL;
+			} else {
+				cdv->custom_val = xstrdup(value);
+				return 0;
+			}
+		}
 	}
-    }
-
-    return (ENOENT);
+	return ENOENT;
 }
 
 /**
