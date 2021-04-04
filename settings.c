@@ -494,12 +494,12 @@ create_config_file(const char *path)
 void
 destroy_config_custom_values(void)
 {
-    FOREACH_CDV() {
-	if (cdv->custom_val) {
-	    free(cdv->custom_val);
-	    cdv->custom_val = NULL;
+	FOREACH_CDV() {
+		if (cdv->custom_val) {
+			free(cdv->custom_val);
+			cdv->custom_val = NULL;
+		}
 	}
-    }
 }
 
 static bool
