@@ -32,35 +32,7 @@ bool g_conf_read = false;
 static const char GfxFailure[] = "[\x1b[1;31m*\x1b[0m]";
 static const char GfxSuccess[] = "[\x1b[1;32m*\x1b[0m]";
 
-static const char USERNAME_DESC[] =
-    "Your username.";
-static const char PASSWORD_DESC[] =
-    "Your password. (Will not echo!)";
-static const char HOSTNAME_DESC[] =
-    "The hostname to be updated. Multiple hosts are separated with a\n"
-    "vertical bar.";
-static const char IP_ADDR_DESC[] =
-    "Associate the hostname(s) with this IP address. If the special value\n"
-    "WAN_address is specified: the WAN address from which the update\n"
-    "request is sent from is used.";
-static const char SP_HOSTNAME_DESC[] =
-    "Service provider hostname. The HTTP GET request is sent to this\n"
-    "hostname.";
-static const char PORT_DESC[] =
-    "Connect to sp_hostname + this port. 443 = enable TLS/SSL.";
-static const char UPDATE_INTERVAL_SECONDS_DESC[] =
-    "Update interval specified in seconds. If a value less than 600 is\n"
-    "entered, the underlying code will fallback to 1800 to avoid flooding\n"
-    "the server with requests.";
-static const char PRIMARY_IP_LOOKUP_SRV_DESC[] =
-    "Server used to determine your external IP.";
-static const char BACKUP_IP_LOOKUP_SRV_DESC[] =
-    "Backup server for IP lookups.";
-static const char FORCE_UPDATE_DESC[] =
-    "Even if your external IP address hasn't changed between update\n"
-    "intervals, or if the program cannot determine your external IP -- in\n"
-    "either way: force update.  This setting should be set to YES if\n"
-    "ip_addr is not equal to value WAN_address.";
+#include "optdesc.h"
 
 static struct config_default_values_tag {
     char		*setting_name;
