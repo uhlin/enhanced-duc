@@ -394,18 +394,15 @@ is_hostname_ok(const char *host, char **reason)
 static bool
 is_port_ok(void)
 {
-    const char *port = setting("port");
+	const char *port = setting("port");
 
-    if (strings_match(port, "80"))
-	return true;
-    else if (strings_match(port, "443"))
-	return true;
-    else if (strings_match(port, "8245"))
-	return true;
-    else
+	if (strings_match(port, "80"))
+		return true;
+	else if (strings_match(port, "443"))
+		return true;
+	else if (strings_match(port, "8245"))
+		return true;
 	return false;
-
-    /*NOTREACHED*/ return false;
 }
 
 /**
