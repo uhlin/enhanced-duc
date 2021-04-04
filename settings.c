@@ -35,71 +35,52 @@ static const char GfxSuccess[] = "[\x1b[1;32m*\x1b[0m]";
 #include "optdesc.h"
 
 static struct config_default_values_tag {
-    char		*setting_name;
-    enum setting_type	 type;
-    char		*value;
-    char		*custom_val;
-    const char		*description;
+	char *setting_name;
+	enum setting_type type;
+	char *value;
+	char *custom_val;
+	const char *description;
 } config_default_values[] = {
-    { "username",
-      TYPE_STRING,
-      "ChangeMe",
-      NULL,
-      USERNAME_DESC },
-
-    { "password",
-      TYPE_STRING,
-      "ChangeMe",
-      NULL,
-      PASSWORD_DESC },
-
-    { "hostname",
-      TYPE_STRING,
-      "host1.domain.com|host2.domain.com",
-      NULL,
-      HOSTNAME_DESC },
-
-    { "ip_addr",
-      TYPE_STRING,
-      "WAN_address",
-      NULL,
-      IP_ADDR_DESC },
-
-    { "sp_hostname",
-      TYPE_STRING,
-      "dynupdate.no-ip.com",
-      NULL,
-      SP_HOSTNAME_DESC },
-
-    { "port",
-      TYPE_INTEGER,
-      "80",
-      NULL,
-      PORT_DESC },
-
-    { "update_interval_seconds",
-      TYPE_INTEGER,
-      "1800",
-      NULL,
-      UPDATE_INTERVAL_SECONDS_DESC },
-
-    { "primary_ip_lookup_srv",
-      TYPE_STRING,
-      "ip1.dynupdate.no-ip.com",
-      NULL,
-      PRIMARY_IP_LOOKUP_SRV_DESC },
-
-    { "backup_ip_lookup_srv",
-      TYPE_STRING,
-      "ip2.dynupdate.no-ip.com",
-      NULL,
-      BACKUP_IP_LOOKUP_SRV_DESC },
-
-    { "force_update",
-      TYPE_BOOLEAN,
-      "YES",
-      NULL,
-      FORCE_UPDATE_DESC },
+	{ "username",
+	  TYPE_STRING,
+	  "ChangeMe",
+	  NULL, USERNAME_DESC },
+	{ "password",
+	  TYPE_STRING,
+	  "ChangeMe",
+	  NULL, PASSWORD_DESC },
+	{ "hostname",
+	  TYPE_STRING,
+	  "host1.domain.com|host2.domain.com",
+	  NULL, HOSTNAME_DESC },
+	{ "ip_addr",
+	  TYPE_STRING,
+	  "WAN_address",
+	  NULL, IP_ADDR_DESC },
+	{ "sp_hostname",
+	  TYPE_STRING,
+	  "dynupdate.no-ip.com",
+	  NULL, SP_HOSTNAME_DESC },
+	{ "port",
+	  TYPE_INTEGER,
+	  "80",
+	  NULL, PORT_DESC },
+	{ "update_interval_seconds",
+	  TYPE_INTEGER,
+	  "1800",
+	  NULL, UPDATE_INTERVAL_SECONDS_DESC },
+	{ "primary_ip_lookup_srv",
+	  TYPE_STRING,
+	  "ip1.dynupdate.no-ip.com",
+	  NULL, PRIMARY_IP_LOOKUP_SRV_DESC },
+	{ "backup_ip_lookup_srv",
+	  TYPE_STRING,
+	  "ip2.dynupdate.no-ip.com",
+	  NULL, BACKUP_IP_LOOKUP_SRV_DESC },
+	{ "force_update",
+	  TYPE_BOOLEAN,
+	  "YES",
+	  NULL, FORCE_UPDATE_DESC },
 };
 
 static const size_t CDV_AR_SZ = nitems(config_default_values);
