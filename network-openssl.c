@@ -224,11 +224,11 @@ net_ssl_begin(void)
 void
 net_ssl_end(void)
 {
-    if (ssl) {
-	SSL_shutdown(ssl);
-	SSL_free(ssl);
-	ssl = NULL;
-    }
+	if (ssl) {
+		SSL_shutdown(ssl);
+		SSL_free(ssl);
+		ssl = NULL;
+	}
 }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
