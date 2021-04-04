@@ -505,15 +505,13 @@ destroy_config_custom_values(void)
 static bool
 is_recognized_setting(const char *setting_name)
 {
-    if (setting_name == NULL)
+	if (setting_name == NULL)
+		return false;
+	FOREACH_CDV() {
+		if (strings_match(setting_name, cdv->setting_name))
+			return true;
+	}
 	return false;
-
-    FOREACH_CDV() {
-	if (strings_match(setting_name, cdv->setting_name))
-	    return true;
-    }
-
-    return false;
 }
 
 static int
