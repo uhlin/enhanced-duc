@@ -344,25 +344,22 @@ setting_integer(const struct integer_context *ctx)
 static bool
 is_ip_addr_ok(char **reason)
 {
-    const char		*ip = setting("ip_addr");
-    unsigned char	 buf[sizeof (struct in_addr)];
+	const char	*ip = setting("ip_addr");
+	unsigned char	 buf[sizeof (struct in_addr)];
 
-    if (strings_match(ip, "")) {
-	*reason = "empty setting";
-	return false;
-    } else if (strings_match(ip, "WAN_address")) {
+	if (strings_match(ip, "")) {
+		*reason = "empty setting";
+		return false;
+	} else if (strings_match(ip, "WAN_address")) {
+		*reason = "";
+		return true;
+	} else if (inet_pton(AF_INET, ip, buf) == 0) {
+		*reason = "bogus ipv4 address";
+		return false;
+	}
+
 	*reason = "";
 	return true;
-    } else if (inet_pton(AF_INET, ip, buf) == 0) {
-	*reason = "bogus ipv4 address";
-	return false;
-    } else {
-	*reason = "";
-	return true;
-    }
-
-    /*NOTREACHED*/ *reason = "";
-    /*NOTREACHED*/ return true;
 }
 
 static bool
