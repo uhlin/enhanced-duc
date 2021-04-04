@@ -251,15 +251,15 @@ create_ssl_context_obj()
 /* -------------------------------- */
 
 static void
-create_ssl_context_obj_insecure()
+create_ssl_context_obj_insecure(void)
 {
-    if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
-	fatal(ENOMEM, "create_ssl_context_obj_insecure: "
-	    "unable to create a new ssl_ctx object");
-    } else {
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
-    }
+	if ((ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL) {
+		fatal(ENOMEM, "create_ssl_context_obj_insecure: "
+		    "unable to create a new ssl_ctx object");
+	} else {
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+	}
 }
 #endif
 
