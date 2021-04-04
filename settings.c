@@ -368,27 +368,29 @@ is_ip_addr_ok(char **reason)
 static bool
 is_hostname_ok(const char *host, char **reason)
 {
-    const char host_chars[] =
-	"abcdefghijklmnopqrstuvwxyz.0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ:";
-    const size_t host_maxlen = 255;
+	const char host_chars[] =
+	    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	    "abcdefghijklmnopqrstuvwxyz"
+	    "0123456789-.:";
+	const size_t host_maxlen = 255;
 
-    if (strings_match(host, "")) {
-	*reason = "empty setting";
-	return false;
-    } else if (strlen(host) > host_maxlen) {
-	*reason = "name too long";
-	return false;
-    } else {
-	for (const char *cp = host; *cp; cp++) {
-	    if (strchr(host_chars, *cp) == NULL) {
-		*reason = "invalid chars found!";
+	if (strings_match(host, "")) {
+		*reason = "empty setting";
 		return false;
-	    }
+	} else if (strlen(host) > host_maxlen) {
+		*reason = "name too long";
+		return false;
+	} else {
+		for (const char *cp = host; *cp; cp++) {
+			if (strchr(host_chars, *cp) == NULL) {
+				*reason = "invalid chars found!";
+				return false;
+			}
+		}
 	}
-    }
 
-    *reason = "";
-    return true;
+	*reason = "";
+	return true;
 }
 
 static bool
