@@ -415,30 +415,30 @@ is_port_ok(void)
 void
 check_some_settings_strictly(void)
 {
-    char *reason = "";
-    const char *password = setting("password");
-    const char *username = setting("username");
-    const size_t password_maxlen = 120;
-    const size_t username_maxlen = 50;
+	char *reason = "";
+	const char *password = setting("password");
+	const char *username = setting("username");
+	const size_t password_maxlen = 120;
+	const size_t username_maxlen = 50;
 
-    if (strings_match(username, "") || strings_match(password, ""))
-	fatal(0, "error: empty username nor password");
-    else if (strlen(username) > username_maxlen)
-	fatal(0, "error: username too long. max=%zu", username_maxlen);
-    else if (strlen(password) > password_maxlen)
-	fatal(0, "error: password too long. max=%zu", password_maxlen);
-    else if (!is_ip_addr_ok(&reason))
-	fatal(0, "is_ip_addr_ok: error: %s", reason);
-    else if (!is_hostname_ok(setting("sp_hostname"), &reason))
-	fatal(0, "is_hostname_ok: sp_hostname: %s", reason);
-    else if (!is_port_ok())
-	fatal(0, "error: bogus port number");
-    else if (!is_hostname_ok(setting("primary_ip_lookup_srv"), &reason))
-	fatal(0, "is_hostname_ok: primary_ip_lookup_srv: %s", reason);
-    else if (!is_hostname_ok(setting("backup_ip_lookup_srv"), &reason))
-	fatal(0, "is_hostname_ok: backup_ip_lookup_srv: %s", reason);
-    else
-	return;
+	if (strings_match(username, "") || strings_match(password, ""))
+		fatal(0, "error: empty username nor password");
+	else if (strlen(username) > username_maxlen)
+		fatal(0, "error: username too long. max=%zu", username_maxlen);
+	else if (strlen(password) > password_maxlen)
+		fatal(0, "error: password too long. max=%zu", password_maxlen);
+	else if (!is_ip_addr_ok(&reason))
+		fatal(0, "is_ip_addr_ok: error: %s", reason);
+	else if (!is_hostname_ok(setting("sp_hostname"), &reason))
+		fatal(0, "is_hostname_ok: sp_hostname: %s", reason);
+	else if (!is_port_ok())
+		fatal(0, "error: bogus port number");
+	else if (!is_hostname_ok(setting("primary_ip_lookup_srv"), &reason))
+		fatal(0, "is_hostname_ok: primary_ip_lookup_srv: %s", reason);
+	else if (!is_hostname_ok(setting("backup_ip_lookup_srv"), &reason))
+		fatal(0, "is_hostname_ok: backup_ip_lookup_srv: %s", reason);
+	else
+		return;
 }
 
 /**
