@@ -225,7 +225,7 @@ is_setting_ok(const char *value, enum setting_type type)
 /**
  * Get answer based on setting description and setting type. The
  * storage of the return is dynamically allocated and must be freed
- * fter use.
+ * after use.
  *
  * @param desc		Setting description
  * @param type		Setting type
@@ -235,54 +235,51 @@ is_setting_ok(const char *value, enum setting_type type)
 char *
 get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 {
-    const size_t	 sz	= 390;
-    char		*answer = xcalloc(sz, 1);
+	const size_t sz = 390;
+	char *answer = xcalloc(sz, 1);
 
-    log_assert_arg_nonnull("get_answer", "desc", desc);
-    log_assert_arg_nonnull("get_answer", "defaultAnswer", defaultAnswer);
+	log_assert_arg_nonnull("get_answer", "desc", desc);
+	log_assert_arg_nonnull("get_answer", "defaultAnswer", defaultAnswer);
 
-    puts(desc);
-    printf("Ans [%s]: ", defaultAnswer);
-    fflush(stdout);
+	puts(desc);
+	printf("Ans [%s]: ", defaultAnswer);
+	fflush(stdout);
 
-    if (!strncmp(desc, "Your password.", 14))
-	toggle_echo(OFF);
-    const bool	fgets_fail = fgets(answer, sz, stdin) == NULL;
-    const int	errno_save = errno;
-    if (!strncmp(desc, "Your password.", 14)) {
-	putchar('\n');
-	toggle_echo(ON);
-    }
+	if (!strncmp(desc, "Your password.", 14))
+		toggle_echo(OFF);
+	const bool fgets_fail = fgets(answer, sz, stdin) == NULL;
+	const int errno_save = errno;
+	if (!strncmp(desc, "Your password.", 14)) {
+		toggle_echo(ON);
+		putchar('\n');
+	}
 
-    if (fgets_fail) {
-	fatal(errno_save, "get_answer: fatal: fgets fail");
-    } else {
+	if (fgets_fail)
+		fatal(errno_save, "get_answer: fatal: fgets fail");
+
 	const bool input_too_big = strchr(answer, '\n') == NULL;
 	int c = EOF;
 
 	if (input_too_big) {
-	    fprintf(stderr, "%s get_answer: input too big!\n", GfxFailure);
-	    while (c = getchar(), c != '\n' && c != EOF)
-		/* discard */;
-	    free(answer);
-	    return (NULL);
+		fprintf(stderr, "%s get_answer: input too big!\n", GfxFailure);
+		while (c = getchar(), c != '\n' && c != EOF)
+			/* discard */;
+		free(answer);
+		return NULL;
 	}
 
 	/* trim newline */
 	answer[strcspn(answer, "\n")] = '\0';
 
 	if (strings_match(answer, "")) {
-	    free(answer);
-	    answer = xstrdup(defaultAnswer);
+		free(answer);
+		answer = xstrdup(defaultAnswer);
 	}
-    }
-
-    if (!is_setting_ok(answer, type)) {
-	free(answer);
-	return (NULL);
-    }
-
-    return (answer);
+	if (!is_setting_ok(answer, type)) {
+		free(answer);
+		return NULL;
+	}
+	return answer;
 }
 
 /**
