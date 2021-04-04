@@ -233,17 +233,17 @@ net_ssl_end(void)
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
 static void
-create_ssl_context_obj()
+create_ssl_context_obj(void)
 {
-    if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
-	fatal(ENOMEM, "create_ssl_context_obj: "
-	    "unable to create a new ssl_ctx object");
-    } else {
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1);
-	SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
-    }
+	if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
+		fatal(ENOMEM, "create_ssl_context_obj: "
+		    "unable to create a new ssl_ctx object");
+	} else {
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1);
+		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
+	}
 }
 #else
 /* -------------------------------- */
