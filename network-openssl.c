@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -330,13 +330,13 @@ net_ssl_init(void)
 void
 net_ssl_deinit(void)
 {
-    if (ssl) {
-	SSL_shutdown(ssl);
-	SSL_free(ssl);
-	ssl = NULL;
-    }
-    if (ssl_ctx) {
-	SSL_CTX_free(ssl_ctx);
-	ssl_ctx = NULL;
-    }
+	if (ssl) {
+		SSL_shutdown(ssl);
+		SSL_free(ssl);
+		ssl = NULL;
+	}
+	if (ssl_ctx) {
+		SSL_CTX_free(ssl_ctx);
+		ssl_ctx = NULL;
+	}
 }
