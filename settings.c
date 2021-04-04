@@ -295,16 +295,16 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 const char *
 setting(const char *setting_name)
 {
-    if (setting_name == NULL) {
+	if (setting_name == NULL) {
+		return ("");
+	}
+
+	FOREACH_CDV() {
+		if (strings_match(setting_name, cdv->setting_name))
+			return (cdv->custom_val ? cdv->custom_val : cdv->value);
+	}
+
 	return ("");
-    }
-
-    FOREACH_CDV() {
-	if (strings_match(setting_name, cdv->setting_name))
-	    return (cdv->custom_val ? cdv->custom_val : cdv->value);
-    }
-
-    return ("");
 }
 
 /**
