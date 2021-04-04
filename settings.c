@@ -138,8 +138,8 @@ static const size_t CDV_AR_SZ = nitems(config_default_values);
 	 cdv++)
 
 /**
- * Unparse a setting of type boolean. In either way: if a setting
- * isn't found at all, or the setting found isn't of type boolean, it
+ * Get a setting of type boolean. In either way: if a setting isn't
+ * found at all, or the setting found isn't of type boolean, it
  * returns the fallback value.
  *
  * @param setting_name	Setting name
@@ -149,33 +149,32 @@ static const size_t CDV_AR_SZ = nitems(config_default_values);
 bool
 setting_bool(const char *setting_name, const bool fallback_val)
 {
-    if (setting_name == NULL) {
-	return (fallback_val);
-    }
+	if (setting_name == NULL)
+		return fallback_val;
+	FOREACH_CDV() {
+		if (strings_match(setting_name, cdv->setting_name)) {
+			const char *value =
+			    (cdv->custom_val ? cdv->custom_val : cdv->value);
 
-    FOREACH_CDV() {
-	if (strings_match(setting_name, cdv->setting_name)) {
-	    const char *value = cdv->custom_val ? cdv->custom_val : cdv->value;
-
-	    if (cdv->type != TYPE_BOOLEAN) {
-		log_warn(0, "setting_bool: %s: "
-			 "setting not a boolean!", setting_name);
-		break;
-	    } else if (strings_match(value, "yes") ||
-		       strings_match(value, "YES")) {
-		return (true);
-	    } else if (strings_match(value, "no") ||
-		       strings_match(value, "NO")) {
-		return (false);
-	    } else {
-		log_warn(0, "setting_bool: %s: "
-			 "setting has an invalid value!", setting_name);
-		break;
-	    }
-	} /* if */
-    } /* for */
-
-    return (fallback_val);
+			if (cdv->type != TYPE_BOOLEAN) {
+				log_warn(0, "setting_bool: %s: "
+				    "setting not a boolean!", setting_name);
+				break;
+			} else if (strings_match(value, "yes") ||
+				   strings_match(value, "YES")) {
+				return true;
+			} else if (strings_match(value, "no") ||
+				   strings_match(value, "NO")) {
+				return false;
+			} else {
+				log_warn(0, "setting_bool: %s: "
+				    "setting has an invalid value!",
+				    setting_name);
+				break;
+			}
+		}
+	}
+	return fallback_val;
 }
 
 static bool
