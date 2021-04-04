@@ -266,27 +266,26 @@ create_ssl_context_obj_insecure()
 static int
 verify_callback(int ok, X509_STORE_CTX *ctx)
 {
-    X509	*cert  = X509_STORE_CTX_get_current_cert(ctx);
-    char  issuer[256]  = "";
-    char  subject[256] = "";
-    const int	 depth = X509_STORE_CTX_get_error_depth(ctx);
-    const int	 err   = X509_STORE_CTX_get_error(ctx);
+	X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
+	char issuer[256]  = "";
+	char subject[256] = "";
+	const int depth = X509_STORE_CTX_get_error_depth(ctx);
+	const int err   = X509_STORE_CTX_get_error(ctx);
 
-    X509_NAME_oneline(X509_get_issuer_name(cert), issuer, sizeof issuer);
-    X509_NAME_oneline(X509_get_subject_name(cert), subject, sizeof subject);
+	X509_NAME_oneline(X509_get_issuer_name(cert), issuer, sizeof issuer);
+	X509_NAME_oneline(X509_get_subject_name(cert), subject, sizeof subject);
 
-    if (!ok) {
-	log_warn(0, "Error with certificate at depth: %d", depth);
-	log_warn(0, "  issuer  = %s", issuer);
-	log_warn(0, "  subject = %s", subject);
-	log_warn(0, "Reason: %s", X509_verify_cert_error_string(err));
-    } else {
-	log_debug("Cert verification OK!");
-	log_debug("  issuer  = %s", issuer);
-	log_debug("  subject = %s", subject);
-    }
-
-    return (ok);
+	if (!ok) {
+		log_warn(0, "Error with certificate at depth: %d", depth);
+		log_warn(0, "  issuer  = %s", issuer);
+		log_warn(0, "  subject = %s", subject);
+		log_warn(0, "Reason: %s", X509_verify_cert_error_string(err));
+	} else {
+		log_debug("Cert verification OK!");
+		log_debug("  issuer  = %s", issuer);
+		log_debug("  subject = %s", subject);
+	}
+	return (ok);
 }
 
 /**
