@@ -181,45 +181,44 @@ setting_bool(const char *setting_name, const bool fallback_val)
 static bool
 is_setting_ok(const char *value, enum setting_type type)
 {
-    if (value == NULL) {
-	return false;
-    }
+	if (value == NULL)
+		return false;
 
-    switch (type) {
-    case TYPE_BOOLEAN:
-    {
-	if (!strings_match(value, "yes") && !strings_match(value, "YES") &&
-	    !strings_match(value, "no") && !strings_match(value, "NO")) {
-	    log_warn(0, "%s is_setting_ok: booleans must be either: "
-		     "yes, YES, no or NO", GfxFailure);
-	    return false;
+	switch (type) {
+	case TYPE_BOOLEAN: {
+		if (!strings_match(value, "yes") &&
+		    !strings_match(value, "YES") &&
+		    !strings_match(value, "no") &&
+		    !strings_match(value, "NO")) {
+			log_warn(0, "%s is_setting_ok: "
+			    "booleans must be either: yes, YES, no or NO",
+			    GfxFailure);
+			return false;
+		}
+		break;
 	}
-	break;
-    }
-    case TYPE_INTEGER:
-    {
-	if (!is_numeric(value)) {
-	    log_warn(0, "%s is_setting_ok: integer not all numeric",
-		     GfxFailure);
-	    return false;
+	case TYPE_INTEGER: {
+		if (!is_numeric(value)) {
+			log_warn(0, "%s is_setting_ok: integer not all numeric",
+			    GfxFailure);
+			return false;
+		}
+		break;
 	}
-	break;
-    }
-    case TYPE_STRING:
-    {
-	if (strpbrk(value, " \f\n\r\t\v\"") != NULL) {
-	    log_warn(0, "%s is_setting_ok: illegal characters in string",
-		     GfxFailure);
-	    return false;
+	case TYPE_STRING: {
+		if (strpbrk(value, " \f\n\r\t\v\"") != NULL) {
+			log_warn(0, "%s is_setting_ok: "
+			    "illegal characters in string", GfxFailure);
+			return false;
+		}
+		break;
 	}
-	break;
-    }
-    default:
-	assert(false); /* Should not be reached. */
-	break;
-    }
+	default:
+		fatal(0, "is_setting_ok: statement reached unexpectedly");
+		break;
+	}
 
-    return true;
+	return true;
 }
 
 /**
