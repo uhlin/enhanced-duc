@@ -308,8 +308,8 @@ setting(const char *setting_name)
 }
 
 /**
- * Unparse a setting of type integer. The context structure specifies
- * the rules.
+ * Get a setting of type integer. The context structure specifies the
+ * rules.
  *
  * @param ctx Context structure
  * @return The result of the conversion
@@ -317,28 +317,32 @@ setting(const char *setting_name)
 long int
 setting_integer(const struct integer_context *ctx)
 {
-    long int val = 0;
+	long int val = 0;
 
-    log_assert_arg_nonnull("setting_integer", "ctx", ctx);
+	log_assert_arg_nonnull("setting_integer", "ctx", ctx);
 
-    FOREACH_CDV() {
-	if (strings_match(ctx->setting_name, cdv->setting_name)) {
-	    errno = 0;
-	    val	= strtol(cdv->custom_val?cdv->custom_val:cdv->value,NULL,10);
+	FOREACH_CDV() {
+		if (strings_match(ctx->setting_name, cdv->setting_name)) {
+			const char *str =
+			    (cdv->custom_val ? cdv->custom_val : cdv->value);
+			errno = 0;
+			val = strtol(str, NULL, 10);
 
-	    if (errno != 0 || (val < ctx->lo_limit || val > ctx->hi_limit)) {
-		log_warn(ERANGE, "warning: setting %s out of range %ld-%ld: "
-			 "fallback value is %ld",
-			 ctx->setting_name, ctx->lo_limit, ctx->hi_limit,
-			 ctx->fallback_val);
-		break;
-	    } else {
-		return (val);
-	    }
+			if (errno != 0 ||
+			    (val < ctx->lo_limit || val > ctx->hi_limit)) {
+				log_warn(ERANGE, "warning: setting %s "
+				    "out of range %ld-%ld: "
+				    "fallback value is %ld", ctx->setting_name,
+				    ctx->lo_limit, ctx->hi_limit,
+				    ctx->fallback_val);
+				break;
+			} else {
+				return val;
+			}
+		}
 	}
-    }
 
-    return (ctx->fallback_val);
+	return (ctx->fallback_val);
 }
 
 static bool
