@@ -59,7 +59,7 @@ static struct config_default_values_tag {
 	  NULL, IP_ADDR_DESC },
 	{ "sp_hostname",
 	  TYPE_STRING,
-	  "dynupdate.no-ip.com",
+	  "dynupdate.noip.com",
 	  NULL, SP_HOSTNAME_DESC },
 	{ "port",
 	  TYPE_INTEGER,
