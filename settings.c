@@ -452,39 +452,41 @@ check_some_settings_strictly(void)
 void
 create_config_file(const char *path)
 {
-    FILE *fp = NULL;
-    const mode_t mode = S_IRUSR | S_IWUSR; /* Read and write for the owner. */
+	FILE *fp = NULL;
+	const mode_t mode = S_IRUSR | S_IWUSR; // Read and write for the owner.
 
-    log_assert_arg_nonnull("create_config_file", "path", path);
+	log_assert_arg_nonnull("create_config_file", "path", path);
 
-    if (file_exists(path)) {
-	fatal(EEXIST, "%s create_config_file: can't create config file"
-	      "  --  it's already existent", GfxFailure);
-    } else if ((fp = fopen(path, "w")) == NULL) {
-	fatal(errno, "%s create_config_file: fopen", GfxFailure);
-    } else {
-	FOREACH_CDV() {
-	    char *ans = NULL;
+	if (file_exists(path)) {
+		fatal(EEXIST, "%s create_config_file: can't create config file"
+		    "  --  it's already existent", GfxFailure);
+	} else if ((fp = fopen(path, "w")) == NULL) {
+		fatal(errno, "%s create_config_file: fopen", GfxFailure);
+	} else {
+		FOREACH_CDV() {
+			char *ans = NULL;
+			int ret = -1;
 
-	    while (ans = get_answer(cdv->description, cdv->type, cdv->value),
-		   ans == NULL)
-		/* continue */;
+			while ((ans = get_answer(cdv->description,
+						 cdv->type,
+						 cdv->value)) == NULL)
+				/* continue */;
+			ret = fprintf(fp, "%s = \"%s\";\n",
+			    cdv->setting_name, ans);
+			if (ret < 0) {
+				fatal(0, "%s create_config_file: failed to "
+				    "write to the file stream", GfxFailure);
+			}
+			free(ans);
+		}
 
-	    if (fprintf(fp, "%s = \"%s\";\n", cdv->setting_name, ans) < 0)
-		fatal(0, "%s create_config_file: "
-		      "failed to write to the file stream", GfxFailure);
-
-	    free(ans);
+		(void) fclose(fp);
 	}
 
-	fclose(fp);
-    }
+	if (chmod(path, mode) != 0)
+		fatal(errno, "%s create_config_file: chmod", GfxFailure);
 
-    if (chmod(path, mode) != 0) {
-	fatal(errno, "%s create_config_file: chmod", GfxFailure);
-    }
-
-    printf("%s %s successfully written!\n", GfxSuccess, path);
+	printf("%s %s successfully written!\n", GfxSuccess, path);
 }
 
 /**
