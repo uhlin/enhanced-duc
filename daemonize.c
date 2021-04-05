@@ -27,37 +27,48 @@
 #define OBTAIN_LOCK_ERR -1
 #define VALUE_CHILD_PROCESS 0
 
+const char g_lockfile_path[] = "/var/run/enhanced-duc.pid";
 int g_lockfile_fd = -1;
 
-static bool
-is_already_running()
-{
-    const char *file_path = "/var/run/enhanced-duc.pid";
-    const mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH; /* -rw-r--r-- */
-    int errno_save = 0;
-    int fd = -1;
-    struct flock lock_ctx = {
-	.l_type	  = F_WRLCK,
-	.l_whence = SEEK_SET,
-	.l_start  = 0,
-	.l_len	  = 0,
-	.l_pid	  = -1,
-    };
+/*
+ * mode: -rw-r--r--
+ */
+static const mode_t mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
-    if ((fd = open(file_path, O_RDWR | O_CREAT, mode)) == -1)
-	fatal(errno, "is_already_running: can't open %s", file_path);
-    if (fcntl(fd, F_SETLK, &lock_ctx) == OBTAIN_LOCK_ERR) {
-	errno_save = errno;
-	close(fd);
-	if (errno_save == EACCES || errno_save == EAGAIN)
-	    return (true);
-	else
-	    fatal(errno_save, "is_already_running: can't lock %s", file_path);
-    }
-    ftruncate(fd, 0);
-    dprintf(fd, "%ld\n", (long int) getpid());
-    g_lockfile_fd = fd;
-    return (false);
+static bool
+is_already_running(void)
+{
+	int	errno_save = 0;
+	int	fd = -1;
+	struct flock lock_ctx = {
+		.l_type   = F_WRLCK,
+		.l_whence = SEEK_SET,
+		.l_start  = 0,
+		.l_len    = 0,
+		.l_pid    = -1,
+	};
+
+	if ((fd = open(g_lockfile_path, O_RDWR | O_CREAT, mode)) == -1) {
+		fatal(errno, "is_already_running: can't open %s",
+		    g_lockfile_path);
+	}
+
+	if (fcntl(fd, F_SETLK, &lock_ctx) == OBTAIN_LOCK_ERR) {
+		errno_save = errno;
+		(void) close(fd);
+
+		if (errno_save == EACCES || errno_save == EAGAIN)
+			return true;
+		else {
+			fatal(errno_save, "is_already_running: can't lock %s",
+			    g_lockfile_path);
+		}
+	}
+
+	(void) ftruncate(fd, 0);
+	(void) dprintf(fd, "%ld\n", (long int) getpid());
+	g_lockfile_fd = fd;
+	return false;
 }
 
 /**
