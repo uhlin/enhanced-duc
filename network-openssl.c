@@ -98,52 +98,50 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
 int
 net_ssl_send(const char *fmt, ...)
 {
-    static const char message_terminate[] =
-	"\r\n\r\n";
-    char	*buf	 = NULL;
-    int		 buflen	 = 0;
-    int		 n_sent	 = 0;
-    size_t	 newSize = 0;
-    va_list	 ap;
+	static const char message_terminate[] = "\r\n\r\n";
+	char	*buf = NULL;
+	int	 buflen = 0;
+	int	 n_sent = 0;
+	size_t	 newSize = 0;
+	va_list	 ap;
 
-    log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
+	log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
 
-    va_start(ap, fmt);
-    if (my_vasprintf(&buf, fmt, ap) < 0)
-	fatal(errno, "net_ssl_send: my_vasprintf");
-    va_end(ap);
+	va_start(ap, fmt);
+	if (my_vasprintf(&buf, fmt, ap) < 0)
+		fatal(errno, "net_ssl_send: my_vasprintf");
+	va_end(ap);
 
-    newSize = strlen(buf) + nitems(message_terminate);
-    buf = xrealloc(buf, newSize);
+	newSize = strlen(buf) + nitems(message_terminate);
+	buf = xrealloc(buf, newSize);
 
-    if (strlcat(buf, message_terminate, newSize) >= newSize)
-	fatal(EOVERFLOW, "net_ssl_send: strlcat");
+	if (strlcat(buf, message_terminate, newSize) >= newSize)
+		fatal(EOVERFLOW, "net_ssl_send: strlcat");
+	if (strlen(buf) > INT_MAX) {
+		free(buf);
+		return -1;
+	}
 
-    if (strlen(buf) > INT_MAX) {
+	buflen = (int) strlen(buf);
+	ERR_clear_error();
+
+	if ((n_sent = SSL_write(ssl, buf, buflen)) > 0) {
+		free(buf);
+		return 0;
+	}
+
 	free(buf);
+
+	switch (SSL_get_error(ssl, n_sent)) {
+	case SSL_ERROR_NONE:
+		return 0;
+	case SSL_ERROR_WANT_READ:
+	case SSL_ERROR_WANT_WRITE:
+		log_warn(0, "net_ssl_send: operation did not complete");
+		return 0;
+	}
+
 	return -1;
-    }
-
-    buflen = (int) strlen(buf);
-    ERR_clear_error();
-
-    if ((n_sent = SSL_write(ssl, buf, buflen)) > 0) {
-	free(buf);
-	return 0;
-    }
-
-    free(buf);
-
-    switch (SSL_get_error(ssl, n_sent)) {
-    case SSL_ERROR_NONE:
-	return 0;
-    case SSL_ERROR_WANT_READ:
-    case SSL_ERROR_WANT_WRITE:
-	log_warn(0, "net_ssl_send: operation did not complete");
-	return 0;
-    }
-
-    return -1;
 }
 
 /**
