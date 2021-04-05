@@ -83,13 +83,13 @@ redirect_standard_streams(void)
 __dead void
 fatal(int code, const char *fmt, ...)
 {
-    va_list ap;
+	va_list ap;
 
-    va_start(ap, fmt);
-    log_doit(code, LOG_ERR, fmt, ap);
-    va_end(ap);
+	va_start(ap, fmt);
+	log_doit(code, LOG_ERR, fmt, ap);
+	va_end(ap);
 
-    abort();
+	abort();
 }
 
 /**
