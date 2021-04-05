@@ -129,11 +129,11 @@ log_init(void)
 void
 log_msg(const char *fmt, ...)
 {
-    va_list ap;
+	va_list ap;
 
-    va_start(ap, fmt);
-    log_doit(0, LOG_INFO, fmt, ap);
-    va_end(ap);
+	va_start(ap, fmt);
+	log_doit(0, LOG_INFO, fmt, ap);
+	va_end(ap);
 }
 
 /**
