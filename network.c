@@ -239,82 +239,80 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
 ip_chg_t
 net_check_for_ip_change(void)
 {
-    bool           address_resolved = false;
-    bool           connected        = false;
-    char           buf[1000]        = "";
-    char           srv[255]         = "";
-    const char    *backup_srv       = setting("backup_ip_lookup_srv");
-    const char    *port             = "80";
-    const char    *primary_srv      = setting("primary_ip_lookup_srv");
-    struct addrinfo *res, *rp;
-    unsigned char  nw_addr[sizeof (struct in_addr)];
+	bool address_resolved = false;
+	bool connected = false;
+	char buf[1000] = "";
+	char srv[255] = "";
+	const char *backup_srv = setting("backup_ip_lookup_srv");
+	const char *port = "80";
+	const char *primary_srv = setting("primary_ip_lookup_srv");
+	struct addrinfo *res, *rp;
+	unsigned char nw_addr[sizeof (struct in_addr)];
 
-    if (setting_bool("force_update", true))
-	return (IP_HAS_CHANGED);
+	if (setting_bool("force_update", true))
+		return IP_HAS_CHANGED;
 
-    if ((res = net_addr_resolve(primary_srv, port)) != NULL) {
-	strlcpy(srv, primary_srv, sizeof srv);
-	address_resolved = true;
-	goto done;
-    }
-
-    if ((res = net_addr_resolve(backup_srv, port)) != NULL) {
-	strlcpy(srv, backup_srv, sizeof srv);
-	address_resolved = true;
-    }
+	if ((res = net_addr_resolve(primary_srv, port)) != NULL) {
+		(void) strlcpy(srv, primary_srv, sizeof srv);
+		address_resolved = true;
+		goto done;
+	}
+	if ((res = net_addr_resolve(backup_srv, port)) != NULL) {
+		(void) strlcpy(srv, backup_srv, sizeof srv);
+		address_resolved = true;
+	}
 
   done:
+	if (!address_resolved)
+		return IP_HAS_CHANGED; /* force update */
 
-    if (!address_resolved)
-	return (IP_HAS_CHANGED); /* force update */
+	for (rp = res; rp; rp = rp->ai_next) {
+		g_socket =
+		    socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 
-    for (rp = res; rp; rp = rp->ai_next) {
-	if (g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol),
-	    g_socket == SOCKET_CREATION_FAILED) {
-	    continue;
-	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
-	    connected = true;
-	    break;
-	} else {
-	    close(g_socket);
+		if (g_socket == SOCKET_CREATION_FAILED) {
+			continue;
+		} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
+			connected = true;
+			break;
+		} else {
+			(void) close(g_socket);
+		}
 	}
-    }
 
-    freeaddrinfo(res);
+	freeaddrinfo(res);
 
-    if (!connected) {
-	close(g_socket);
+	if (!connected) {
+		(void) close(g_socket);
+		g_socket = -1;
+		return IP_HAS_CHANGED;
+	}
+
+	(void) net_send_plain("GET /index.html HTTP/1.0\r\nHost: %s\r\n"
+	    "User-Agent: %s/%s %s", srv, g_programName, g_programVersion,
+	    g_maintainerEmail);
+	(void) net_recv_plain(buf, sizeof buf);
+	(void) close(g_socket);
 	g_socket = -1;
-	return (IP_HAS_CHANGED);
-    }
 
-    net_send_plain("GET /index.html HTTP/1.0\r\nHost: %s\r\n"
-		   "User-Agent: %s/%s %s",
-		   srv, g_programName, g_programVersion, g_maintainerEmail);
-    net_recv_plain(buf, sizeof buf);
-    close(g_socket);
-    g_socket = -1;
-    trim(buf);
-    const char *cp = strrchr(buf, '\n');
+	const char *cp = strrchr(trim(buf), '\n');
 
-    if (!cp) {
-	log_warn(0, "net_check_for_ip_change: warning: "
-	    "cannot locate last occurrance of a newline");
-	return (IP_NO_CHANGE);
-    } else if (inet_pton(AF_INET, ++cp, nw_addr) == 0) {
-	log_warn(0, "net_check_for_ip_change: warning: bogus ipv4 address");
-	return (IP_NO_CHANGE);
-    } else if (strings_match(cp, g_last_ip_addr)) {
-	log_debug("not updating (the external ip hasn't changed)");
-	return (IP_NO_CHANGE);
-    } else {
-	strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
+	if (!cp) {
+		log_warn(0, "net_check_for_ip_change: warning: "
+		    "cannot locate last occurrance of a newline");
+		return IP_NO_CHANGE;
+	} else if (inet_pton(AF_INET, ++cp, nw_addr) == 0) {
+		log_warn(0, "net_check_for_ip_change: warning: "
+		    "bogus ipv4 address");
+		return IP_NO_CHANGE;
+	} else if (strings_match(cp, g_last_ip_addr)) {
+		log_debug("not updating (the external ip hasn't changed)");
+		return IP_NO_CHANGE;
+	}
+
+	(void) strlcpy(g_last_ip_addr, cp, sizeof g_last_ip_addr);
 	log_msg("ip has changed to %s", cp);
-	return (IP_HAS_CHANGED);
-    }
-
-    /*NOTREACHED*/ assert(false);
-    /*NOTREACHED*/ return (IP_NO_CHANGE);
+	return IP_HAS_CHANGED;
 }
 
 /**
