@@ -39,29 +39,28 @@ static const char cipher_list[] = "HIGH:!aNULL";
 
 /*lint -sem(get_cert, r_null) */
 static X509 *
-get_cert()
+get_cert(void)
 {
 #ifndef UNIT_TESTING
-    if (!ssl)
-	return NULL;
-
-    return SSL_get_peer_certificate(ssl);
+	if (!ssl)
+		return NULL;
+	return SSL_get_peer_certificate(ssl);
 #else
 /* ------------ */
 /* UNIT_TESTING */
 /* ------------ */
-    FILE *fp = NULL;
-    X509 *cert = NULL;
+	FILE	*fp = NULL;
+	X509	*cert = NULL;
 
-    if ((fp = fopen("noip.crt", "r")) == NULL ||
-	(cert = PEM_read_X509(fp, NULL, NULL, NULL)) == NULL) {
-	if (fp)
-	    fclose(fp);
-	return NULL;
-    }
+	if ((fp = fopen("noip.crt", "r")) == NULL ||
+	    (cert = PEM_read_X509(fp, NULL, NULL, NULL)) == NULL) {
+		if (fp)
+			fclose(fp);
+		return NULL;
+	}
 
-    fclose(fp);
-    return cert;
+	fclose(fp);
+	return cert;
 #endif
 }
 
