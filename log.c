@@ -28,30 +28,30 @@ bool	g_debug_mode	= false;
 static void
 log_doit(int errCode, int priority, const char *fmt, va_list ap)
 {
-    char buf[2000] = "";
+	char buf[2000] = { '\0' };
 
-    vsnprintf(buf, sizeof buf, fmt, ap);
+	(void) vsnprintf(buf, sizeof buf, fmt, ap);
 
-    if (errCode) {
-	snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf), ": %s",
-		 strerror(errCode));
-    }
-
-    if (g_log_to_syslog)
-	syslog(priority, "%s", buf);
-    else {
-	FILE *stream = stderr;
-
-	switch (priority) {
-	case LOG_INFO:
-	case LOG_DEBUG:
-	    stream = stdout;
-	    break;
+	if (errCode) {
+		(void) snprintf(&buf[strlen(buf)], sizeof buf - strlen(buf),
+		    ": %s", strerror(errCode));
 	}
 
-	fputs(buf, stream);
-	fputc('\n', stream);
-    }
+	if (g_log_to_syslog)
+		syslog(priority, "%s", buf);
+	else {
+		FILE *stream = stderr;
+
+		switch (priority) {
+		case LOG_INFO:
+		case LOG_DEBUG:
+			stream = stdout;
+			break;
+		}
+
+		(void) fputs(buf, stream);
+		(void) fputc('\n', stream);
+	}
 }
 
 /**
