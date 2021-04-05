@@ -65,14 +65,14 @@ is_already_running()
  * terminal and continue execution...
  */
 void
-Daemonize(void)
+daemonize(void)
 {
     switch (fork()) {
     case FORK_FAILED:
-	fatal(errno, "Daemonize: Cannot fork");
+	fatal(errno, "daemonize: Cannot fork");
     case VALUE_CHILD_PROCESS:
 	if (setsid() == -1)
-	    fatal(errno, "Daemonize: Trouble in becoming the session leader");
+	    fatal(errno, "daemonize: Trouble in becoming the session leader");
 	break;
     default:
 	_exit(0);
@@ -83,20 +83,20 @@ Daemonize(void)
 
     switch (redirect_standard_streams()) {
     case REDIR_STDERR_FAIL:
-	log_warn(0, "Daemonize: Error redirecting stderr");
+	log_warn(0, "daemonize: Error redirecting stderr");
 	break;
     case REDIR_STDIN_FAIL:
-	log_warn(0, "Daemonize: Error redirecting stdin");
+	log_warn(0, "daemonize: Error redirecting stdin");
 	break;
     case REDIR_STDOUT_FAIL:
-	log_warn(0, "Daemonize: Error redirecting stdout");
+	log_warn(0, "daemonize: Error redirecting stdout");
 	break;
     default:
     case REDIR_OK:
-	log_debug("Daemonize: All standard IO-streams successfully redirected");
+	log_debug("daemonize: All standard IO-streams successfully redirected");
 	break;
     }
 
     if (is_already_running())
-	fatal(0, "Daemonize: FATAL: A copy of the daemon is already running!");
+	fatal(0, "daemonize: FATAL: A copy of the daemon is already running!");
 }

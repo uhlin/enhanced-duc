@@ -530,13 +530,13 @@ main(int argc, char *argv[])
     if (opt.want_update_once)
 	set_cycle_off();
     if (opt.want_daemon) {
-	void Daemonize(void);
+	void daemonize(void);
 
 	/*
 	 * Detach the program from the controlling terminal and continue
 	 * execution...
 	 */
-	Daemonize();
+	daemonize();
     }
 
     log_msg("%s %s has started", g_programName, g_programVersion);
