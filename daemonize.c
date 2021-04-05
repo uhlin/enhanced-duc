@@ -50,7 +50,7 @@ is_already_running(void)
 		    g_lockfile_path);
 	}
 
-	if (fcntl(fd, F_SETLK, &lock_ctx) == OBTAIN_LOCK_ERR) {
+	if (fcntl(fd, F_SETLK, &lock_ctx) == FAILED_TO_ACQUIRE_LOCK) {
 		errno_save = errno;
 		(void) close(fd);
 
