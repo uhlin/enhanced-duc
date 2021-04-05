@@ -22,8 +22,8 @@
 
 #include "log.h"
 
-bool	g_log_to_syslog = false;
-bool	g_debug_mode	= false;
+bool	 g_log_to_syslog = false;
+bool	 g_debug_mode = false;
 
 static void
 log_doit(int errCode, int priority, const char *fmt, va_list ap)
