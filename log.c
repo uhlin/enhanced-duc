@@ -145,9 +145,9 @@ log_msg(const char *fmt, ...)
 void
 log_warn(int code, const char *fmt, ...)
 {
-    va_list ap;
+	va_list ap;
 
-    va_start(ap, fmt);
-    log_doit(code, LOG_WARNING, fmt, ap);
-    va_end(ap);
+	va_start(ap, fmt);
+	log_doit(code, LOG_WARNING, fmt, ap);
+	va_end(ap);
 }
