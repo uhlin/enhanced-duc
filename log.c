@@ -62,15 +62,15 @@ log_doit(int errCode, int priority, const char *fmt, va_list ap)
 redir_res_t
 redirect_standard_streams(void)
 {
-    const char dev_null[] = "/dev/null";
+	const char dev_null[] = "/dev/null";
 
-    if (freopen(dev_null, "r+", stderr) == NULL)
-	return (REDIR_STDERR_FAIL);
-    else if (freopen(dev_null, "r+", stdin) == NULL)
-	return (REDIR_STDIN_FAIL);
-    else if (freopen(dev_null, "r+", stdout) == NULL)
-	return (REDIR_STDOUT_FAIL);
-    return (REDIR_OK);
+	if (freopen(dev_null, "r+", stderr) == NULL)
+		return REDIR_STDERR_FAIL;
+	else if (freopen(dev_null, "r+", stdin) == NULL)
+		return REDIR_STDIN_FAIL;
+	else if (freopen(dev_null, "r+", stdout) == NULL)
+		return REDIR_STDOUT_FAIL;
+	return REDIR_OK;
 }
 
 /**
