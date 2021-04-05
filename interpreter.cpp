@@ -56,32 +56,31 @@ copy_identifier(const char *&id)
 static char *
 copy_argument(const char *&arg)
 {
-    bool    inside_arg = true;
-    size_t  count      = argument_maxSize;
-    char   *dest_buf   = new char[count + 1];
-    char   *dest       = &dest_buf[0];
+	bool	 inside_arg = true;
+	size_t	 count = argument_maxSize;
+	char	*dest_buf = new char[count + 1];
+	char	*dest = addrof(dest_buf[0]);
 
-    while (*arg && count > 1) {
-	if (*arg == '\"') {
-	    inside_arg = false;
-	    arg++;
-	    break;
+	while (*arg && count > 1) {
+		if (*arg == '\"') {
+			inside_arg = false;
+			arg++;
+			break;
+		}
+
+		*dest++ = *arg++, count--;
 	}
 
-	*dest++ = *arg++, count--;
-    }
+	*dest = '\0';
 
-    *dest = '\0';
-
-    if (inside_arg && count == 1)
-	fatal(EOVERFLOW, "In copy_argument: fatal: string was truncated!");
-
-    if (inside_arg) {
-	delete[] dest_buf;
-	return NULL;
-    }
-
-    return dest_buf;
+	if (inside_arg && count == 1)
+		fatal(EOVERFLOW, "In copy_argument: fatal: "
+		    "string was truncated!");
+	if (inside_arg) {
+		delete[] dest_buf;
+		return NULL;
+	}
+	return dest_buf;
 }
 
 static void
