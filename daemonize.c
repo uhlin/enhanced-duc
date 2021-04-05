@@ -24,8 +24,8 @@
 #include "daemonize.h"
 #include "log.h"
 
-const char g_lockfile_path[] = "/var/run/enhanced-duc.pid";
-int g_lockfile_fd = -1;
+const char	g_lockfile_path[] = "/var/run/enhanced-duc.pid";
+int		g_lockfile_fd = -1;
 
 /*
  * mode: -rw-r--r--
