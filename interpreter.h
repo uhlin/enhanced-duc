@@ -6,6 +6,9 @@
 
 #include "ducdef.h"
 
+/* Set to 0 to turn off this feature. */
+#define IGNORE_UNRECOGNIZED_IDENTIFIERS 1
+
 enum setting_type {
 	TYPE_BOOLEAN,
 	TYPE_INTEGER,

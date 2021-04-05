@@ -21,9 +21,6 @@
 #include "log.h"
 #include "various.h"
 
-/* Set to 0 to turn off this feature. */
-#define IGNORE_UNRECOGNIZED_IDENTIFIERS 1
-
 static const size_t	identifier_maxSize = 64;
 static const size_t	argument_maxSize = 512;
 
