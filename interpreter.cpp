@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2012-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -105,61 +105,63 @@ clean_up(char *id, char *arg)
 void
 Interpreter(const struct Interpreter_in *in)
 {
-    char *id = NULL;
-    char *arg = NULL;
+	char	*id = NULL;
+	char	*arg = NULL;
 
-    try {
-	if (in == NULL)
-	    throw std::runtime_error("null input");
+	try {
+		if (in == NULL)
+			throw std::runtime_error("null input");
 
-	const char *cp = &in->line[0];
+		const char *cp = addrof(in->line[0]);
 
-	if (!isalnum(*cp) && *cp != '_')
-	    throw std::runtime_error("unexpected leading character");
-	id = copy_identifier(cp);
+		if (!isalnum(*cp) && *cp != '_')
+			throw std::runtime_error("unexpected leading "
+			    "character");
+		id = copy_identifier(cp);
+		adv_while_isspace(&cp);
+		if (*cp++ != '=') {
+			throw std::runtime_error("expected assignment "
+			    "operator");
+		}
 
-	adv_while_isspace(&cp);
-	if (*cp++ != '=')
-	    throw std::runtime_error("expected assignment operator");
+		adv_while_isspace(&cp);
+		if (*cp++ != '\"')
+			throw std::runtime_error("expected string");
+		else if ((arg = copy_argument(cp)) == NULL)
+			throw std::runtime_error("unterminated argument");
 
-	adv_while_isspace(&cp);
-	if (*cp++ != '\"')
-	    throw std::runtime_error("expected string");
-	else if ((arg = copy_argument(cp)) == NULL)
-	    throw std::runtime_error("unterminated argument");
+		adv_while_isspace(&cp);
+		if (*cp++ != ';')
+			throw std::runtime_error("no line terminator!");
 
-	adv_while_isspace(&cp);
-	if (*cp++ != ';')
-	    throw std::runtime_error("no line terminator!");
-
-	adv_while_isspace(&cp);
-	if (*cp && *cp != '#')
-	    throw std::runtime_error("implicit data after line terminator!");
-	else if (!(in->validator_func(id))) {
-	    /*
-	     * Unrecognized identifier
-	     */
-
+		adv_while_isspace(&cp);
+		if (*cp && *cp != '#') {
+			throw std::runtime_error("implicit data after "
+			    "line terminator!");
+		} else if (!(in->validator_func(id))) {
 #if IGNORE_UNRECOGNIZED_IDENTIFIERS
-	    /* ignore */;
+			/* ignore */;
 #else
-	    throw std::runtime_error("no such identifier");
+			throw std::runtime_error("no such identifier");
 #endif
-	} else if ((errno = in->install_func(id, arg)) != 0)
-	    throw std::runtime_error("install error");
-    } catch (std::runtime_error &e) {
-	std::cerr << '\t' << in->line << '\n';
+		} else if ((errno = in->install_func(id, arg)) != 0) {
+			throw std::runtime_error("install error");
+		}
+	} catch (std::runtime_error& e) {
+		std::cerr << '\t' << in->line << '\n';
 
-	if (strings_match(e.what(), "install error")) {
-	    log_warn(errno, "%s:%ld: error: install_func returned %d",
-		     in->path, in->line_num, errno);
-	} else {
-	    log_warn(0, "%s:%ld: error: %s", in->path, in->line_num, e.what());
+		if (strings_match(e.what(), "install error")) {
+			log_warn(errno, "%s:%ld: error: "
+			    "install_func returned %d", in->path, in->line_num,
+			    errno);
+		} else {
+			log_warn(0, "%s:%ld: error: %s", in->path, in->line_num,
+			    e.what());
+		}
+
+		clean_up(id, arg);
+		abort();
 	}
 
 	clean_up(id, arg);
-	abort();
-    }
-
-    clean_up(id, arg);
 }
