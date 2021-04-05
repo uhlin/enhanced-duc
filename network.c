@@ -82,50 +82,51 @@ ssl_is_enabled(void)
 int
 net_connect(void)
 {
-    bool		 connected = false;
-    const char		*host	   = setting("sp_hostname");
-    const char		*port	   = setting("port");
-    struct addrinfo	*res, *rp;
+	bool connected = false;
+	const char *host = setting("sp_hostname");
+	const char *port = setting("port");
+	struct addrinfo *res, *rp;
 
-    log_debug("connecting to %s (%s)...", host, port);
+	log_debug("connecting to %s (%s)...", host, port);
 
-    if ((res = net_addr_resolve(host, port)) == NULL) {
-	log_warn(0, "unable to get a list of ip addresses. bogus hostname?");
-	return -1;
-    } else {
-	log_debug("get a list of ip addresses complete");
-    }
-
-    for (rp = res; rp; rp = rp->ai_next) {
-	if (g_socket = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol),
-	    g_socket == SOCKET_CREATION_FAILED) {
-	    continue;
-	} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
-	    log_debug("connected!");
-	    connected = true;
-	    break;
+	if ((res = net_addr_resolve(host, port)) == NULL) {
+		log_warn(0, "unable to get a list of ip addresses. "
+		    "bogus hostname?");
+		return -1;
 	} else {
-	    close(g_socket);
+		log_debug("get a list of ip addresses complete");
 	}
-    }
 
-    freeaddrinfo(res);
+	for (rp = res; rp; rp = rp->ai_next) {
+		g_socket =
+		    socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 
-    if (!connected || (ssl_is_enabled() && net_ssl_begin() == -1)) {
-	log_warn(0, "failed to establish a connection");
-	return -1;
-    }
+		if (g_socket == SOCKET_CREATION_FAILED) {
+			continue;
+		} else if (connect(g_socket, rp->ai_addr, rp->ai_addrlen) == 0) {
+			log_debug("connected!");
+			connected = true;
+			break;
+		} else {
+			(void) close(g_socket);
+		}
+	}
 
-    if (ssl_is_enabled() &&
-	net_ssl_check_hostname(host, 0) == HOSTNAME_MISMATCH) {
-	log_warn(0, "net_ssl_check_hostname: warning: "
-	    "hostname checking failed: "
-	    "hostname specified by 'sp_hostname' mismatch: "
-	    "failed to establish a connection");
-	return -1;
-    }
+	freeaddrinfo(res);
 
-    return 0;
+	if (!connected || (ssl_is_enabled() && net_ssl_begin() == -1)) {
+		log_warn(0, "failed to establish a connection");
+		return -1;
+	}
+	if (ssl_is_enabled() &&
+	    net_ssl_check_hostname(host, 0) == HOSTNAME_MISMATCH) {
+		log_warn(0, "net_ssl_check_hostname: warning: "
+		    "hostname checking failed: "
+		    "hostname specified by 'sp_hostname' mismatch: "
+		    "failed to establish a connection");
+		return -1;
+	}
+	return 0;
 }
 
 /**
