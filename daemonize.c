@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -67,36 +67,41 @@ is_already_running()
 void
 daemonize(void)
 {
-    switch (fork()) {
-    case FORK_FAILED:
-	fatal(errno, "daemonize: Cannot fork");
-    case VALUE_CHILD_PROCESS:
-	if (setsid() == -1)
-	    fatal(errno, "daemonize: Trouble in becoming the session leader");
-	break;
-    default:
-	_exit(0);
-    }
+	switch (fork()) {
+	case FORK_FAILED:
+		fatal(errno, "daemonize: cannot fork");
+		break;
+	case VALUE_CHILD_PROCESS:
+		if (setsid() == -1)
+			fatal(errno, "daemonize: trouble in becoming "
+			    "the session leader");
+		break;
+	default:
+		_exit(0);
+	}
 
-    /* Calls to the log functions before this log to stderr/stdout. */
-    log_init();
+	/* Calls to the log functions before this log to stderr/stdout. */
+	log_init();
 
-    switch (redirect_standard_streams()) {
-    case REDIR_STDERR_FAIL:
-	log_warn(0, "daemonize: Error redirecting stderr");
-	break;
-    case REDIR_STDIN_FAIL:
-	log_warn(0, "daemonize: Error redirecting stdin");
-	break;
-    case REDIR_STDOUT_FAIL:
-	log_warn(0, "daemonize: Error redirecting stdout");
-	break;
-    default:
-    case REDIR_OK:
-	log_debug("daemonize: All standard IO-streams successfully redirected");
-	break;
-    }
+	switch (redirect_standard_streams()) {
+	case REDIR_STDERR_FAIL:
+		log_warn(0, "daemonize: error redirecting stderr");
+		break;
+	case REDIR_STDIN_FAIL:
+		log_warn(0, "daemonize: error redirecting stdin");
+		break;
+	case REDIR_STDOUT_FAIL:
+		log_warn(0, "daemonize: error redirecting stdout");
+		break;
+	default:
+	case REDIR_OK:
+		log_debug("daemonize: all standard io-streams successfully "
+		    "redirected");
+		break;
+	}
 
-    if (is_already_running())
-	fatal(0, "daemonize: FATAL: A copy of the daemon is already running!");
+	if (is_already_running()) {
+		fatal(0, "daemonize: fatal: a copy of the daemon is already "
+		    "running!");
+	}
 }
