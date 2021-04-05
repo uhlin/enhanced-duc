@@ -21,11 +21,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "daemonize.h"
 #include "log.h"
-
-#define FORK_FAILED -1
-#define OBTAIN_LOCK_ERR -1
-#define VALUE_CHILD_PROCESS 0
 
 const char g_lockfile_path[] = "/var/run/enhanced-duc.pid";
 int g_lockfile_fd = -1;
