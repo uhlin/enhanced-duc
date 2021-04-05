@@ -192,39 +192,39 @@ int
 net_recv_plain(char *recvbuf, size_t recvbuf_size)
 {
 #if IO_MULTIPLEXING
-    const int maxfdp1 = g_socket + 1;
-    fd_set readset;
-    struct timeval tv = {
-	.tv_sec  = 10,
-	.tv_usec = 0,
-    };
+	const int maxfdp1 = g_socket + 1;
+	fd_set readset;
+	struct timeval tv = {
+		.tv_sec = 10,
+		.tv_usec = 0,
+	};
 
-    FD_ZERO(&readset);
-    FD_SET(g_socket, &readset);
+	FD_ZERO(&readset);
+	FD_SET(g_socket, &readset);
 
-    if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-	log_warn(errno, "net_recv_plain: select");
-	return -1;
-    } else if (!FD_ISSET(g_socket, &readset)) {
-	log_warn(0, "net_recv_plain: no data to receive  --  timed out!");
-	return -1;
-    }
+	if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
+		log_warn(errno, "net_recv_plain: select");
+		return -1;
+	} else if (!FD_ISSET(g_socket, &readset)) {
+		log_warn(0, "net_recv_plain: no data to receive  --  "
+		    "timed out!");
+		return -1;
+	}
 #endif /* IO_MULTIPLEXING */
 
-    log_assert_arg_nonnull("net_recv_plain", "recvbuf", recvbuf);
+	log_assert_arg_nonnull("net_recv_plain", "recvbuf", recvbuf);
 
-    switch (recv(g_socket, recvbuf, recvbuf_size, 0)) {
-    case -1:
-	log_warn(errno, "net_recv_plain: recv");
-	return -1;
-    case 0:
-	log_warn(0, "net_recv_plain: fatal: connection lost");
-	return -1;
-    default:
-	break;
-    }
-
-    return 0;
+	switch (recv(g_socket, recvbuf, recvbuf_size, 0)) {
+	case -1:
+		log_warn(errno, "net_recv_plain: recv");
+		return -1;
+	case 0:
+		log_warn(0, "net_recv_plain: fatal: connection lost");
+		return -1;
+	default:
+		break;
+	}
+	return 0;
 }
 
 /**
