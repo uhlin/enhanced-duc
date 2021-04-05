@@ -152,33 +152,30 @@ net_disconnect(void)
 int
 net_send_plain(const char *fmt, ...)
 {
-    static const char message_terminate[] =
-	"\r\n\r\n";
-    bool	 ok	 = true;
-    char	*buf	 = NULL;
-    size_t	 newSize = 0;
-    va_list	 ap;
+	static const char message_terminate[] = "\r\n\r\n";
+	bool	 ok = true;
+	char	*buf = NULL;
+	size_t	 newSize = 0;
+	va_list	 ap;
 
-    log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
+	log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
 
-    va_start(ap, fmt);
-    if (errno = 0, my_vasprintf(&buf, fmt, ap) < 0)
-	fatal(errno, "net_send_plain: my_vasprintf");
-    va_end(ap);
+	va_start(ap, fmt);
+	if (errno = 0, my_vasprintf(&buf, fmt, ap) < 0)
+		fatal(errno, "net_send_plain: my_vasprintf");
+	va_end(ap);
 
-    newSize = strlen(buf) + nitems(message_terminate);
-    buf = xrealloc(buf, newSize);
+	newSize = strlen(buf) + nitems(message_terminate);
+	buf = xrealloc(buf, newSize);
 
-    if (strlcat(buf, message_terminate, newSize) >= newSize)
-	fatal(EOVERFLOW, "net_send_plain: strlcat");
-
-    if (errno = 0, send(g_socket, buf, strlen(buf), 0) == -1)
-	ok = false;
-    if (!ok)
-	log_warn(errno, "net_send_plain: send");
-
-    free(buf);
-    return ok ? 0 : -1;
+	if (strlcat(buf, message_terminate, newSize) >= newSize)
+		fatal(EOVERFLOW, "net_send_plain: strlcat");
+	if (errno = 0, send(g_socket, buf, strlen(buf), 0) == -1)
+		ok = false;
+	if (!ok)
+		log_warn(errno, "net_send_plain: send");
+	free(buf);
+	return (ok ? 0 : -1);
 }
 
 /**
