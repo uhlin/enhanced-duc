@@ -114,13 +114,13 @@ log_debug(const char *fmt, ...)
 void
 log_init(void)
 {
-    extern char *__progname;
-    static bool initialized = false;
+	extern char	*__progname;
+	static bool	 initialized = false;
 
-    if (initialized)
-	return;
-    openlog(__progname, LOG_PID, LOG_DAEMON);
-    g_log_to_syslog = initialized = true;
+	if (initialized)
+		return;
+	openlog(__progname, LOG_PID, LOG_DAEMON);
+	g_log_to_syslog = initialized = true;
 }
 
 /**
