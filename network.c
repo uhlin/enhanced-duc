@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -333,11 +333,10 @@ net_init(void)
 void
 net_deinit(void)
 {
-    if (ssl_is_enabled())
-	net_ssl_deinit();
-
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
-    }
+	if (ssl_is_enabled())
+		net_ssl_deinit();
+	if (g_socket != -1) {
+		(void) close(g_socket);
+		g_socket = -1;
+	}
 }
