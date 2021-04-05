@@ -33,20 +33,20 @@ static const size_t argument_maxSize = 512;
 static char *
 copy_identifier(const char *&id)
 {
-    size_t  count    = identifier_maxSize;
-    char   *dest_buf = new char[count + 1];
-    char   *dest     = &dest_buf[0];
+	size_t	 count = identifier_maxSize;
+	char	*dest_buf = new char[count + 1];
+	char	*dest = addrof(dest_buf[0]);
 
-    while ((isalnum(*id) || *id == '_') && count > 1) {
-	*dest++ = *id++, count--;
-    }
+	while ((isalnum(*id) || *id == '_') && count > 1) {
+		*dest++ = *id++, count--;
+	}
 
-    *dest = '\0';
+	*dest = '\0';
 
-    if (count == 1)
-	fatal(EOVERFLOW, "In copy_identifier: fatal: string was truncated!");
-
-    return dest_buf;
+	if (count == 1)
+		fatal(EOVERFLOW, "In copy_identifier: fatal: "
+		    "string was truncated!");
+	return dest_buf;
 }
 
 /**
