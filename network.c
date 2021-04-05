@@ -32,9 +32,6 @@
 #include "various.h"
 #include "wrapper.h"
 
-#define IO_MULTIPLEXING 1
-#define SOCKET_CREATION_FAILED -1
-
 NET_SEND_FUNCPTR net_send = net_send_plain;
 NET_RECV_FUNCPTR net_recv = net_recv_plain;
 

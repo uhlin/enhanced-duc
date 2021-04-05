@@ -6,6 +6,9 @@
 
 #include "ducdef.h"
 
+#define IO_MULTIPLEXING 1
+#define SOCKET_CREATION_FAILED -1
+
 typedef enum {
 	IP_HAS_CHANGED,
 	IP_NO_CHANGE
