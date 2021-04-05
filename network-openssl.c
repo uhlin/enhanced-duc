@@ -33,7 +33,7 @@
 #include "wrapper.h"
 
 static SSL_CTX	*ssl_ctx = NULL;
-static SSL	*ssl	 = NULL;
+static SSL	*ssl = NULL;
 
 static const char cipher_list[] = "HIGH:!aNULL";
 
