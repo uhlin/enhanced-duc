@@ -134,13 +134,12 @@ net_connect(void)
 void
 net_disconnect(void)
 {
-    if (ssl_is_enabled())
-	net_ssl_end();
-
-    if (g_socket != -1) {
-	close(g_socket);
-	g_socket = -1;
-    }
+	if (ssl_is_enabled())
+		net_ssl_end();
+	if (g_socket != -1) {
+		(void) close(g_socket);
+		g_socket = -1;
+	}
 }
 
 /**
