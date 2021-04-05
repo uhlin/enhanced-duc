@@ -323,8 +323,8 @@ net_check_for_ip_change(void)
 void
 net_init(void)
 {
-    if (ssl_is_enabled())
-	net_ssl_init();
+	if (ssl_is_enabled())
+		net_ssl_init();
 }
 
 /**
