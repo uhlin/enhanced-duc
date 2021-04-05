@@ -98,13 +98,13 @@ fatal(int code, const char *fmt, ...)
 void
 log_debug(const char *fmt, ...)
 {
-    va_list ap;
+	va_list ap;
 
-    if (g_debug_mode) {
-	va_start(ap, fmt);
-	log_doit(0, LOG_DEBUG, fmt, ap);
-	va_end(ap);
-    }
+	if (g_debug_mode) {
+		va_start(ap, fmt);
+		log_doit(0, LOG_DEBUG, fmt, ap);
+		va_end(ap);
+	}
 }
 
 /**
