@@ -203,19 +203,19 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 int
 net_ssl_begin(void)
 {
-    const int VALUE_HANDSHAKE_OK = 1;
+	const int VALUE_HANDSHAKE_OK = 1;
 
-    if ((ssl = SSL_new(ssl_ctx)) == NULL)
-	fatal(ENOMEM, "net_ssl_begin: unable to create a new ssl object");
-    else if (!SSL_set_fd(ssl, g_socket))
-	log_warn(0, "net_ssl_begin: "
-	    "unable to associate the global socket fd with the ssl object");
-    else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
-	log_warn(0, "net_ssl_begin: handshake not ok!");
-    else
-	return (0);
-
-    return (-1);
+	if ((ssl = SSL_new(ssl_ctx)) == NULL)
+		fatal(ENOMEM, "net_ssl_begin: "
+		    "unable to create a new ssl object");
+	else if (!SSL_set_fd(ssl, g_socket))
+		log_warn(0, "net_ssl_begin: unable to associate the "
+		    "global socket fd with the ssl object");
+	else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
+		log_warn(0, "net_ssl_begin: handshake not ok!");
+	else
+		return 0;
+	return -1;
 }
 
 /**
