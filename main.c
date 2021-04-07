@@ -181,11 +181,11 @@ force_priv_drop()
 /* ----------------------------------------------------------------- */
 
 static void
-hostname_array_init()
+hostname_array_init(void)
 {
-    FOREACH_HOSTNAME() {
-	*ar_p = NULL;
-    }
+	FOREACH_HOSTNAME() {
+		*ar_p = NULL;
+	}
 }
 
 static void
