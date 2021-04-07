@@ -161,21 +161,27 @@ set_cycle_off()
 }
 
 static void
-force_priv_drop()
+force_priv_drop(void)
 {
-    struct passwd *pw = getpwnam(enhanced_duc_user);
+	struct passwd *pw = getpwnam(enhanced_duc_user);
 
-    log_msg("dropping root privileges...");
+	log_msg("dropping root privileges...");
 
-    if (pw == NULL)
-	fatal(0, "getpwnam: no such user %s", enhanced_duc_user);
-    else if (is_directory(enhanced_duc_dir) && chdir(enhanced_duc_dir) != 0)
-	fatal(errno, "chdir %s", enhanced_duc_dir);
-    else if (setgid(pw->pw_gid)  == -1) fatal(errno, "setgid");
-    else if (setegid(pw->pw_gid) == -1) fatal(errno, "setegid");
-    else if (setuid(pw->pw_uid)  == -1) fatal(errno, "setuid");
-    else if (seteuid(pw->pw_uid) == -1) fatal(errno, "seteuid");
-    else return;
+	if (pw == NULL)
+		fatal(0, "getpwnam: no such user %s", enhanced_duc_user);
+	else if (!is_directory(enhanced_duc_dir) ||
+		 chdir(enhanced_duc_dir) != 0)
+		fatal(errno, "chdir %s", enhanced_duc_dir);
+	else if (setgid(pw->pw_gid) == -1)
+		fatal(errno, "setgid");
+	else if (setegid(pw->pw_gid) == -1)
+		fatal(errno, "setegid");
+	else if (setuid(pw->pw_uid) == -1)
+		fatal(errno, "setuid");
+	else if (seteuid(pw->pw_uid) == -1)
+		fatal(errno, "seteuid");
+	else
+		return;
 }
 
 /* ----------------------------------------------------------------- */
