@@ -235,8 +235,8 @@ hostname_array_destroy(void)
 static void
 flag_err_and_output_warning(bool *ok, const char *msg)
 {
-    *ok = false;
-    log_warn(0, "%s", msg);
+	*ok = false;
+	log_warn(0, "%s", msg);
 }
 
 static int
