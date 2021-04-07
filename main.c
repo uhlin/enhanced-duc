@@ -149,9 +149,9 @@ usage()
 }
 
 static void
-turn_on_debug_mode()
+turn_on_debug_mode(void)
 {
-    g_debug_mode = true;
+	g_debug_mode = true;
 }
 
 static void
