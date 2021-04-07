@@ -224,6 +224,15 @@ hostname_array_assign()
 }
 
 static void
+hostname_array_destroy(void)
+{
+	FOREACH_HOSTNAME() {
+		free_not_null(*ar_p);
+		*ar_p = NULL;
+	}
+}
+
+static void
 flag_err_and_output_warning(bool *ok, const char *msg)
 {
     *ok = false;
@@ -426,15 +435,6 @@ update_host(const char *which_host, const char *to_ip,
     net_disconnect();
     free_not_null(buf);
     return (ok);
-}
-
-static void
-hostname_array_destroy(void)
-{
-	FOREACH_HOSTNAME() {
-		free_not_null(*ar_p);
-		*ar_p = NULL;
-	}
 }
 
 static void
