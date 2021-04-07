@@ -382,59 +382,63 @@ static bool
 update_host(const char *which_host, const char *to_ip,
 	    bool *updateRequestAfter30Min)
 {
-    bool ok = true;
-    char *buf = NULL;
+	bool	 ok = true;
+	char	*buf = NULL;
 
-    if (which_host == NULL || to_ip == NULL || updateRequestAfter30Min == NULL)
-	fatal(EINVAL, "update_host() fatal error!");
+	if (which_host == NULL || to_ip == NULL ||
+	    updateRequestAfter30Min == NULL)
+		fatal(EINVAL, "update_host");
 
-    if (net_connect() == -1 || send_update_request(which_host, to_ip) == -1 ||
-	store_server_resp_in_buffer(&buf) == -1) {
-	ok = false;
-	goto err;
-    }
+	if (net_connect() == -1 ||
+	    send_update_request(which_host, to_ip) == -1 ||
+	    store_server_resp_in_buffer(&buf) == -1) {
+		ok = false;
+		goto err;
+	}
 
-    switch (server_response(buf)) {
-    case CODE_GOOD:
-	log_msg("dns hostname update successful");
-	break;
-    case CODE_NOCHG:
-	log_msg("ip address is current");
-	break;
-    case CODE_NOHOST:
-	fatal(0, "Hostname supplied does not exist under specified account.");
-	break;
-    case CODE_BADAUTH:
-	fatal(0, "Invalid username password combination.");
-	break;
-    case CODE_BADAGENT:
-	fatal(0, "Bad agent? I don't think so! "
-	    "But the server is always right. Dying...");
-	break;
-    case CODE_NOTDONATOR:
-	fatal(0, "Bad update request. Feature not available.");
-	break;
-    case CODE_ABUSE:
-	fatal(0, "Username blocked due to abuse.");
-	break;
-    case CODE_EMERG:
-	if (Cycle)
-	    log_warn(0, "fatal error on the server side "
-		"(will retry update after 30 minutes)");
-	else
-	    log_warn(0, "fatal error on the server side");
-	*updateRequestAfter30Min = true;
-	break;
-    default:
-    case CODE_UNKNOWN:
-	flag_err_and_output_warning(&ok, "Unknown server response!");
-	break;
-    }
+	switch (server_response(buf)) {
+	case CODE_GOOD:
+		log_msg("dns hostname update successful");
+		break;
+	case CODE_NOCHG:
+		log_msg("ip address is current");
+		break;
+	case CODE_NOHOST:
+		fatal(0, "Hostname supplied does not exist under specified "
+		    "account.");
+		break;
+	case CODE_BADAUTH:
+		fatal(0, "Invalid username password combination.");
+		break;
+	case CODE_BADAGENT:
+		fatal(0, "Bad agent? I don't think so! But the server is "
+		    "always right. Exiting...");
+		break;
+	case CODE_NOTDONATOR:
+		fatal(0, "Bad update request. Feature not available.");
+		break;
+	case CODE_ABUSE:
+		fatal(0, "Username blocked due to abuse.");
+		break;
+	case CODE_EMERG: {
+		if (Cycle)
+			log_warn(0, "fatal error on the server side "
+			    "(will retry update after 30 minutes)");
+		else
+			log_warn(0, "fatal error on the server side");
+		*updateRequestAfter30Min = true;
+		break;
+	}
+	default:
+	case CODE_UNKNOWN:
+		flag_err_and_output_warning(&ok, "Unknown server response!");
+		break;
+	}
 
   err:
-    net_disconnect();
-    free_not_null(buf);
-    return (ok);
+	net_disconnect();
+	free_not_null(buf);
+	return (ok);
 }
 
 static void
