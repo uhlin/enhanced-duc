@@ -284,30 +284,30 @@ send_update_request(const char *which_host, const char *to_ip)
 static int
 store_server_resp_in_buffer(char **buf)
 {
-    const size_t sz = 2000;
+	const size_t sz = 2000;
 
-    if (*buf) {
-	free(*buf);
-	*buf = NULL;
-    }
+	if (*buf) {
+		free(*buf);
+		*buf = NULL;
+	}
 
-    *buf = xcalloc(sz, 1);
+	*buf = xcalloc(sz, 1);
 
-    if (net_recv(*buf, sz) == -1)
-	return -1;
+	if (net_recv(*buf, sz) == -1)
+		return -1;
 
-    char concatSource[500] = { '\0' };
+	char concatSource[500] = { '\0' };
 
-    (void) net_recv(concatSource, nitems(concatSource));
+	(void) net_recv(concatSource, nitems(concatSource));
 
-    if (!strings_match(concatSource, "") &&
-	strlcat(*buf, concatSource, sz) >= sz) {
-	log_warn(0, "warning: store_server_resp_in_buffer: strlcat: "
-	    "response truncated!");
-	return -1;
-    }
+	if (!strings_match(concatSource, "") &&
+	    strlcat(*buf, concatSource, sz) >= sz) {
+		log_warn(0, "warning: store_server_resp_in_buffer: strlcat: "
+		    "response truncated!");
+		return -1;
+	}
 
-    return 0;
+	return 0;
 }
 
 static response_code_t
