@@ -242,43 +242,47 @@ flag_err_and_output_warning(bool *ok, const char *msg)
 static int
 send_update_request(const char *which_host, const char *to_ip)
 {
-    bool ok = true;
-    char *agent = NULL;
-    char *auth = NULL;
-    char *s, *host, *unp;
-    char buf[500] = "";
+	bool	 ok = true;
+	char	*agent = NULL;
+	char	*auth = NULL;
+	char	*s, *host, *unp;
+	char	 buf[500] = { '\0' };
 
-    s = host = unp = NULL;
+	s = host = unp = NULL;
 
-    if (strings_match(to_ip, "WAN_address")) {
-	s = strdup_printf("GET %s?hostname=%s HTTP/1.0",
-	    UPDATE_SCRIPT, which_host);
-    } else {
-	s = strdup_printf("GET %s?hostname=%s&myip=%s HTTP/1.0",
-	    UPDATE_SCRIPT, which_host, to_ip);
-    }
-    host = strdup_printf("Host: %s", setting("sp_hostname"));
-    unp	 = strdup_printf("%s:%s", setting("username"), setting("password"));
-    if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
-	log_warn(EMSGSIZE, "send_update_request: b64_encode");
-	ok = false;
-	goto err;
-    }
-    auth  = strdup_printf("Authorization: Basic %s", buf);
-    agent = strdup_printf("User-Agent: %s/%s %s",
-			  g_programName, g_programVersion, g_maintainerEmail);
+	if (strings_match(to_ip, "WAN_address")) {
+		s = strdup_printf("GET %s?hostname=%s HTTP/1.0", UPDATE_SCRIPT,
+		    which_host);
+	} else {
+		s = strdup_printf("GET %s?hostname=%s&myip=%s HTTP/1.0",
+		    UPDATE_SCRIPT, which_host, to_ip);
+	}
 
-    log_debug("sending http get request");
-    if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0)
-	ok = false;
+	host = strdup_printf("Host: %s", setting("sp_hostname"));
+	unp = strdup_printf("%s:%s", setting("username"), setting("password"));
+
+	if (b64_encode((uint8_t *) unp, strlen(unp), buf, sizeof buf) < 0) {
+		log_warn(EMSGSIZE, "send_update_request: b64_encode");
+		ok = false;
+		goto err;
+	}
+
+	auth = strdup_printf("Authorization: Basic %s", buf);
+	agent = strdup_printf("User-Agent: %s/%s %s", g_programName,
+	    g_programVersion, g_maintainerEmail);
+
+	log_debug("sending http get request");
+
+	if (net_send("%s\r\n%s\r\n%s\r\n%s", s, host, auth, agent) != 0)
+		ok = false;
 
   err:
-    free_not_null(s);
-    free_not_null(host);
-    free_not_null(unp);
-    free_not_null(auth);
-    free_not_null(agent);
-    return ok ? 0 : -1;
+	free_not_null(s);
+	free_not_null(host);
+	free_not_null(unp);
+	free_not_null(auth);
+	free_not_null(agent);
+	return (ok ? 0 : -1);
 }
 
 static int
