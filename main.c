@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2019 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -28,6 +28,7 @@
 
 #include "base64.h"
 #include "colors.h"
+#include "daemonize.h"
 #include "log.h"
 #include "main.h"
 #include "network.h"
@@ -489,72 +490,69 @@ start_update_cycle()
     } while (Cycle);
 }
 
-#ifndef UNIT_TESTING
 int
 main(int argc, char *argv[])
 {
-    char conf[DUC_PATH_MAX] =
-	"/etc/enhanced-duc.conf";
-    struct program_options opt = {
-	.want_usage		 = false,
-	.want_create_config_file = false,
-	.want_debug		 = false,
-	.want_update_once	 = false,
-	.want_daemon		 = false,
-    };
+	char conf[DUC_PATH_MAX] = "/etc/enhanced-duc.conf";
+	struct program_options opt = {
+		.want_usage              = false,
+		.want_create_config_file = false,
+		.want_debug              = false,
+		.want_update_once        = false,
+		.want_daemon             = false,
+	};
 
-    if (sighand_init() == -1)
-	log_warn(0, "Initialization of signal handling failed");
-    if (atexit(program_clean_up) == -1)
-	log_warn(errno, "Failed to register a clean up function");
+	if (sighand_init() == -1)
+		log_warn(0, "Initialization of signal handling failed");
+	if (atexit(program_clean_up) == -1)
+		log_warn(errno, "Failed to register a clean up function");
 
-    setlocale(LC_ALL, "");
-    process_options(argc,argv,&opt,&conf[0],sizeof conf); /*Always successful*/
+	(void) setlocale(LC_ALL, "");
+	process_options(argc, argv, &opt, &conf[0], nitems(conf));
 
-    if (opt.want_usage) {
-	usage();
-	/* NOTREACHED */
-    }
-    if (opt.want_create_config_file) {
-	char *path = NULL;
+	if (opt.want_usage) {
+		usage();
+		/* NOTREACHED */
+	}
+	if (opt.want_create_config_file) {
+		char *path = NULL;
 
-	while (path = get_answer("Create where?", TYPE_STRING, &conf[0]),
-	       path == NULL)
-	    /* continue */;
-	create_config_file(path);
-	free(path);
-	exit(0);
-    }
-    if (opt.want_debug)
-	turn_on_debug_mode();
-    if (opt.want_update_once)
-	set_cycle_off();
-    if (opt.want_daemon) {
-	void daemonize(void);
+		while ((path = get_answer("Create where?",
+					  TYPE_STRING,
+					  &conf[0])) == NULL) {
+			/* continue */;
+		}
 
-	/*
-	 * Detach the program from the controlling terminal and continue
-	 * execution...
-	 */
-	daemonize();
-    }
+		create_config_file(path);
+		free(path);
+		exit(0);
+	}
+	if (opt.want_debug)
+		turn_on_debug_mode();
+	if (opt.want_update_once)
+		set_cycle_off();
+	if (opt.want_daemon) {
+		/*
+		 * Detach the program from the controlling terminal
+		 * and continue execution...
+		 */
 
-    log_msg("%s %s has started", g_programName, g_programVersion);
-    log_msg("reading %s...", conf);
-    read_config_file(conf);
-    check_some_settings_strictly();
+		daemonize();
+	}
 
-    /* Drop root privileges. */
-    if (geteuid() == UID_SUPER_USER) {
-	force_priv_drop();
-	log_msg("EUID = %ld", (long int) geteuid());
-    }
+	log_msg("%s %s has started", g_programName, g_programVersion);
+	log_msg("reading %s...", conf);
+	read_config_file(conf);
+	check_some_settings_strictly();
 
-    net_init();
-    start_update_cycle();
+	/* Drop root privileges. */
+	if (geteuid() == UID_SUPER_USER) {
+		force_priv_drop();
+		log_msg("EUID = %ld", (long int) geteuid());
+	}
 
-    /* Exit program */
-    return 0;
+	net_init();
+	start_update_cycle();
+
+	return 0;
 }
-#endif /* UNIT_TESTING */
-/* EOF */
