@@ -189,38 +189,42 @@ hostname_array_init()
 }
 
 static void
-hostname_array_assign()
+hostname_array_assign(void)
 {
-    char *dump = xstrdup(setting("hostname"));
-    const char legal_index[] =
-	"abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
+	char *dump = xstrdup(setting("hostname"));
+	static const char legal_index[] =
+	    "abcdefghijklmnopqrstuvwxyz-0123456789.ABCDEFGHIJKLMNOPQRSTUVWXYZ|";
 
-    if (strings_match(dump, "")) {
-	fatal(EINVAL, "hostname_array_assign: no hostnames to update"
-	    "  --  setting empty");
-    }
-
-    for (const char *cp = dump; *cp; cp++) {
-	if (strchr(legal_index, *cp) == NULL)
-	    fatal(0, "hostname_array_assign: invalid chars in setting: "
-		  "first invalid char was '%c'...", *cp);
-    }
-
-    for (size_t hosts_assigned = 0;; hosts_assigned++) {
-	char *token = strtok(hosts_assigned == 0 ? dump : NULL, "|");
-
-	if (token && hosts_assigned < nitems(hostname_array))
-	    hostname_array[hosts_assigned] = xstrdup(token);
-	else if (hosts_assigned == 0)
-	    fatal(0, "hostname_array_assign: fatal: zero assigned hosts!");
-	else {
-	    log_debug("hostname_array_assign: "
-		      "a total of %zu hosts were assigned!", hosts_assigned);
-	    break;
+	if (strings_match(dump, "")) {
+		fatal(EINVAL, "hostname_array_assign: no hostnames to update"
+		    "  --  setting empty");
 	}
-    }
 
-    free(dump);
+	for (const char *cp = dump; *cp; cp++) {
+		if (strchr(legal_index, *cp) == NULL) {
+			fatal(0, "hostname_array_assign: "
+			    "invalid chars in setting: "
+			    "first invalid char is '%c'...", *cp);
+		}
+	}
+
+	for (size_t hosts_assigned = 0;; hosts_assigned++) {
+		char *token = strtok(hosts_assigned == 0 ? dump : NULL, "|");
+
+		if (token && hosts_assigned < nitems(hostname_array)) {
+			hostname_array[hosts_assigned] = xstrdup(token);
+		} else if (hosts_assigned == 0) {
+			fatal(0, "hostname_array_assign: fatal: "
+			    "zero assigned hosts!");
+		} else {
+			log_debug("hostname_array_assign: "
+			    "a total of %zu hosts were assigned!",
+			    hosts_assigned);
+			break;
+		}
+	}
+
+	free(dump);
 }
 
 static void
