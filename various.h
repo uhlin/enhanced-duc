@@ -22,17 +22,17 @@ size_t	 size_product(const size_t elt_count, const size_t elt_size);
 void	 toggle_echo(on_off_t);
 __DUC_END_DECLS
 
-#if HAVE_STRLCPY == 0 || !defined(_BSD_SOURCE)
+#if HAVE_STRLCPY == 0
 __DUC_BEGIN_DECLS
 size_t strlcpy(char *, const char *, size_t) PTR_ARGS_NONNULL;
 __DUC_END_DECLS
-#endif /* HAVE_STRLCPY == 0 */
+#endif
 
-#if HAVE_STRLCAT == 0 || !defined(_BSD_SOURCE)
+#if HAVE_STRLCAT == 0
 __DUC_BEGIN_DECLS
 size_t strlcat(char *, const char *, size_t) PTR_ARGS_NONNULL;
 __DUC_END_DECLS
-#endif /* HAVE_STRLCAT == 0 */
+#endif
 
 static inline bool
 strings_match(const char *str1, const char *str2)
