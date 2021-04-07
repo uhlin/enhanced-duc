@@ -313,69 +313,69 @@ store_server_resp_in_buffer(char **buf)
 static response_code_t
 server_response(const char *buf)
 {
-    char *dump, *cp, *r;
-    const struct responses_tag {
-	char		*str;
-	response_code_t	 code;
-    } responses[] = {
-	{ "good",     CODE_GOOD       },
-	{ "nochg",    CODE_NOCHG      },
-	{ "nohost",   CODE_NOHOST     },
-	{ "badauth",  CODE_BADAUTH    },
-	{ "badagent", CODE_BADAGENT   },
-	{ "!donator", CODE_NOTDONATOR },
-	{ "abuse",    CODE_ABUSE      },
-	{ "911",      CODE_EMERG      },
-    };
-    const size_t ar_sz = nitems(responses);
-    const struct responses_tag *ar_p = &responses[0];
+	char *dump, *cp, *r;
+	static const struct responses_tag {
+		char *str;
+		response_code_t code;
+	} responses[] = {
+		{ "good",     CODE_GOOD       },
+		{ "nochg",    CODE_NOCHG      },
+		{ "nohost",   CODE_NOHOST     },
+		{ "badauth",  CODE_BADAUTH    },
+		{ "badagent", CODE_BADAGENT   },
+		{ "!donator", CODE_NOTDONATOR },
+		{ "abuse",    CODE_ABUSE      },
+		{ "911",      CODE_EMERG      },
+	};
 
-    dump = cp = r = NULL;
+	dump = cp = r = NULL;
 
-    if (buf == NULL || strings_match(buf, "")) {
-	return CODE_UNKNOWN;
-    } else {
-	char *buf_copy = xstrdup(buf);
-	char *buf_ptr = NULL;
+	if (buf == NULL || strings_match(buf, "")) {
+		return CODE_UNKNOWN;
+	} else {
+		char	*buf_copy = xstrdup(buf);
+		char	*buf_ptr = NULL;
 
-	while ((buf_ptr = strpbrk(buf_copy, "\r\n")) != NULL) {
-	    if (*buf_ptr == '\r') {
-		*buf_ptr = 'R';
-	    } else {
-		*buf_ptr = 'N';
-	    }
+		while ((buf_ptr = strpbrk(buf_copy, "\r\n")) != NULL) {
+			if (*buf_ptr == '\r') {
+				*buf_ptr = 'R';
+			} else {
+				*buf_ptr = 'N';
+			}
+		}
+
+		log_debug("server_response: the buffer looks like this: %s",
+		    buf_copy);
+		free(buf_copy);
 	}
 
-	log_debug("server_response: the buffer looks like this: %s", buf_copy);
-	free(buf_copy);
-    }
-
-    dump = trim(xstrdup(buf));
-    if ((cp = strrchr(dump, '\n')) == NULL) {
+	dump = trim(xstrdup(buf));
+	if ((cp = strrchr(dump, '\n')) == NULL) {
+		free(dump);
+		return CODE_UNKNOWN;
+	}
+	r = strToLower(xstrdup(++cp));
 	free(dump);
-	return CODE_UNKNOWN;
-    }
-    r = strToLower(xstrdup(++cp));
-    free(dump);
-    log_debug("server_response: r = \"%s\"", r);
+	log_debug("server_response: r = \"%s\"", r);
 
-    if (!strncmp(r, "good ", 5)) {
-	free(r);
-	return CODE_GOOD;
-    } else if (!strncmp(r, "nochg ", 6)) {
-	free(r);
-	return CODE_NOCHG;
-    } else {
-	for (; ar_p < &responses[ar_sz]; ar_p++) {
-	    if (strings_match(ar_p->str, r)) {
+	if (!strncmp(r, "good ", 5)) {
 		free(r);
-		return ar_p->code;
-	    }
+		return CODE_GOOD;
+	} else if (!strncmp(r, "nochg ", 6)) {
+		free(r);
+		return CODE_NOCHG;
 	}
-    }
 
-    free(r);
-    return CODE_UNKNOWN;
+	for (const struct responses_tag *ar_p = &responses[0];
+	     ar_p < &responses[nitems(responses)]; ar_p++) {
+		if (strings_match(ar_p->str, r)) {
+			free(r);
+			return ar_p->code;
+		}
+	}
+
+	free(r);
+	return CODE_UNKNOWN;
 }
 
 static bool
