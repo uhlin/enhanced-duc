@@ -155,9 +155,9 @@ turn_on_debug_mode()
 }
 
 static void
-set_cycle_off()
+set_cycle_off(void)
 {
-    Cycle = false;
+	Cycle = false;
 }
 
 static void
