@@ -438,56 +438,58 @@ hostname_array_destroy()
 }
 
 static void
-start_update_cycle()
+start_update_cycle(void)
 {
-    hostname_array_init();
+	hostname_array_init();
 
 #if defined(OpenBSD) && OpenBSD >= 201605
-    if (pledge("stdio inet dns", NULL) == -1)
-	fatal(errno, "pledge");
-    log_msg("forced into a restricted service operating mode (good)");
+	if (pledge("stdio inet dns", NULL) == -1)
+		fatal(errno, "pledge");
+	log_msg("forced into a restricted service operating mode (good)");
 #endif
 
-    do {
-	bool updateRequestAfter30Min = false;
+	do {
+		bool updateRequestAfter30Min = false;
 
-	if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
-	    hostname_array_assign();
+		if (!Cycle || net_check_for_ip_change() == IP_HAS_CHANGED) {
+			hostname_array_assign();
 
-	    FOREACH_HOSTNAME() {
-		if (! (*ar_p))
-		    break;
-		if (updateRequestAfter30Min)
-		    break;
+			FOREACH_HOSTNAME() {
+				if (! (*ar_p))
+					break;
+				if (updateRequestAfter30Min)
+					break;
 
-		log_msg("trying to update %s", *ar_p);
+				log_msg("trying to update %s", *ar_p);
 
-		if (!update_host(*ar_p, setting("ip_addr"),
-				 &updateRequestAfter30Min))
-		    log_warn(0, "failed to update hostname");
-	    }
+				if (!update_host(*ar_p, setting("ip_addr"),
+						 &updateRequestAfter30Min)) {
+					log_warn(0, "failed to update "
+					    "hostname");
+				}
+			}
 
-	    hostname_array_destroy();
-	}
+			hostname_array_destroy();
+		}
+		if (Cycle) {
+			struct integer_context ctx = {
+				.setting_name = "update_interval_seconds",
+				.lo_limit     = 600,    /* 10 minutes */
+				.hi_limit     = 172800, /* 2 days */
+				.fallback_val = 1800,   /* 30 minutes */
+			};
+			struct timespec ts = {
+				.tv_sec = ((updateRequestAfter30Min)
+					   ? 1800
+					   : setting_integer(&ctx)),
+				.tv_nsec = 0,
+			};
 
-	if (Cycle) {
-	    struct integer_context ctx = {
-		.setting_name = "update_interval_seconds",
-		.lo_limit     = 600,	/* 10 minutes */
-		.hi_limit     = 172800,	/* 2 days */
-		.fallback_val = 1800,	/* 30 minutes */
-	    };
-	    struct timespec ts = {
-		.tv_sec	 = ((updateRequestAfter30Min)
-			    ? 1800
-			    : setting_integer(&ctx)),
-		.tv_nsec = 0,
-	    };
-
-	    log_debug("sleeping for %ld seconds", (long int) ts.tv_sec);
-	    nanosleep(&ts, NULL);
-	}
-    } while (Cycle);
+			log_debug("sleeping for %ld seconds",
+			    ((long int) ts.tv_sec));
+			(void) nanosleep(&ts, NULL);
+		}
+	} while (Cycle);
 }
 
 int
