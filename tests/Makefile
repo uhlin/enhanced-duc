@@ -1,32 +1,39 @@
-ROOT=..
+ROOT = ../
 
-include $(ROOT)/options.mk
+TEST_LOGFILE ?= /tmp/run.log
 
-CFLAGS+=-DUNIT_TESTING=1
-CFLAGS+=-I$(ROOT)
-CFLAGS+=-I/usr/local/include
-LDFLAGS+=-L/usr/local/lib
-LDFLAGS+=-lcmocka
+include $(ROOT)options.mk
 
-include build.mk
+CFLAGS += -DUNIT_TESTING=1\
+	-I$(ROOT)\
+	-I/usr/local/include
+
+LDFLAGS += -L/usr/local/lib\
+	-lcmocka
+
+all: main
+
+include tests.mk
+
+main: $(TESTS)
 
 .SUFFIXES: .c .o .run
 
 .c.o:
-	@echo "  CC      " $@
-	@$(CC) $(CFLAGS) -c -o $@ $<
-.cpp.o:
-	@echo "  CXX     " $@
-	@$(CXX) $(CXXFLAGS) -c -o $@ $<
-.o.run:
-	@echo "  LINK    " $@
-	@$(CXX) $(CXXFLAGS) -o $@ $*.o $(OBJS) $(LDFLAGS)
-	@strip $@
+	$(E) "  CC      " $@
+	$(Q) $(CC) $(CFLAGS) -c -o $@ $<
 
-all: $(OBJS) $(TEST_OBJS) $(TESTS)
+.cpp.o:
+	$(E) "  CXX     " $@
+	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
+
+.o.run:
+	$(E) "  LINK    " $@
+	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(ROOT)*.o $(LDFLAGS)
+	$(Q) strip $@
 
 clean:
-	@echo "  CLEAN"
-	@$(RM) $(OBJS)
-	@$(RM) $(TEST_OBJS)
-	@$(RM) $(TESTS)
+	$(E) "  CLEAN"
+	$(RM) "$(TEST_LOGFILE)"
+	$(RM) $(TESTS)
+	$(RM) *.o
