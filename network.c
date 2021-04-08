@@ -274,7 +274,8 @@ net_check_for_ip_change(void)
 	freeaddrinfo(res);
 
 	if (!connected) {
-		(void) close(g_socket);
+		if (g_socket >= 0)
+			(void) close(g_socket);
 		g_socket = -1;
 		return IP_HAS_CHANGED;
 	}
