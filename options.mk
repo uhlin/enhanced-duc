@@ -15,7 +15,7 @@ CXX = c++
 CXXCLAGS =
 
 LDFLAGS = -lcrypto -lssl
-RM ?= rm -f
+RM ?= @rm -f
 
 E = @echo
 Q = @
