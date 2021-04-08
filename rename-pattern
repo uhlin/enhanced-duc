@@ -5,6 +5,8 @@ TARGETS="
 *.cpp
 *.h
 *.hpp
+tests/*.c
+tests/*.h
 "
 
 if [ $# != 2 ]; then
