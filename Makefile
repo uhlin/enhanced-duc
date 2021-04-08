@@ -22,5 +22,6 @@ include install.mk
 
 clean:
 	$(E) "  CLEAN"
-	$(Q) $(RM) $(OBJS)
-	$(Q) $(RM) $(TGTS)
+	$(RM) $(OBJS)
+	$(RM) $(TGTS)
+	$(MAKE) -Ctests clean
