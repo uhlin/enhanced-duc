@@ -67,7 +67,7 @@
 
 #if defined(_WIN32) && defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 static void
-VirtualTerminalProcessing()
+VirtualTerminalProcessing(void)
 {
 	HANDLE output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	DWORD modes = 0;
