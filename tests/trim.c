@@ -5,61 +5,68 @@
 
 #include "various.h"
 
-static char dst[100] = "";
+static char dst[200] = { '\0' };
 
 static void
 returnsAnEmptyStringOnEmptyInput(void **state)
 {
-    strlcpy(dst, "", sizeof dst);
-    assert_string_equal(trim(dst), "");
+	(void) state;
+	(void) strlcpy(dst, "", sizeof dst);
+	assert_string_equal(trim(dst), "");
 }
 
 static void
 returnsAnEmptyStringIfInputIsAllWhitespace(void **state)
 {
-    strlcpy(dst, "     \f\n\r\t\t\t\t\t\v     ", sizeof dst);
-    assert_string_equal(trim(dst), "");
+	(void) state;
+	(void) strlcpy(dst, "     \f\n\r\t\t\t\t\t\v     ", sizeof dst);
+	assert_string_equal(trim(dst), "");
 }
 
 static void
 canTrim_test1(void **state)
 {
-    strlcpy(dst, "hello, world!\r\n", sizeof dst);
-    assert_string_equal(trim(dst), "hello, world!");
+	(void) state;
+	(void) strlcpy(dst, "hello, world!\r\n", sizeof dst);
+	assert_string_equal(trim(dst), "hello, world!");
 }
 
 static void
 canTrim_test2(void **state)
 {
-    strlcpy(dst, "hello, world!\r", sizeof dst);
-    assert_string_equal(trim(dst), "hello, world!");
+	(void) state;
+	(void) strlcpy(dst, "hello, world!\r", sizeof dst);
+	assert_string_equal(trim(dst), "hello, world!");
 }
 
 static void
 canTrim_test3(void **state)
 {
-    strlcpy(dst, "hello, world!\n", sizeof dst);
-    assert_string_equal(trim(dst), "hello, world!");
+	(void) state;
+	(void) strlcpy(dst, "hello, world!\n", sizeof dst);
+	assert_string_equal(trim(dst), "hello, world!");
 }
 
 static void
 canTrim_test4(void **state)
 {
-    strlcpy(dst, "hello, world!     \f\n\r\t\t\t\t\t\v     ", sizeof dst);
-    assert_string_equal(trim(dst), "hello, world!");
+	(void) state;
+	(void) strlcpy(dst, "hello, world!     \f\n\r\t\t\t\t\t\v     ",
+	    sizeof dst);
+	assert_string_equal(trim(dst), "hello, world!");
 }
 
 int
 main(void)
 {
-    const struct CMUnitTest tests[] = {
-	cmocka_unit_test(returnsAnEmptyStringOnEmptyInput),
-	cmocka_unit_test(returnsAnEmptyStringIfInputIsAllWhitespace),
-	cmocka_unit_test(canTrim_test1),
-	cmocka_unit_test(canTrim_test2),
-	cmocka_unit_test(canTrim_test3),
-	cmocka_unit_test(canTrim_test4),
-    };
+	const struct CMUnitTest tests[] = {
+		cmocka_unit_test(returnsAnEmptyStringOnEmptyInput),
+		cmocka_unit_test(returnsAnEmptyStringIfInputIsAllWhitespace),
+		cmocka_unit_test(canTrim_test1),
+		cmocka_unit_test(canTrim_test2),
+		cmocka_unit_test(canTrim_test3),
+		cmocka_unit_test(canTrim_test4),
+	};
 
-    return cmocka_run_group_tests(tests, NULL, NULL);
+	return cmocka_run_group_tests(tests, NULL, NULL);
 }
