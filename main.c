@@ -72,43 +72,45 @@ static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 	     ar_p++)
 
 static void
-process_options(int argc, char *argv[], struct program_options *po,
-		char *ar, size_t ar_sz)
+process_options(int argc, char *argv[], struct program_options *po, char *ar,
+		size_t ar_sz)
 {
-    const char opt_string[] = ":hcx:DoB";
-    enum { MISSING_OPTARG = ':', UNRECOGNIZED_OPTION = '?' };
-    int opt = -1;
+	const char opt_string[] = ":hcx:DoB";
+	enum { MISSING_OPTARG = ':', UNRECOGNIZED_OPTION = '?' };
+	int opt = -1;
 
-    while ((opt = getopt(argc, argv, opt_string)) != -1) {
-	switch (opt) {
-	case MISSING_OPTARG:
-	case UNRECOGNIZED_OPTION:
-	    if (opt == MISSING_OPTARG) {
-		fprintf(stderr, "Option '%c' requires an argument.\n", optopt);
-	    } else {
-		fprintf(stderr, "Unrecognized option '%c'.\n", optopt);
-	    }
-	    /*FALLTHROUGH*/
-	case 'h':
-	    po->want_usage = true;
-	    return;
-	case 'c':
-	    po->want_create_config_file = true;
-	    return;
-	case 'x':
-	    snprintf(ar, ar_sz, "%s", optarg);
-	    break;
-	case 'D':
-	    po->want_debug = true;
-	    break;
-	case 'o':
-	    po->want_update_once = true;
-	    break;
-	case 'B':
-	    po->want_daemon = true;
-	    break;
+	while ((opt = getopt(argc, argv, opt_string)) != -1) {
+		switch (opt) {
+		case MISSING_OPTARG:
+		case UNRECOGNIZED_OPTION:
+			if (opt == MISSING_OPTARG) {
+				fprintf(stderr, "Option '%c' requires an "
+				    "argument.\n", optopt);
+			} else {
+				fprintf(stderr, "Unrecognized option '%c'.\n",
+				    optopt);
+			}
+			/*FALLTHROUGH*/
+		case 'h':
+			po->want_usage = true;
+			return;
+		case 'c':
+			po->want_create_config_file = true;
+			return;
+		case 'x':
+			snprintf(ar, ar_sz, "%s", optarg);
+			break;
+		case 'D':
+			po->want_debug = true;
+			break;
+		case 'o':
+			po->want_update_once = true;
+			break;
+		case 'B':
+			po->want_daemon = true;
+			break;
+		}
 	}
-    }
 }
 
 static void
