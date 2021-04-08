@@ -463,6 +463,12 @@ start_update_cycle(void)
 {
 	hostname_array_init();
 
+#if defined(OpenBSD) && OpenBSD >= 201811
+	if (unveil(enhanced_duc_dir, "r") == -1)
+	    fatal(errno, "unveil");
+	log_msg("restricted filesystem view to: %s", enhanced_duc_dir);
+#endif
+
 #if defined(OpenBSD) && OpenBSD >= 201605
 	if (pledge("stdio inet dns", NULL) == -1)
 		fatal(errno, "pledge");
