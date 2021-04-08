@@ -113,6 +113,7 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 	}
 }
 
+#if 0
 static void
 write_border(const int c, const size_t len)
 {
@@ -122,18 +123,21 @@ write_border(const int c, const size_t len)
 	(void) fputs(NORMAL, stderr);
 	(void) fputc('\n', stderr);
 }
+#endif
 
 static __dead void
 usage(void)
 {
 	extern char *__progname;
-	char *msgVersion = strdup_printf("%s %s by %s\n", g_programName,
-	    g_programVersion, g_programAuthor);
+	char *msgVersion = strdup_printf("%s%s%s %s by %s\n",
+	    MAGENTA, g_programName, NORMAL,
+	    g_programVersion,
+	    g_programAuthor);
 	char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
 
-	write_border('-', strlen(msgVersion) - 1);
+	//write_border('-', strlen(msgVersion) - 1);
 	(void) fputs(msgVersion, stderr);
-	write_border('-', strlen(msgVersion) - 1);
+	//write_border('-', strlen(msgVersion) - 1);
 
 	(void) fputc('\n', stderr);
 	(void) fputs(msgUsage, stderr);
