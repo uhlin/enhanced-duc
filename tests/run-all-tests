@@ -11,10 +11,10 @@ trim
 xstrdup
 "
 
-for name in $TESTS; do
-    echo "========== ${name}${SUFFIX} =========="
+for t in $TESTS; do
+	echo "--- ${t}${SUFFIX} ---"
 
-    if test -f "${name}${SUFFIX}"; then
-	./"${name}${SUFFIX}"
-    fi
+	if [ -x "${t}${SUFFIX}" ]; then
+		"./${t}${SUFFIX}"
+	fi
 done
