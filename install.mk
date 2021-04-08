@@ -1,12 +1,17 @@
-INSTALL=install -D
-INSTALL_DEPS=enhanced-duc enhanced-duc.1 example.conf
-PREFIX?=/usr/local
+INSTALL := install
+INSTALL_DEPS = enhanced-duc enhanced-duc.1 template.conf
+PREFIX ?= /usr/local
 
-DEST_PROGRAM=$(PREFIX)/bin/enhanced-duc
-DEST_MANUAL=$(PREFIX)/man/man1
-DEST_CONFIG=/etc/enhanced-duc.conf
+# Don't provide a default value for DESTDIR. It should be empty.
+DESTDIR ?=
+
+DEST_PROGRAM = $(DESTDIR)$(PREFIX)/bin
+DEST_MANUAL = $(DESTDIR)$(PREFIX)/share/man/man1
+DEST_CONFIG = /etc/enhanced-duc.conf
 
 install: $(INSTALL_DEPS)
+	$(INSTALL) -d $(DEST_PROGRAM)
+	$(INSTALL) -d $(DEST_MANUAL)
 	$(INSTALL) -m 0755 enhanced-duc $(DEST_PROGRAM)
 	$(INSTALL) -m 0444 enhanced-duc.1 $(DEST_MANUAL)
-	$(INSTALL) -m 0600 -b example.conf $(DEST_CONFIG)
+	$(INSTALL) -m 0600 -b template.conf $(DEST_CONFIG)
