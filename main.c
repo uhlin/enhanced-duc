@@ -114,11 +114,11 @@ process_options(int argc, char *argv[], struct program_options *po,
 static void
 write_border(const int c, const size_t len)
 {
-    fputs(BOLDRED, stderr);
-    for (size_t count = 0; count < len; count++)
-	fputc(c, stderr);
-    fputs(NORMAL, stderr);
-    fputc('\n', stderr);
+	(void) fputs(BOLDRED, stderr);
+	for (size_t count = 0; count < len; count++)
+		(void) fputc(c, stderr);
+	(void) fputs(NORMAL, stderr);
+	(void) fputc('\n', stderr);
 }
 
 static __dead void
