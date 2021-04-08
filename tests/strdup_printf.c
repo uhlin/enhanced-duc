@@ -50,7 +50,7 @@ canDuplicatePrintfStyleFormatString_test3(void **state)
 }
 
 int
-main()
+main(void)
 {
     const struct CMUnitTest tests[] = {
 	cmocka_unit_test(canDuplicatePrintfStyleFormatString_test1),

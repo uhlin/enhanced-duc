@@ -30,7 +30,7 @@ canDuplicateString_test2(void **state)
 }
 
 int
-main()
+main(void)
 {
     const struct CMUnitTest tests[] = {
 	cmocka_unit_test(canDuplicateString_test1),
