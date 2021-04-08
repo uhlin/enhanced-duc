@@ -16,3 +16,6 @@ CXXCLAGS =
 
 LDFLAGS = -lcrypto -lssl
 RM ?= rm -f
+
+E = @echo
+Q = @
