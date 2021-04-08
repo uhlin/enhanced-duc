@@ -1,14 +1,17 @@
 # README #
 
-![EDUC globe](http://hem.bredband.net/markuhli/duc/gfx/educ-globe-140x140.png)
+![EDUC globe](educ-globe-140x140.png)
+
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/18259/badge.svg)](https://scan.coverity.com/projects/enhanced-duc)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/uhlin/enhanced-duc.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/uhlin/enhanced-duc/context:cpp)
 
 ## About ##
 
 Enhanced DUC is a dynamic DNS update client and daemon. Primarily it's
 written for use with the DNS services that [NoIP](http://www.noip.com)
-provide.  However: the protocol "is in an open format used by other
-service providers".  I began working on the project in November
-2015. The goal is to create a better update client for UNIX by using
+provide. However: the protocol "is in an open format used by other
+service providers". I began working on the project in November
+2015\. The goal is to create a better update client for UNIX by using
 modern C coding practices.
 
 ## Cloning ##
