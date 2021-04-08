@@ -1,7 +1,7 @@
 .\"
 .\" Public domain
 .\"
-.Dd June 15, 2019
+.Dd April 8, 2021
 .Dt ENHANCED-DUC 1
 .Os
 .Sh NAME
@@ -52,9 +52,14 @@ Valid ports are 80, 443 and 8245
 On
 .Ox
 .Xr pledge 2
-is used per default in order to force
+is used to force
 .Nm
 into a restricted service operating mode.
+(This since version 1.6.)
+Further, as of 2.2,
+.Xr pledge 2
+is used in combination with
+.Xr unveil 2 .
 .Sh FILES
 .Bl -tag -width "                         " -compact
 .It Pa /etc/enhanced-duc.conf
