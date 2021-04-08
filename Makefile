@@ -7,16 +7,16 @@ all: $(TGTS)
 include build.mk
 
 .c.o:
-	@echo "  CC      " $@
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	$(E) "  CC      " $@
+	$(Q) $(CC) $(CFLAGS) -c -o $@ $<
 .cpp.o:
-	@echo "  CXX     " $@
-	@$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(E) "  CXX     " $@
+	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # install target
 include install.mk
 
 clean:
-	@echo "  CLEAN"
-	@$(RM) $(OBJS)
-	@$(RM) $(TGTS)
+	$(E) "  CLEAN"
+	$(Q) $(RM) $(OBJS)
+	$(Q) $(RM) $(TGTS)
