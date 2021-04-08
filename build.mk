@@ -15,5 +15,5 @@ OBJS = b64_decode.o\
 	wrapper.o
 
 enhanced-duc: $(OBJS)
-	@echo "  LINK    " $@
-	@$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(E) "  LINK    " $@
+	$(Q) $(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
