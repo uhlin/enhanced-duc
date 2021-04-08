@@ -45,18 +45,18 @@ const char g_maintainerEmail[] = "markus.uhlin@bredband.net";
 char g_last_ip_addr[100] = "";
 
 static const char *help_text[] = {
-    "\n",
-    UNDERLINE_ON "Options:" UNDERLINE_OFF "\n",
-    "  -h           Print help\n",
-    "  -c           Create a config file by asking the user for input.\n",
-    "               The user will be given the opportunity to choose a\n",
-    "               location for the config file, i.e. where to create it.\n",
-    "  -x <path>    Start the DUC with the config file specified by path\n",
-    "  -D           Turn on debug mode\n",
-    "  -o           Don't cycle, i.e. don't periodically check for IP\n",
-    "               changes. Only update the hostname(s) once.\n",
-    "  -B           Run in the background and act as a daemon\n",
-    "\n",
+  "\n",
+  UNDERLINE_ON "Options:" UNDERLINE_OFF "\n",
+  "  -h           Print help\n",
+  "  -c           Create a config file by asking the user for input.\n",
+  "               The user will be given the opportunity to choose a\n",
+  "               location for the config file, i.e. where to create it.\n",
+  "  -x <path>    Start the DUC with the config file specified by path\n",
+  "  -D           Turn on debug mode\n",
+  "  -o           Don't cycle, i.e. don't periodically check for IP\n",
+  "               changes. Only update the hostname(s) once.\n",
+  "  -B           Run in the background and act as a daemon\n",
+  "\n",
 };
 
 static bool Cycle = true;
