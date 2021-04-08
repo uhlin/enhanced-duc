@@ -13,6 +13,10 @@ include build.mk
 	$(E) "  CXX     " $@
 	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
+check: $(OBJS)
+	$(Q) strip --strip-symbol=main main.o
+	$(MAKE) -Ctests
+
 # install target
 include install.mk
 
