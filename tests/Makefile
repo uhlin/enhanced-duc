@@ -23,10 +23,6 @@ main: $(TESTS)
 	$(E) "  CC      " $@
 	$(Q) $(CC) $(CFLAGS) -c -o $@ $<
 
-.cpp.o:
-	$(E) "  CXX     " $@
-	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
-
 .o.run:
 	$(E) "  LINK    " $@
 	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(ROOT)*.o $(LDFLAGS)
