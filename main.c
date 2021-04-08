@@ -122,30 +122,27 @@ write_border(const int c, const size_t len)
 }
 
 static __dead void
-usage()
+usage(void)
 {
-    extern char *__progname;
-    char *msgVersion =
-	strdup_printf("%s %s by %s\n",
-		      g_programName, g_programVersion, g_programAuthor);
-    char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
-    const size_t ar_sz = nitems(help_text);
+	extern char *__progname;
+	char *msgVersion = strdup_printf("%s %s by %s\n", g_programName,
+	    g_programVersion, g_programAuthor);
+	char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
 
-    write_border('-', strlen(msgVersion) - 1);
-    fputs(msgVersion, stderr);
-    write_border('-', strlen(msgVersion) - 1);
+	write_border('-', strlen(msgVersion) - 1);
+	(void) fputs(msgVersion, stderr);
+	write_border('-', strlen(msgVersion) - 1);
 
-    fputc('\n', stderr);
-    fputs(msgUsage, stderr);
+	(void) fputc('\n', stderr);
+	(void) fputs(msgUsage, stderr);
 
-    free(msgVersion);
-    free(msgUsage);
+	free(msgVersion);
+	free(msgUsage);
 
-    for (const char **ppcc = &help_text[0]; ppcc < &help_text[ar_sz]; ppcc++) {
-	fputs(*ppcc, stderr);
-    }
-
-    exit(1);
+	for (const char **ppcc = &help_text[0];
+	     ppcc < &help_text[nitems(help_text)]; ppcc++)
+		(void) fputs(*ppcc, stderr);
+	exit(1);
 }
 
 static void
