@@ -297,7 +297,7 @@ static bool
 is_ip_addr_ok(char **reason)
 {
 	const char	*ip = setting("ip_addr");
-	unsigned char	 buf[sizeof (struct in_addr)];
+	unsigned char	 buf[sizeof(struct in_addr)];
 
 	if (strings_match(ip, "")) {
 		*reason = "empty setting";

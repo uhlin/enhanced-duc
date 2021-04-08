@@ -238,7 +238,7 @@ net_check_for_ip_change(void)
 	const char *port = "80";
 	const char *primary_srv = setting("primary_ip_lookup_srv");
 	struct addrinfo *res, *rp;
-	unsigned char nw_addr[sizeof (struct in_addr)];
+	unsigned char nw_addr[sizeof(struct in_addr)];
 
 	if (setting_bool("force_update", true))
 		return IP_HAS_CHANGED;
