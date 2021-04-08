@@ -18,6 +18,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include "daemonize.h"
 #include "log.h"
 #include "main.h"
 #include "network.h"
@@ -117,8 +118,6 @@ sighand_init(void)
 void
 program_clean_up(void)
 {
-	extern int g_lockfile_fd;
-
 	net_deinit();
 	destroy_config_custom_values();
 
