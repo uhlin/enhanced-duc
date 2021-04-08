@@ -69,8 +69,8 @@
 static void
 VirtualTerminalProcessing(void)
 {
-	HANDLE output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	DWORD modes = 0;
+	HANDLE	 output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD	 modes = 0;
 
 	GetConsoleMode(output_handle, &modes);
 	modes |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
