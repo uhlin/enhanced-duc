@@ -62,7 +62,7 @@ static const char *help_text[] = {
 static bool Cycle = true;
 
 static const char enhanced_duc_user[] = DUC_USER;
-static const char enhanced_duc_dir[]  = DUC_DIR;
+static const char enhanced_duc_dir[] = DUC_DIR;
 
 static char *hostname_array[DUC_PERMITTED_HOSTS_LIMIT] = { NULL };
 
