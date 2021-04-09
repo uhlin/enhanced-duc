@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "colors.h"
 #include "log.h"
 #include "settings.h"
 #include "various.h"
@@ -192,9 +193,12 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	log_assert_arg_nonnull("get_answer", "desc", desc);
 	log_assert_arg_nonnull("get_answer", "defaultAnswer", defaultAnswer);
 
-	puts(desc);
-	printf("Ans [%s]: ", defaultAnswer);
-	fflush(stdout);
+	(void) fputs(MAGENTA, stdout);
+	(void) puts(desc);
+	(void) fputs(NORMAL, stdout);
+
+	(void) printf("Ans [%s]: ", defaultAnswer);
+	(void) fflush(stdout);
 
 	if (!strncmp(desc, "Your password.", 14))
 		toggle_echo(OFF);
