@@ -1,6 +1,30 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] ##
+- Added and deleted tests
+- Added colors.h and made use of it
+- Added compiler flags
+- Added daemonize.h
+- Added ducdef.h and made use of its definitions through the whole
+  project.
+- Added make target "check"
+- Added optdesc.h
+- Added template.conf
+- Added usage of unveil()
+- Deleted def.h
+- Deleted example.conf
+- Fixed non ANSI function declarations
+- Improved the makefiles
+- Indented and formatted **all files** according to OpenBSD's Kernel
+  Normal Form (KNF) with a few exceptions.
+- **Made improvements to several files and their functions**
+- Moved defines
+- Moved functions
+- Renamed functions and patterns
+- Updated the man page
+- Updated the readme
+
 ## [2.1] - 2019-06-16 ##
 ### Added ###
 - The possibility to set
