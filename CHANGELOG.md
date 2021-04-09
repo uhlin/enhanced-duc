@@ -1,7 +1,7 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] ##
+## [2.2] - 2021-04-09 ##
 - Added and deleted tests
 - **Added** colors.h and made use of it
 - **Added** compiler flags
