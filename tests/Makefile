@@ -1,4 +1,4 @@
-ROOT = ../
+ROOT := ../
 
 TEST_LOGFILE ?= /tmp/run.log
 
@@ -13,9 +13,12 @@ LDFLAGS += -L/usr/local/lib\
 
 all: main
 
+include recompile.mk
 include tests.mk
 
-main: $(TESTS)
+main: $(RECOMPILE) $(TESTS)
+	./run-all-tests > "$(TEST_LOGFILE)"
+	$(E) "$(TEST_LOGFILE) written"
 
 .SUFFIXES: .c .o .run
 

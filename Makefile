@@ -1,6 +1,7 @@
 include options.mk
 
-TGTS=enhanced-duc
+ROOT := ./
+TGTS = enhanced-duc
 
 all: $(TGTS)
 
@@ -13,7 +14,10 @@ include build.mk
 	$(E) "  CXX     " $@
 	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
+include tests/recompile.mk
+
 check: $(OBJS)
+	$(RM) $(RECOMPILE)
 	$(Q) strip --strip-symbol=main main.o
 	$(MAKE) -Ctests
 
