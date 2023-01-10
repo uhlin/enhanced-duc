@@ -24,11 +24,11 @@ typedef bool (*Interpreter_vFunc)(const char *);
 typedef int (*Interpreter_instFunc)(const char *, const char *);
 
 struct Interpreter_in {
-	char *path;
-	char *line;
-	long int line_num;
-	Interpreter_vFunc validator_func;
-	Interpreter_instFunc install_func;
+	char			*path;
+	char			*line;
+	long int		 line_num;
+	Interpreter_vFunc	 validator_func;
+	Interpreter_instFunc	 install_func;
 };
 
 __DUC_BEGIN_DECLS
