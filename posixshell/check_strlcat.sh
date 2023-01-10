@@ -34,7 +34,7 @@ EOF
 
 	printf "checking for strlcat()..."
 
-	${CC} ${CFLAGS} -Werror "$_srcfile" -o "$_out" ${LDFLAGS} \
+	${CC} ${CFLAGS} "$_srcfile" -o "$_out" ${LDFLAGS} \
 	    >/dev/null 2>&1
 
 	if [ $? -eq 0 ]; then
