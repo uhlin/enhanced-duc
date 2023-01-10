@@ -1,5 +1,17 @@
 #!/bin/sh
 
+if [ -z ${CC+x} ]; then
+	CC=cc
+fi
+
+if [ -z ${CFLAGS+x} ]; then
+	CFLAGS=""
+fi
+
+if [ -z ${LDFLAGS+x} ]; then
+	LDFLAGS=""
+fi
+
 . "posixshell/check_strlcpy.sh"
 . "posixshell/check_strlcat.sh"
 
