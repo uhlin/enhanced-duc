@@ -32,8 +32,8 @@
 #include "various.h"
 #include "wrapper.h"
 
-NET_SEND_FUNCPTR net_send = net_send_plain;
-NET_RECV_FUNCPTR net_recv = net_recv_plain;
+NET_SEND_FUNCPTR	net_send = net_send_plain;
+NET_RECV_FUNCPTR	net_recv = net_recv_plain;
 
 int g_socket = -1;
 
