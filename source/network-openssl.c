@@ -242,7 +242,20 @@ void
 net_ssl_end(void)
 {
 	if (ssl) {
-		SSL_shutdown(ssl);
+		switch (SSL_shutdown(ssl)) {
+		case 0:
+			log_debug("%s: SSL_shutdown: not yet finished",
+			    __func__);
+			(void) SSL_shutdown(ssl);
+			break;
+		case 1:
+			/* success! */
+			break;
+		default:
+			log_warn(0, "%s: SSL_shutdown: error", __func__);
+			break;
+		}
+
 		SSL_free(ssl);
 		ssl = NULL;
 	}
