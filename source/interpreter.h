@@ -3,11 +3,16 @@
 
 #include <ctype.h> /* isspace */
 #include <stdbool.h>
+#include <stdio.h> /* FILE */
 
 #include "ducdef.h"
 
-/* Set to 0 to turn off this feature. */
+/*
+ * Set to 0 to turn off this feature.
+ */
 #define IGNORE_UNRECOGNIZED_IDENTIFIERS 1
+
+#define MAXLINE 3200
 
 enum setting_type {
 	TYPE_BOOLEAN,
@@ -27,7 +32,12 @@ struct Interpreter_in {
 };
 
 __DUC_BEGIN_DECLS
+extern const char g_fgets_nullret_err1[];
+extern const char g_fgets_nullret_err2[];
+
 void	Interpreter(const struct Interpreter_in *);
+void	Interpreter_processAllLines(FILE *, const char *, Interpreter_vFunc,
+	    Interpreter_instFunc);
 __DUC_END_DECLS
 
 static inline void
