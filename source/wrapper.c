@@ -67,10 +67,8 @@ xstrdup(const char *s)
 
 	if ((newstr = malloc(sz)) == NULL)
 		fatal(ENOMEM, "%s: error allocating %zu bytes", __func__, sz);
-
 	if (strlcpy(newstr, s, sz) >= sz)
 		fatal(EOVERFLOW, "%s: truncated", __func__);
-
 	return (newstr);
 }
 
