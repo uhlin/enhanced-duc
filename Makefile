@@ -9,10 +9,10 @@ include source/build.mk
 
 .c.o:
 	$(E) "  CC      " $@
-	$(Q) $(CC) $(CFLAGS) -c -o $@ $<
+	$(Q) $(CC) $(CFLAGS) -I include -c -o $@ $<
 .cpp.o:
 	$(E) "  CXX     " $@
-	$(Q) $(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(Q) $(CXX) $(CXXFLAGS) -I include -c -o $@ $<
 
 include tests/recompile.mk
 
