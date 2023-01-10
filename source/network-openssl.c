@@ -309,8 +309,8 @@ create_ssl_context_obj_insecure(void)
 		fatal(ENOMEM, "%s: unable to create a new ssl_ctx object",
 		    __func__);
 	} else {
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+		(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+		(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
 	}
 }
 #endif
