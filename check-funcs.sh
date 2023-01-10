@@ -5,7 +5,7 @@ if [ -z ${CC+x} ]; then
 fi
 
 if [ -z ${CFLAGS+x} ]; then
-	CFLAGS=""
+	CFLAGS="-D_BSD_SOURCE=1 -D_DEFAULT_SOURCE=1 -D_POSIX_C_SOURCE=200809L"
 fi
 
 if [ -z ${LDFLAGS+x} ]; then
