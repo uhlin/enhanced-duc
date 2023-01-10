@@ -18,11 +18,7 @@
  */
 #define UPDATE_SCRIPT "/nic/update"
 
-/* Set to 1 if your system has strlcpy() */
-#define HAVE_STRLCPY 0
-
-/* Set to 1 if your system has strlcat() */
-#define HAVE_STRLCAT 0
+#include "funcs-yesno.h"
 
 /*
  * Set to 0 if the OpenSSL implementation provided by your system
