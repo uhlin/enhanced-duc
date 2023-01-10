@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
 - Added automatic checking of the presence of wanted functions
+- Added code optimizations
 - Added null checks
 - Added paths to unveil whitelist
 - Added usage of `__func__`
