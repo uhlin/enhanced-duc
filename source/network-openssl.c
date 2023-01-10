@@ -187,10 +187,10 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 	errno = 0;
 
 	if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-		log_warn(errno, "net_ssl_recv: select");
+		log_warn(errno, "%s: select", __func__);
 		return -1;
 	} else if (!FD_ISSET(g_socket, &readset)) {
-		log_warn(0, "net_ssl_recv: no data to receive  --  timed out!");
+		log_warn(0, "%s: no data to receive  --  timed out!", __func__);
 		return -1;
 	}
 
@@ -205,7 +205,7 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 		return 0;
 	case SSL_ERROR_WANT_READ:
 	case SSL_ERROR_WANT_WRITE:
-		log_warn(0, "net_ssl_recv: want read / want write");
+		log_warn(0, "%s: want read / want write", __func__);
 		return 0;
 	}
 
