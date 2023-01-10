@@ -41,8 +41,8 @@ int g_socket = -1;
 static struct addrinfo *
 net_addr_resolve(const char *host, const char *port)
 {
-	struct addrinfo *res;
-	struct addrinfo hints = { 0 };
+	struct addrinfo		*res;
+	struct addrinfo		 hints = { 0 };
 
 	if (host == NULL || port == NULL)
 		return NULL;
