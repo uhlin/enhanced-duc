@@ -220,8 +220,8 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 int
 net_ssl_begin(void)
 {
-	const char *err_reason = "";
-	static const int VALUE_HANDSHAKE_OK = 1;
+	const char		*err_reason = "";
+	static const int	 VALUE_HANDSHAKE_OK = 1;
 
 	if (ssl != NULL) {
 		err_reason = "the ssl object appears to be non-null";
