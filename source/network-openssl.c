@@ -68,8 +68,8 @@ chkhost_res_t
 net_ssl_check_hostname(const char *host, unsigned int flags)
 {
 #if HAVE_X509_CHECK_HOST
-	X509 *cert = NULL;
-	chkhost_res_t ret = HOSTNAME_MISMATCH;
+	X509		*cert = NULL;
+	chkhost_res_t	 ret = HOSTNAME_MISMATCH;
 
 	if ((cert = get_cert()) == NULL || host == NULL) {
 		if (cert)
