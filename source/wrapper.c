@@ -1,4 +1,4 @@
-/* Copyright (c) 2015-2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -32,9 +32,9 @@
 char *
 strdup_printf(const char *format, ...)
 {
-	char *ret;
-	int chars_printed;
-	va_list ap;
+	char		*ret;
+	int		 chars_printed;
+	va_list		 ap;
 
 	va_start(ap, format);
 	chars_printed = my_vasprintf(&ret, format, ap);
