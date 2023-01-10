@@ -57,7 +57,6 @@ char *
 xstrdup(const char *s)
 {
 	char *newstr = NULL;
-	int chars_printed = -1;
 	size_t sz = 0;
 
 	if (s == NULL) {
@@ -69,11 +68,8 @@ xstrdup(const char *s)
 	if ((newstr = malloc(sz)) == NULL)
 		fatal(ENOMEM, "xstrdup: error allocating %zu bytes", sz);
 
-	if ((chars_printed = snprintf(newstr, sz, "%s", s)) < 0 ||
-	    ((size_t) chars_printed) >= sz) {
-		fatal(errno, "xstrdup: snprintf error (chars_printed = %d)",
-		    chars_printed);
-	}
+	if (strlcpy(newstr, s, sz) >= sz)
+		fatal(EOVERFLOW, "xstrdup: truncated");
 
 	return (newstr);
 }
