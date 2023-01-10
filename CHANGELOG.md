@@ -1,6 +1,9 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] ##
+- Changed the directory structure
+
 ## [2.2] - 2021-04-09 ##
 - Added and deleted tests
 - **Added** colors.h and made use of it
