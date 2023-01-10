@@ -1,1 +1,1 @@
-RECOMPILE=$(ROOT)network-openssl.o
+RECOMPILE=$(SRC_DIR)network-openssl.o
