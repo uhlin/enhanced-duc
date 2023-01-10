@@ -1,4 +1,6 @@
 *.o
 *.run
+*.tgz
+cov-int/
 enhanced-duc
 include/funcs-yesno.h
