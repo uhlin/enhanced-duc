@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
+- Added paths to unveil whitelist
 - Changed the directory structure
 
 ## [2.2] - 2021-04-09 ##
