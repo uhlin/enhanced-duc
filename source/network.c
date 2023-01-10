@@ -76,10 +76,10 @@ ssl_is_enabled(void)
 int
 net_connect(void)
 {
-	bool connected = false;
-	const char *host = setting("sp_hostname");
-	const char *port = setting("port");
-	struct addrinfo *res, *rp;
+	bool			 connected = false;
+	const char		*host = setting("sp_hostname");
+	const char		*port = setting("port");
+	struct addrinfo		*res, *rp;
 
 	log_debug("connecting to %s (%s)...", host, port);
 
