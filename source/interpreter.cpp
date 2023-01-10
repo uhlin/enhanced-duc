@@ -20,6 +20,7 @@
 #include "interpreter.h"
 #include "log.h"
 #include "various.h"
+
 const char g_fgets_nullret_err1[] = "error: fgets() returned null and the "
     "error indicator is set";
 const char g_fgets_nullret_err2[] = "error: fgets() returned null for an "
