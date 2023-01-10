@@ -98,11 +98,11 @@ net_ssl_check_hostname(const char *host, unsigned int flags)
 int
 net_ssl_send(const char *fmt, ...)
 {
-	static const char message_terminate[] = "\r\n\r\n";
 	char *buf = NULL;
 	int buflen = 0;
 	int n_sent = 0;
 	size_t newSize = 0;
+	static const char message_terminate[] = "\r\n\r\n";
 	va_list ap;
 
 	log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
