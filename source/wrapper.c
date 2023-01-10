@@ -60,16 +60,16 @@ xstrdup(const char *s)
 	size_t	 sz = 0;
 
 	if (s == NULL) {
-		fatal(EINVAL, "xstrdup: invalid argument");
+		fatal(EINVAL, "%s: invalid argument", __func__);
 	} else {
 		sz = strlen(s) + 1;
 	}
 
 	if ((newstr = malloc(sz)) == NULL)
-		fatal(ENOMEM, "xstrdup: error allocating %zu bytes", sz);
+		fatal(ENOMEM, "%s: error allocating %zu bytes", __func__, sz);
 
 	if (strlcpy(newstr, s, sz) >= sz)
-		fatal(EOVERFLOW, "xstrdup: truncated");
+		fatal(EOVERFLOW, "%s: truncated", __func__);
 
 	return (newstr);
 }
