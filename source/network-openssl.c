@@ -360,11 +360,8 @@ net_ssl_init(void)
 void
 net_ssl_deinit(void)
 {
-	if (ssl) {
-		SSL_shutdown(ssl);
-		SSL_free(ssl);
-		ssl = NULL;
-	}
+	net_ssl_end();
+
 	if (ssl_ctx) {
 		SSL_CTX_free(ssl_ctx);
 		ssl_ctx = NULL;
