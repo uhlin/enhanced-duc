@@ -490,7 +490,7 @@ start_update_cycle(void)
 #endif
 
 #if defined(OpenBSD) && OpenBSD >= 201605
-	if (pledge("stdio inet dns", NULL) == -1)
+	if (pledge("dns inet rpath stdio", NULL) == -1)
 		fatal(errno, "pledge");
 	log_msg("forced into a restricted service operating mode (good)");
 #endif
