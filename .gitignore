@@ -1,3 +1,4 @@
 *.o
 *.run
 enhanced-duc
+include/funcs-yesno.h
