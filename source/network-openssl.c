@@ -110,14 +110,14 @@ net_ssl_send(const char *fmt, ...)
 
 	va_start(ap, fmt);
 	if (my_vasprintf(&buf, fmt, ap) < 0)
-		fatal(errno, "net_ssl_send: my_vasprintf");
+		fatal(errno, "%s: my_vasprintf", __func__);
 	va_end(ap);
 
 	newSize = strlen(buf) + nitems(message_terminate);
 	buf = xrealloc(buf, newSize);
 
 	if (strlcat(buf, message_terminate, newSize) >= newSize)
-		fatal(EOVERFLOW, "net_ssl_send: strlcat");
+		fatal(EOVERFLOW, "%s: strlcat", __func__);
 	if (strlen(buf) > INT_MAX) {
 		free(buf);
 		return -1;
@@ -138,7 +138,7 @@ net_ssl_send(const char *fmt, ...)
 		return 0;
 	case SSL_ERROR_WANT_READ:
 	case SSL_ERROR_WANT_WRITE:
-		log_warn(0, "net_ssl_send: operation did not complete");
+		log_warn(0, "%s: operation did not complete", __func__);
 		return 0;
 	}
 
