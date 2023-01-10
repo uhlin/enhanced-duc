@@ -174,6 +174,8 @@ toggle_echo(on_off_t state)
 {
 	struct termios term_attrs = { 0 };
 
+	errno = 0;
+
 	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
 		fatal(errno, "toggle_echo: tcgetattr");
 
