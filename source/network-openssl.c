@@ -99,6 +99,7 @@ int
 net_ssl_send(const char *fmt, ...)
 {
 	char		*buf = NULL;
+	char		*bufptr = NULL;
 	int		 buflen = 0;
 	int		 n_sent = 0;
 	size_t		 newSize = 0;
@@ -123,26 +124,42 @@ net_ssl_send(const char *fmt, ...)
 		return -1;
 	}
 
+	bufptr = buf;
 	buflen = (int) strlen(buf);
-	ERR_clear_error();
 
-	if ((n_sent = SSL_write(ssl, buf, buflen)) > 0) {
-		free(buf);
-		return 0;
+	while (buflen > 0) {
+		if (ssl == NULL || g_socket == -1)
+			break;
+
+		ERR_clear_error();
+		const int ret = SSL_write(ssl, bufptr, buflen);
+
+		if (ret > 0) {
+			if (BIO_flush(SSL_get_wbio(ssl)) != 1)
+				log_debug("%s: error flushing write bio",
+				    __func__);
+			n_sent += ret;
+			bufptr += ret;
+			buflen -= ret;
+		} else {
+			switch (SSL_get_error(ssl, ret)) {
+			case SSL_ERROR_NONE:
+				fatal(0, "%s: 'SSL_ERROR_NONE' reached "
+				    "unexpectedly", __func__);
+				break;
+			case SSL_ERROR_WANT_READ:
+			case SSL_ERROR_WANT_WRITE:
+				log_debug("%s: want read / want write", __func__);
+				continue;
+			}
+
+			free(buf);
+			return -1;
+		}
 	}
 
 	free(buf);
-
-	switch (SSL_get_error(ssl, n_sent)) {
-	case SSL_ERROR_NONE:
-		return 0;
-	case SSL_ERROR_WANT_READ:
-	case SSL_ERROR_WANT_WRITE:
-		log_warn(0, "%s: operation did not complete", __func__);
-		return 0;
-	}
-
-	return -1;
+	return (n_sent > 0 ? 0 : -1);
 }
 
 /**
