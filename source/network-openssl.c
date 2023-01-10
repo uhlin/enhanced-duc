@@ -220,20 +220,32 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 int
 net_ssl_begin(void)
 {
+	const char *err_reason = "";
 	const int VALUE_HANDSHAKE_OK = 1;
 
-	if (ssl != NULL)
-		fatal(0, "%s: the ssl object appears to be non-null", __func__);
-	else if ((ssl = SSL_new(ssl_ctx)) == NULL)
+	if (ssl != NULL) {
+		err_reason = "the ssl object appears to be non-null";
+		goto err;
+	} else if ((ssl = SSL_new(ssl_ctx)) == NULL) {
 		fatal(ENOMEM, "%s: unable to create a new ssl object",
 		    __func__);
-	else if (!SSL_set_fd(ssl, g_socket))
-		log_warn(0, "%s: unable to associate the global socket fd with "
-		    "the ssl object", __func__);
-	else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
-		log_warn(0, "%s: handshake not ok!", __func__);
-	else
-		return 0;
+	} else if (!SSL_set_fd(ssl, g_socket)) {
+		err_reason = "unable to associate the global socket fd with "
+		    "the ssl object";
+		goto err;
+	}
+
+	SSL_set_connect_state(ssl);
+
+	if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK) {
+		err_reason = "handshake not ok!";
+		goto err;
+	}
+
+	return 0;
+
+  err:
+	log_warn(0, "%s: %s", __func__, err_reason);
 	return -1;
 }
 
