@@ -3,6 +3,8 @@
 ![EDUC globe](educ-globe-140x140.png)
 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/18259/badge.svg)](https://scan.coverity.com/projects/enhanced-duc)
+[![CodeQL](https://github.com/uhlin/enhanced-duc/actions/workflows/codeql.yml/badge.svg)](https://github.com/uhlin/enhanced-duc/actions/workflows/codeql.yml)
+[![macOS](https://github.com/uhlin/enhanced-duc/actions/workflows/macos.yml/badge.svg)](https://github.com/uhlin/enhanced-duc/actions/workflows/macos.yml)
 
 ## About ##
 
