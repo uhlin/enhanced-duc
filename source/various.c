@@ -181,7 +181,7 @@ toggle_echo(on_off_t state)
 
 	switch (state) {
 	case ON:
-		if (! (term_attrs.c_lflag & ECHO)) {
+		if (!(term_attrs.c_lflag & ECHO)) {
 			term_attrs.c_lflag |= ECHO;
 			if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
 				fatal(errno, "toggle_echo: tcsetattr");
