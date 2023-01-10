@@ -223,13 +223,13 @@ net_ssl_begin(void)
 	const int VALUE_HANDSHAKE_OK = 1;
 
 	if ((ssl = SSL_new(ssl_ctx)) == NULL)
-		fatal(ENOMEM, "net_ssl_begin: "
-		    "unable to create a new ssl object");
+		fatal(ENOMEM, "%s: unable to create a new ssl object",
+		    __func__);
 	else if (!SSL_set_fd(ssl, g_socket))
-		log_warn(0, "net_ssl_begin: unable to associate the "
-		    "global socket fd with the ssl object");
+		log_warn(0, "%s: unable to associate the global socket fd with "
+		    "the ssl object", __func__);
 	else if (SSL_connect(ssl) != VALUE_HANDSHAKE_OK)
-		log_warn(0, "net_ssl_begin: handshake not ok!");
+		log_warn(0, "%s: handshake not ok!", __func__);
 	else
 		return 0;
 	return -1;
