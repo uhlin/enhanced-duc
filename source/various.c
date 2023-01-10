@@ -177,25 +177,25 @@ toggle_echo(on_off_t state)
 	errno = 0;
 
 	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
-		fatal(errno, "toggle_echo: tcgetattr");
+		fatal(errno, "%s: tcgetattr", __func__);
 
 	switch (state) {
 	case ON:
 		if (!(term_attrs.c_lflag & ECHO)) {
 			term_attrs.c_lflag |= ECHO;
 			if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-				fatal(errno, "toggle_echo: tcsetattr");
+				fatal(errno, "%s: tcsetattr", __func__);
 		}
 		break;
 	case OFF:
 		if (term_attrs.c_lflag & ECHO) {
 			term_attrs.c_lflag &= ~ECHO;
 			if (tcsetattr(STDIN_FILENO, TCSANOW, &term_attrs) != 0)
-				fatal(errno, "toggle_echo: tcsetattr");
+				fatal(errno, "%s: tcsetattr", __func__);
 		}
 		break;
 	default:
-		fatal(0, "toggle_echo: statement reached unexpectedly");
+		fatal(0, "%s: statement reached unexpectedly", __func__);
 		break;
 	}
 }
