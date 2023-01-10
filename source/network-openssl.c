@@ -290,12 +290,15 @@ create_ssl_context_obj(void)
 	if ((ssl_ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
 		fatal(ENOMEM, "%s: unable to create a new ssl_ctx object",
 		    __func__);
-	} else {
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1);
-		SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_TLSv1_1);
 	}
+
+	(void) SSL_CTX_set_mode(ssl_ctx, SSL_MODE_ENABLE_PARTIAL_WRITE);
+	(void) SSL_CTX_set_mode(ssl_ctx, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+	(void) SSL_CTX_set_mode(ssl_ctx, SSL_MODE_AUTO_RETRY);
+	(void) SSL_CTX_set_mode(ssl_ctx, SSL_MODE_RELEASE_BUFFERS);
+
+	(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+	(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
 }
 #else
 /* -------------------------------- */
