@@ -202,8 +202,11 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 	int bytes_received = 0;
 	ERR_clear_error();
 
-	if ((bytes_received = SSL_read(ssl, recvbuf, recvbuf_size)) > 0)
+	if ((bytes_received = SSL_read(ssl, recvbuf, recvbuf_size)) > 0) {
+		if (BIO_flush(SSL_get_rbio(ssl)) != 1)
+			log_debug("%s: error flushing read bio", __func__);
 		return 0;
+	}
 
 	switch (SSL_get_error(ssl, bytes_received)) {
 	case SSL_ERROR_NONE:
