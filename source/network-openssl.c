@@ -193,7 +193,8 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 			log_warn(errno, "%s: select", __func__);
 			return -1;
 		} else if (!FD_ISSET(g_socket, &readset)) {
-			log_warn(0, "%s: no data to receive  --  timed out!", __func__);
+			log_warn(0, "%s: no data to receive  --  timed out!",
+			    __func__);
 			return -1;
 		}
 	}
