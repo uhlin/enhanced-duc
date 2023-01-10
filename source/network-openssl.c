@@ -311,10 +311,10 @@ static int
 verify_callback(int ok, X509_STORE_CTX *ctx)
 {
 	X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
-	char issuer[256]  = "";
+	char issuer[256] = "";
 	char subject[256] = "";
 	const int depth = X509_STORE_CTX_get_error_depth(ctx);
-	const int err   = X509_STORE_CTX_get_error(ctx);
+	const int err = X509_STORE_CTX_get_error(ctx);
 
 	X509_NAME_oneline(X509_get_issuer_name(cert), issuer, sizeof issuer);
 	X509_NAME_oneline(X509_get_subject_name(cert), subject, sizeof subject);
