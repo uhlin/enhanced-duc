@@ -56,8 +56,8 @@ strdup_printf(const char *format, ...)
 char *
 xstrdup(const char *s)
 {
-	char *newstr = NULL;
-	size_t sz = 0;
+	char	*newstr = NULL;
+	size_t	 sz = 0;
 
 	if (s == NULL) {
 		fatal(EINVAL, "xstrdup: invalid argument");
