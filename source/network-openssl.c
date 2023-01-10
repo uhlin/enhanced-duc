@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -99,11 +99,11 @@ int
 net_ssl_send(const char *fmt, ...)
 {
 	static const char message_terminate[] = "\r\n\r\n";
-	char	*buf = NULL;
-	int	 buflen = 0;
-	int	 n_sent = 0;
-	size_t	 newSize = 0;
-	va_list	 ap;
+	char *buf = NULL;
+	int buflen = 0;
+	int n_sent = 0;
+	size_t newSize = 0;
+	va_list ap;
 
 	log_assert_arg_nonnull("net_ssl_send", "fmt", fmt);
 
