@@ -31,9 +31,6 @@ you need to install a package with name `libssl-dev` before building:
 
     $ cd /path/to/source
 
-If your system comes with `strlcpy()` and `strlcat()` please edit
-`enhanced-duc-config.h`.
-
     $ make
     $ sudo make install
 
