@@ -186,10 +186,10 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
 #if IO_MULTIPLEXING
 	const int maxfdp1 = g_socket + 1;
 	fd_set readset;
-	struct timeval tv = {
-		.tv_sec = 10,
-		.tv_usec = 0,
-	};
+	struct timeval tv;
+
+	tv.tv_sec	= 10;
+	tv.tv_usec	= 333;
 
 	FD_ZERO(&readset);
 	FD_SET(g_socket, &readset);
