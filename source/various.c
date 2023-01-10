@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018, 2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -172,14 +172,10 @@ size_product(const size_t elt_count, const size_t elt_size)
 void
 toggle_echo(on_off_t state)
 {
-	static bool initialized = false;
-	static struct termios term_attrs = { 0 };
+	struct termios term_attrs = { 0 };
 
-	if (!initialized) {
-		if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
-			fatal(errno, "toggle_echo: tcgetattr");
-		initialized = true;
-	}
+	if (tcgetattr(STDIN_FILENO, &term_attrs) != 0)
+		fatal(errno, "toggle_echo: tcgetattr");
 
 	switch (state) {
 	case ON:
