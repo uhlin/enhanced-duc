@@ -514,15 +514,12 @@ read_config_file(const char *path)
 	Interpreter_processAllLines(fp, path, is_recognized_setting,
 	    install_setting);
 
-	if (feof(fp)) {
+	if (feof(fp))
 		fclose(fp);
-	} else if (ferror(fp)) {
-		fatal(0, "read_config_file: fatal: fgets returned null and "
-		    "the error indicator is set");
-	} else {
-		fatal(0, "read_config_file: fatal: fgets returned null and "
-		    "the reason cannot be determined");
-	}
+	else if (ferror(fp))
+		fatal(0, "%s: %s", __func__, g_fgets_nullret_err1);
+	else
+		fatal(0, "%s: %s", __func__, g_fgets_nullret_err2);
 
 	g_conf_read = true;
 }
