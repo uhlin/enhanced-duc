@@ -2,9 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
+- Added null checks
 - Added paths to unveil whitelist
 - Added usage of `__func__`
 - Changed the directory structure
+- Made multiple improvements to the TLS/SSL functions
 - Updated the interpreter
 
 ## [2.2] - 2021-04-09 ##
