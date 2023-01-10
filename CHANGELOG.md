@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Changed the directory structure
 - Made multiple improvements to the TLS/SSL functions
 - Updated the interpreter
+- Updated the man page
 
 ## [2.2] - 2021-04-09 ##
 - Added and deleted tests
