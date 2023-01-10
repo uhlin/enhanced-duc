@@ -113,18 +113,6 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 	}
 }
 
-#if 0
-static void
-write_border(const int c, const size_t len)
-{
-	(void) fputs(BOLDRED, stderr);
-	for (size_t count = 0; count < len; count++)
-		(void) fputc(c, stderr);
-	(void) fputs(NORMAL, stderr);
-	(void) fputc('\n', stderr);
-}
-#endif
-
 static __dead void
 usage(void)
 {
@@ -135,9 +123,7 @@ usage(void)
 	    g_programAuthor);
 	char *msgUsage = strdup_printf("Usage: %s [OPTION] ...\n", __progname);
 
-	//write_border('-', strlen(msgVersion) - 1);
 	(void) fputs(msgVersion, stderr);
-	//write_border('-', strlen(msgVersion) - 1);
 
 	(void) fputc('\n', stderr);
 	(void) fputs(msgUsage, stderr);
