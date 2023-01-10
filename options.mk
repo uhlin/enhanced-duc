@@ -1,7 +1,9 @@
 # options.mk
 
 CC = cc
-CFLAGS = -D_POSIX_C_SOURCE=200809L\
+CFLAGS = -D_BSD_SOURCE=1\
+	-D_DEFAULT_SOURCE=1\
+	-D_POSIX_C_SOURCE=200809L\
 	-O2\
 	-Wall\
 	-Wsign-compare\
