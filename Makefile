@@ -5,7 +5,7 @@ TGTS = enhanced-duc
 
 all: $(TGTS)
 
-include build.mk
+include source/build.mk
 
 .c.o:
 	$(E) "  CC      " $@
