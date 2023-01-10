@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
 - Added paths to unveil whitelist
+- Added usage of `__func__`
 - Changed the directory structure
 - Updated the interpreter
 
