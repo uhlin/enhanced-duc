@@ -222,7 +222,9 @@ net_ssl_begin(void)
 {
 	const int VALUE_HANDSHAKE_OK = 1;
 
-	if ((ssl = SSL_new(ssl_ctx)) == NULL)
+	if (ssl != NULL)
+		fatal(0, "%s: the ssl object appears to be non-null", __func__);
+	else if ((ssl = SSL_new(ssl_ctx)) == NULL)
 		fatal(ENOMEM, "%s: unable to create a new ssl object",
 		    __func__);
 	else if (!SSL_set_fd(ssl, g_socket))
