@@ -233,8 +233,8 @@ net_check_for_ip_change(void)
 {
 	bool			 address_resolved = false;
 	bool			 connected = false;
-	char			 buf[1000] = "";
-	char			 srv[255] = "";
+	char			 buf[1000] = { '\0' };
+	char			 srv[255] = { '\0' };
 	const char		*backup_srv = setting("backup_ip_lookup_srv");
 	const char		*port = "80";
 	const char		*primary_srv = setting("primary_ip_lookup_srv");
