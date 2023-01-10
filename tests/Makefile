@@ -1,4 +1,6 @@
 ROOT := ../
+INCLUDE_DIR := $(ROOT)include/
+SRC_DIR := $(ROOT)source/
 
 TEST_LOGFILE ?= /tmp/run.log
 
@@ -24,11 +26,11 @@ main: $(RECOMPILE) $(TESTS)
 
 .c.o:
 	$(E) "  CC      " $@
-	$(Q) $(CC) $(CFLAGS) -c -o $@ $<
+	$(Q) $(CC) $(CFLAGS) -I $(INCLUDE_DIR) -I $(SRC_DIR) -c -o $@ $<
 
 .o.run:
 	$(E) "  LINK    " $@
-	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(ROOT)*.o $(LDFLAGS)
+	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(SRC_DIR)*.o $(LDFLAGS)
 	$(Q) strip $@
 
 clean:
