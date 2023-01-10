@@ -505,10 +505,10 @@ read_config_file(const char *path)
 	if (g_conf_read) {
 		return;
 	} else if (!is_regularFile(path)) {
-		fatal(0, "read_config_file: either the config file is "
-		    "nonexistent  --  or it isn't a regular file");
+		fatal(0, "%s: either the config file is nonexistent"
+		    "  --  or it isn't a regular file", __func__);
 	} else if ((fp = fopen(path, "r")) == NULL) {
-		fatal(errno, "read_config_file: fopen");
+		fatal(errno, "%s: fopen", __func__);
 	}
 
 	Interpreter_processAllLines(fp, path, is_recognized_setting,
