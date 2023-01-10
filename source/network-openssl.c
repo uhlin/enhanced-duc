@@ -295,7 +295,7 @@ void
 net_ssl_init(void)
 {
 	SSL_load_error_strings();
-	SSL_library_init();
+	(void) SSL_library_init();
 
 	if (RAND_load_file("/dev/urandom", 1024) <= 0)
 		log_warn(ENOSYS, "net_ssl_init: error seeding the prng!");
