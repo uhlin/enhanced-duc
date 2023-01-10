@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -467,6 +467,26 @@ start_update_cycle(void)
 	if (unveil(enhanced_duc_dir, "r") == -1)
 	    fatal(errno, "unveil");
 	log_msg("restricted filesystem view to: %s", enhanced_duc_dir);
+
+	struct whitelist_tag {
+		const char	*path;
+		const char	*permissions;
+	} whitelist[] = {
+		{ "/etc/ssl/cert.pem", "r" },
+	};
+
+	for (struct whitelist_tag *wl_p = &whitelist[0];
+	    wl_p < &whitelist[nitems(whitelist)];
+	    wl_p++) {
+		errno = 0;
+
+		if (unveil(wl_p->path, wl_p->permissions) == -1 &&
+		    errno != ENOENT) {
+			fatal(errno, "unveil(%s, %s)",
+			    wl_p->path,
+			    wl_p->permissions);
+		}
+	}
 #endif
 
 #if defined(OpenBSD) && OpenBSD >= 201605
