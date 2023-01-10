@@ -18,7 +18,7 @@ include tests/recompile.mk
 
 check: $(OBJS)
 	$(RM) $(RECOMPILE)
-	$(Q) strip --strip-symbol=main main.o
+	$(Q) strip --strip-symbol=main $(SRC_DIR)main.o
 	$(MAKE) -Ctests
 
 # install target
