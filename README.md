@@ -3,7 +3,6 @@
 ![EDUC globe](educ-globe-140x140.png)
 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/18259/badge.svg)](https://scan.coverity.com/projects/enhanced-duc)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/uhlin/enhanced-duc.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/uhlin/enhanced-duc/context:cpp)
 
 ## About ##
 
