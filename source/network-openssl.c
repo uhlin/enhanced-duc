@@ -299,6 +299,11 @@ create_ssl_context_obj(void)
 
 	(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
 	(void) SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv3);
+
+	if (!SSL_CTX_set_min_proto_version(ssl_ctx, TLS1_2_VERSION)) {
+		log_warn(0, "%s: error setting minimum supported "
+		    "protocol version", __func__);
+	}
 }
 #else
 /* -------------------------------- */
