@@ -1,4 +1,4 @@
-INSTALL := install
+INSTALL = install
 INSTALL_DEPS = enhanced-duc enhanced-duc.1 template.conf
 PREFIX ?= /usr/local
 
