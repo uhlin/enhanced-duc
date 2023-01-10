@@ -146,11 +146,12 @@ net_disconnect(void)
 int
 net_send_plain(const char *fmt, ...)
 {
-	bool ok = true;
-	char *buf = NULL;
-	size_t newSize = 0;
-	static const char message_terminate[] = "\r\n\r\n";
-	va_list ap;
+	bool		 ok = true;
+	char		*buf = NULL;
+	size_t		 newSize = 0;
+	static const char
+			 message_terminate[] = "\r\n\r\n";
+	va_list		 ap;
 
 	log_assert_arg_nonnull("net_send_plain", "fmt", fmt);
 
