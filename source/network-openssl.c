@@ -221,7 +221,7 @@ int
 net_ssl_begin(void)
 {
 	const char *err_reason = "";
-	const int VALUE_HANDSHAKE_OK = 1;
+	static const int VALUE_HANDSHAKE_OK = 1;
 
 	if (ssl != NULL) {
 		err_reason = "the ssl object appears to be non-null";
