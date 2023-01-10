@@ -298,7 +298,7 @@ net_ssl_init(void)
 	(void) SSL_library_init();
 
 	if (RAND_load_file("/dev/urandom", 1024) <= 0)
-		log_warn(ENOSYS, "net_ssl_init: error seeding the prng!");
+		log_warn(ENOSYS, "%s: error seeding the prng!", __func__);
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
 	create_ssl_context_obj();
@@ -308,15 +308,15 @@ net_ssl_init(void)
 #endif
 
 	if (!SSL_CTX_set_default_verify_paths(ssl_ctx)) {
-		log_warn(ENOSYS, "net_ssl_init: error loading default ca file "
-		    "and/or directory");
+		log_warn(ENOSYS, "%s: error loading default ca file and/or "
+		    "directory", __func__);
 	}
 
 	SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER, verify_callback);
 	SSL_CTX_set_verify_depth(ssl_ctx, 4);
 
 	if (!SSL_CTX_set_cipher_list(ssl_ctx, cipher_list))
-		log_warn(EINVAL, "net_ssl_init: bogus cipher list");
+		log_warn(EINVAL, "%s: bogus cipher list", __func__);
 
 	net_send = net_ssl_send;
 	net_recv = net_ssl_recv;
