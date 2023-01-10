@@ -12,7 +12,7 @@ CFLAGS = -D_BSD_SOURCE=1\
 	-std=c11
 
 CXX = c++
-CXXCLAGS =
+CXXCLAGS = -std=c++17
 
 LDFLAGS = -lcrypto -lssl
 RM ?= @rm -f
