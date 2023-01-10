@@ -172,26 +172,30 @@ net_ssl_send(const char *fmt, ...)
 int
 net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 {
-	const int maxfdp1 = g_socket + 1;
-	fd_set readset;
-	struct timeval tv = {
-		.tv_sec = 10,
-		.tv_usec = 0,
-	};
-
 	log_assert_arg_nonnull("net_ssl_recv", "recvbuf", recvbuf);
 
-	FD_ZERO(&readset);
-	FD_SET(g_socket, &readset);
-
-	errno = 0;
-
-	if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
-		log_warn(errno, "%s: select", __func__);
+	if (ssl == NULL || g_socket == -1)
 		return -1;
-	} else if (!FD_ISSET(g_socket, &readset)) {
-		log_warn(0, "%s: no data to receive  --  timed out!", __func__);
-		return -1;
+	else if (!SSL_pending(ssl)) {
+		const int	 maxfdp1 = g_socket + 1;
+		fd_set		 readset;
+		struct timeval	 tv;
+
+		tv.tv_sec	= 10;
+		tv.tv_usec	= 333;
+
+		FD_ZERO(&readset);
+		FD_SET(g_socket, &readset);
+
+		errno = 0;
+
+		if (select(maxfdp1, &readset, NULL, NULL, &tv) == -1) {
+			log_warn(errno, "%s: select", __func__);
+			return -1;
+		} else if (!FD_ISSET(g_socket, &readset)) {
+			log_warn(0, "%s: no data to receive  --  timed out!", __func__);
+			return -1;
+		}
 	}
 
 	int bytes_received = 0;
