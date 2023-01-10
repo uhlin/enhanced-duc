@@ -46,7 +46,7 @@ char g_last_ip_addr[100] = "";
 
 static const char *help_text[] = {
   "\n",
-  UNDERLINE_ON "Options:" UNDERLINE_OFF "\n",
+  (UNDERLINE_ON "Options:" UNDERLINE_OFF "\n"),
   "  -h           Print help\n",
   "  -c           Create a config file by asking the user for input.\n",
   "               The user will be given the opportunity to choose a\n",
