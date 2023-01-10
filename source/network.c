@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -230,15 +230,15 @@ net_recv_plain(char *recvbuf, size_t recvbuf_size)
 ip_chg_t
 net_check_for_ip_change(void)
 {
-	bool address_resolved = false;
-	bool connected = false;
-	char buf[1000] = "";
-	char srv[255] = "";
-	const char *backup_srv = setting("backup_ip_lookup_srv");
-	const char *port = "80";
-	const char *primary_srv = setting("primary_ip_lookup_srv");
-	struct addrinfo *res, *rp;
-	unsigned char nw_addr[sizeof(struct in_addr)];
+	bool			 address_resolved = false;
+	bool			 connected = false;
+	char			 buf[1000] = "";
+	char			 srv[255] = "";
+	const char		*backup_srv = setting("backup_ip_lookup_srv");
+	const char		*port = "80";
+	const char		*primary_srv = setting("primary_ip_lookup_srv");
+	struct addrinfo		*res, *rp;
+	unsigned char		 nw_addr[sizeof(struct in_addr)];
 
 	if (setting_bool("force_update", true))
 		return IP_HAS_CHANGED;
