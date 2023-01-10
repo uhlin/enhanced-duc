@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2012-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -20,6 +20,10 @@
 #include "interpreter.h"
 #include "log.h"
 #include "various.h"
+const char g_fgets_nullret_err1[] = "error: fgets() returned null and the "
+    "error indicator is set";
+const char g_fgets_nullret_err2[] = "error: fgets() returned null for an "
+    "unknown reason";
 
 static const size_t	identifier_maxSize = 64;
 static const size_t	argument_maxSize = 512;
@@ -28,7 +32,7 @@ static const size_t	argument_maxSize = 512;
  * Copy identifier
  */
 static char *
-copy_identifier(const char *&id)
+copy_identifier(const char *&id) noexcept
 {
 	size_t	 count = identifier_maxSize;
 	char	*dest_buf = new char[count + 1];
@@ -51,7 +55,7 @@ copy_identifier(const char *&id)
  */
 /*lint -sem(copy_argument, r_null) */
 static char *
-copy_argument(const char *&arg)
+copy_argument(const char *&arg) noexcept
 {
 	bool	 inside_arg = true;
 	size_t	 count = argument_maxSize;
@@ -143,7 +147,7 @@ Interpreter(const struct Interpreter_in *in)
 		} else if ((errno = in->install_func(id, arg)) != 0) {
 			throw std::runtime_error("install error");
 		}
-	} catch (std::runtime_error& e) {
+	} catch (const std::runtime_error &e) {
 		std::cerr << '\t' << in->line << '\n';
 
 		if (strings_match(e.what(), "install error")) {
@@ -160,4 +164,36 @@ Interpreter(const struct Interpreter_in *in)
 	}
 
 	clean_up(id, arg);
+}
+
+void
+Interpreter_processAllLines(FILE *fp, const char *path, Interpreter_vFunc func1,
+    Interpreter_instFunc func2)
+{
+	char buf[MAXLINE] = { '\0' };
+	long int line_num = 0;
+
+	while (fgets(buf, sizeof buf, fp) != NULL) {
+		char *line;
+		const char *cp;
+		struct Interpreter_in in;
+
+		cp = &buf[0];
+		adv_while_isspace(&cp);
+		if (strings_match(cp, "") || *cp == '#') {
+			line_num++;
+			continue;
+		}
+
+		line = trim(xstrdup(cp));
+
+		in.path			= const_cast<char *>(path);
+		in.line			= line;
+		in.line_num		= ++line_num;
+		in.validator_func	= func1;
+		in.install_func		= func2;
+		Interpreter(&in);
+
+		free(line);
+	}
 }
