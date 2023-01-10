@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Added usage of `__func__`
 - Changed the directory structure
 - Made multiple improvements to the TLS/SSL functions
+- Minimum supported TLS protocol version has been set to 1.2
 - Updated the interpreter
 - Updated the man page
 
