@@ -2,6 +2,7 @@ include options.mk
 
 ROOT := ./
 INCLUDE_DIR := $(ROOT)include/
+TARGETS_DIR := $(ROOT)maketargets/
 TGTS = $(INCLUDE_DIR)funcs-yesno.h\
 	enhanced-duc
 
@@ -12,11 +13,6 @@ include source/build.mk
 # common rules
 include common.mk
 
-# check target
-include check.mk
-
-# clean target
-include clean.mk
-
-# install target
-include install.mk
+include $(TARGETS_DIR)check.mk
+include $(TARGETS_DIR)clean.mk
+include $(TARGETS_DIR)install.mk
