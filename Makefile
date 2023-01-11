@@ -19,12 +19,8 @@ $(INCLUDE_DIR)funcs-yesno.h:
 	$(E) "  CXX     " $@
 	$(Q) $(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c -o $@ $<
 
-include tests/recompile.mk
-
-check: $(OBJS)
-	$(RM) $(RECOMPILE)
-	$(Q) strip --strip-symbol=main $(SRC_DIR)main.o
-	$(MAKE) -Ctests
+# check target
+include check.mk
 
 # install target
 include install.mk
