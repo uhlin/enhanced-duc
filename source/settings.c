@@ -407,16 +407,16 @@ check_some_settings_strictly(void)
 void
 create_config_file(const char *path)
 {
-	FILE *fp = NULL;
-	const mode_t mode = S_IRUSR | S_IWUSR; // Read and write for the owner.
+	int fd;
+	const mode_t mode = (S_IRUSR | S_IWUSR);
 
 	log_assert_arg_nonnull("create_config_file", "path", path);
 
 	if (file_exists(path)) {
 		fatal(EEXIST, "%s %s: can't create config file  --  "
 		    "it's already existent", GfxFailure, __func__);
-	} else if ((fp = fopen(path, "w")) == NULL) {
-		fatal(errno, "%s %s: fopen", GfxFailure, __func__);
+	} else if ((fd = creat(path, mode)) < 0) {
+		fatal(errno, "%s %s: creat", GfxFailure, __func__);
 	}
 
 	FOREACH_CDV() {
@@ -426,18 +426,15 @@ create_config_file(const char *path)
 		while ((ans = get_answer(cdv->description, cdv->type,
 		    cdv->value)) == NULL)
 			/* continue */;
-		if ((ret = fprintf(fp, "%s = \"%s\";\n", cdv->setting_name,
-		    ans)) < 0) {
+		ret = dprintf(fd, "%s = \"%s\";\n", cdv->setting_name, ans);
+		if (ret < 0) {
 			fatal(0, "%s %s: failed to write to the file stream",
 			    GfxFailure, __func__);
 		}
 		free(ans);
 	}
 
-	(void) fclose(fp);
-
-	if (chmod(path, mode) != 0)
-		fatal(errno, "%s %s: chmod", GfxFailure, __func__);
+	(void) close(fd);
 
 	printf("%s %s successfully written!\n", GfxSuccess, path);
 }
