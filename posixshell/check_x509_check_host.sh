@@ -32,6 +32,12 @@ EOF
 
 	printf "checking for X509_check_host()..."
 
+	local libressl_pkg_config_path="/usr/local/opt/libressl/lib/pkgconfig"
+
+	if [ -d ${libressl_pkg_config_path} ]; then
+		export PKG_CONFIG_PATH="${libressl_pkg_config_path}"
+	fi
+
 	local crypto_cflags="$(pkg-config --cflags libcrypto)"
 	local crypto_libs="$(pkg-config --libs libcrypto)"
 
