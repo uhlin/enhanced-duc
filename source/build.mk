@@ -18,4 +18,4 @@ OBJS = $(SRC_DIR)b64_decode.o\
 
 enhanced-duc: $(OBJS)
 	$(E) "  LINK    " $@
-	$(Q) $(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+	$(Q) $(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
