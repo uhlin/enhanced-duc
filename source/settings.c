@@ -16,11 +16,14 @@
 
 #include <sys/socket.h> /* AF_INET */
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #include <arpa/inet.h> /* inet_pton() */
 
 #include <assert.h>
+#include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "colors.h"
 #include "log.h"
