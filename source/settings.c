@@ -301,7 +301,7 @@ setting_integer(const struct integer_context *ctx)
 }
 
 static bool
-is_ip_addr_ok(char **reason)
+is_ip_addr_ok(const char **reason)
 {
 	const char	*ip = setting("ip_addr");
 	unsigned char	 buf[sizeof(struct in_addr)];
@@ -322,7 +322,7 @@ is_ip_addr_ok(char **reason)
 }
 
 static bool
-is_hostname_ok(const char *host, char **reason)
+is_hostname_ok(const char *host, const char **reason)
 {
 	const char host_chars[] =
 	    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -370,7 +370,7 @@ is_port_ok(void)
 void
 check_some_settings_strictly(void)
 {
-	char		*reason = "";
+	const char	*reason = "";
 	const char	*password = setting("password");
 	const char	*username = setting("username");
 	const size_t	 password_maxlen = 120;
