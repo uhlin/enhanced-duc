@@ -18,6 +18,7 @@ CXXFLAGS = -std=c++17
 CPPFLAGS =
 
 LDFLAGS = -lcrypto -lssl
+LDLIBS =
 RM ?= @rm -f
 
 E = @echo
