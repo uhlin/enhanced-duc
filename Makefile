@@ -15,8 +15,8 @@ include common.mk
 # check target
 include check.mk
 
-# install target
-include install.mk
-
 # clean target
 include clean.mk
+
+# install target
+include install.mk
