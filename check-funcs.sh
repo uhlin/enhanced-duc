@@ -14,6 +14,7 @@ fi
 
 . "posixshell/check_strlcpy.sh"
 . "posixshell/check_strlcat.sh"
+. "posixshell/check_x509_check_host.sh"
 
 if [ $# -ne 1 ]; then
 	echo "bogus number of args"
@@ -27,6 +28,7 @@ cat /dev/null >"${FUNCS_YESNO_HDR}"
 
 check_strlcpy "${FUNCS_YESNO_HDR}"
 check_strlcat "${FUNCS_YESNO_HDR}"
+check_x509_check_host "${FUNCS_YESNO_HDR}"
 
 if [ ! -r "${FUNCS_YESNO_HDR}" ]; then
 	echo "fatal: error creating ${FUNCS_YESNO_HDR}"
