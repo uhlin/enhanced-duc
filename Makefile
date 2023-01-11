@@ -1,3 +1,5 @@
+# Makefile for use with BSD make
+
 include options.mk
 
 OSNAME != uname -s
