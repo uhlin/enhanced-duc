@@ -20,10 +20,4 @@
 
 #include "funcs-yesno.h"
 
-/*
- * Set to 0 if the OpenSSL implementation provided by your system
- * doesn't have X509_check_host()
- */
-#define HAVE_X509_CHECK_HOST 1
-
 #endif
