@@ -50,7 +50,7 @@ static struct sig_message_tag {
 };
 
 static void
-signal_handler(int signum)
+handle_signals(int signum)
 {
 	program_clean_up();
 
@@ -92,7 +92,7 @@ sighand_init(void)
 		if (ssp->ignore) {
 			act.sa_handler = SIG_IGN;
 		} else {
-			act.sa_handler = signal_handler;
+			act.sa_handler = handle_signals;
 		}
 		if (sigaction(ssp->num, &act, NULL) != 0) {
 			log_warn(errno, "%s: sigaction failed on signal %d "
