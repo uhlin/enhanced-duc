@@ -370,11 +370,11 @@ is_port_ok(void)
 void
 check_some_settings_strictly(void)
 {
-	char *reason = "";
-	const char *password = setting("password");
-	const char *username = setting("username");
-	const size_t password_maxlen = 120;
-	const size_t username_maxlen = 50;
+	char		*reason = "";
+	const char	*password = setting("password");
+	const char	*username = setting("username");
+	const size_t	 password_maxlen = 120;
+	const size_t	 username_maxlen = 50;
 
 	if (strings_match(username, "") || strings_match(password, ""))
 		fatal(0, "error: empty username nor password");
