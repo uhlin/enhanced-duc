@@ -9,11 +9,8 @@ CPPFLAGS += -I/usr/local/opt/libressl/include
 LDFLAGS += -L/usr/local/opt/libressl/lib
 .endif
 
-ROOT := ./
-INCLUDE_DIR := $(ROOT)include/
-TARGETS_DIR := $(ROOT)maketargets/
-TGTS = $(INCLUDE_DIR)funcs-yesno.h\
-	enhanced-duc
+# common vars
+include vars.mk
 
 all: $(TGTS)
 
