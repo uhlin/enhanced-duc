@@ -1,4 +1,4 @@
-/* Copyright (c) 2016, 2018, 2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -83,7 +83,7 @@ sighand_init(void)
 	act.sa_flags = 0;
 
 	if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-		log_warn(errno, "sighand_init: SIG_SETMASK");
+		log_warn(errno, "%s: SIG_SETMASK", __func__);
 		return -1;
 	}
 
@@ -95,8 +95,8 @@ sighand_init(void)
 			act.sa_handler = signal_handler;
 		}
 		if (sigaction(ssp->num, &act, NULL) != 0) {
-			log_warn(errno, "sighand_init: sigaction failed on "
-			    "signal %d (%s)", ssp->num, ssp->num_str);
+			log_warn(errno, "%s: sigaction failed on signal %d "
+			    "(%s)", __func__, ssp->num, ssp->num_str);
 			return -1;
 		}
 	}
@@ -104,7 +104,7 @@ sighand_init(void)
 	(void) sigemptyset(&set);
 
 	if (sigprocmask(SIG_SETMASK, &set, NULL) != 0) {
-		log_warn(errno, "sighand_init: SIG_SETMASK");
+		log_warn(errno, "%s: SIG_SETMASK", __func__);
 		return -1;
 	}
 
