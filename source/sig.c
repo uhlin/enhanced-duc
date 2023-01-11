@@ -79,7 +79,7 @@ block_signals(void)
 		if (ssp->ignore)
 			(void) sigaddset(&set, ssp->num);
 	}
-	if ((errno = pthread_sigmask(SIG_BLOCK, &set, NULL)) != 0)
+	if (sigprocmask(SIG_BLOCK, &set, NULL) != 0)
 		fatal(errno, "%s: pthread_sigmask", __func__);
 }
 
