@@ -14,6 +14,7 @@ CFLAGS = -D_BSD_SOURCE=1\
 CXX ?= c++
 CXXFLAGS = -std=c++17
 
+# C preprocessor flags
 CPPFLAGS =
 
 LDFLAGS = -lcrypto -lssl
