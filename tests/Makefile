@@ -30,7 +30,7 @@ main: $(RECOMPILE) $(TESTS)
 
 .o.run:
 	$(E) "  LINK    " $@
-	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(SRC_DIR)*.o $(LDFLAGS)
+	$(Q) $(CXX) $(CXXFLAGS) -o $@ $*.o $(SRC_DIR)*.o $(LDFLAGS) $(LDLIBS)
 	$(Q) strip $@
 
 clean:
