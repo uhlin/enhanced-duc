@@ -12,8 +12,8 @@ CFLAGS += -DUNIT_TESTING=1\
 	-I$(ROOT)\
 	-I/usr/local/include
 
-LDFLAGS += -L/usr/local/lib\
-	-lcmocka
+LDFLAGS += -L/usr/local/lib
+LDLIBS += -lcmocka
 
 all: main
 
