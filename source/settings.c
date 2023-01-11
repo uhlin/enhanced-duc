@@ -407,8 +407,8 @@ check_some_settings_strictly(void)
 void
 create_config_file(const char *path)
 {
-	int fd;
 	const mode_t mode = (S_IRUSR | S_IWUSR);
+	int fd;
 
 	log_assert_arg_nonnull("create_config_file", "path", path);
 
