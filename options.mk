@@ -17,8 +17,8 @@ CXXFLAGS = -std=c++17
 # C preprocessor flags
 CPPFLAGS =
 
-LDFLAGS = -lcrypto -lssl
-LDLIBS =
+LDFLAGS =
+LDLIBS = -lcrypto -lssl
 RM ?= @rm -f
 
 E = @echo
