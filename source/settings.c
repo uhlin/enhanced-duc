@@ -407,8 +407,8 @@ check_some_settings_strictly(void)
 void
 create_config_file(const char *path)
 {
-	const mode_t mode = (S_IRUSR | S_IWUSR);
-	int fd;
+	const mode_t	 mode = (S_IRUSR | S_IWUSR);
+	int		 fd;
 
 	log_assert_arg_nonnull("create_config_file", "path", path);
 
@@ -420,8 +420,8 @@ create_config_file(const char *path)
 	}
 
 	FOREACH_CDV() {
-		char *ans = NULL;
-		int ret = -1;
+		char	*ans = NULL;
+		int	 ret = -1;
 
 		while ((ans = get_answer(cdv->description, cdv->type,
 		    cdv->value)) == NULL)
