@@ -55,7 +55,8 @@ handle_signals(int signum)
 	program_clean_up();
 
 	for (struct sig_message_tag *ssp = &sig_message[0];
-	     ssp < &sig_message[nitems(sig_message)]; ssp++) {
+	    ssp < &sig_message[nitems(sig_message)];
+	    ssp++) {
 		if (ssp->num == signum) {
 			log_warn(0, "Received signal %d (%s): %s", ssp->num,
 			    ssp->num_str, ssp->msg);
@@ -88,7 +89,8 @@ sighand_init(void)
 	}
 
 	for (struct sig_message_tag *ssp = &sig_message[0];
-	     ssp < &sig_message[nitems(sig_message)]; ssp++) {
+	    ssp < &sig_message[nitems(sig_message)];
+	    ssp++) {
 		if (ssp->ignore) {
 			act.sa_handler = SIG_IGN;
 		} else {
