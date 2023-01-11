@@ -66,6 +66,23 @@ handle_signals(int signum)
 	_exit(1);
 }
 
+void
+block_signals(void)
+{
+	sigset_t set;
+
+	(void) sigemptyset(&set);
+
+	for (struct sig_message_tag *ssp = &sig_message[0];
+	    ssp < &sig_message[nitems(sig_message)];
+	    ssp++) {
+		if (ssp->ignore)
+			(void) sigaddset(&set, ssp->num);
+	}
+	if ((errno = pthread_sigmask(SIG_BLOCK, &set, NULL)) != 0)
+		fatal(errno, "%s: pthread_sigmask", __func__);
+}
+
 /**
  * This function is called whenever the program exits, no matter if it
  * was an error that caused it, or if the program exited normally.
