@@ -434,7 +434,7 @@ create_config_file(const char *path)
 		free(ans);
 	}
 
-	if (!(fd <= 0) && close(fd) != 0)
+	if (!(fd < 0) && close(fd) != 0)
 		fatal(errno, "%s %s: close", GfxFailure, __func__);
 	printf("%s %s successfully written!\n", GfxSuccess, path);
 }
