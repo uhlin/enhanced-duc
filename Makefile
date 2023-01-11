@@ -25,8 +25,5 @@ include check.mk
 # install target
 include install.mk
 
-clean:
-	$(E) "  CLEAN"
-	$(RM) $(OBJS)
-	$(RM) $(TGTS)
-	$(MAKE) -Ctests clean
+# clean target
+include clean.mk
