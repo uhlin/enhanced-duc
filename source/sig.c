@@ -75,8 +75,8 @@ signal_handler(int signum)
 int
 sighand_init(void)
 {
-	sigset_t set;
-	struct sigaction act = { 0 };
+	sigset_t		 set;
+	struct sigaction	 act = { 0 };
 
 	(void) sigfillset(&set);
 	(void) sigfillset(&act.sa_mask);
