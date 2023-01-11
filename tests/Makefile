@@ -27,7 +27,8 @@ main: $(RECOMPILE) $(TESTS)
 
 .c.o:
 	$(E) "  CC      " $@
-	$(Q) $(CC) $(CFLAGS) -I $(INCLUDE_DIR) -I $(SRC_DIR) -c -o $@ $<
+	$(Q) $(CC) $(CFLAGS) $(CPPFLAGS) -I $(INCLUDE_DIR) -I $(SRC_DIR) -c \
+	    -o $@ $<
 
 .o.run:
 	$(E) "  LINK    " $@
