@@ -29,6 +29,10 @@ you need to install a package with name `libssl-dev` before building:
 
     # apt install libssl-dev
 
+While on macOS, issue:
+
+    # brew install libressl
+
 ## Building and installing ##
 
     $ cd /path/to/source
