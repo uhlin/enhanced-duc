@@ -1,3 +1,5 @@
+# The 'check' target
+
 include tests/recompile.mk
 
 check: $(INCLUDE_DIR)funcs-yesno.h $(OBJS)
