@@ -1,3 +1,5 @@
+# Makefile for compiling and running the DUC tests
+
 ROOT := ../
 INCLUDE_DIR := $(ROOT)include/
 SRC_DIR := $(ROOT)source/
