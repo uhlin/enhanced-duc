@@ -8,7 +8,7 @@ TEST_LOGFILE ?= /tmp/run.log
 
 include $(ROOT)options.mk
 
-CFLAGS += -DUNIT_TESTING=1\
+CPPFLAGS += -DUNIT_TESTING=1\
 	-I$(ROOT)\
 	-I/usr/local/include
 
