@@ -39,11 +39,11 @@ static const char GfxSuccess[] = "[\x1b[1;32m*\x1b[0m]";
 #include "optdesc.h"
 
 static struct config_default_values_tag {
-	char *setting_name;
-	enum setting_type type;
-	char *value;
-	char *custom_val;
-	const char *description;
+	char			*setting_name;
+	enum setting_type	 type;
+	char			*value;
+	char			*custom_val;
+	const char		*description;
 } config_default_values[] = {
 	{ "username",
 	  TYPE_STRING,
