@@ -410,10 +410,10 @@ create_config_file(const char *path)
 	log_assert_arg_nonnull("create_config_file", "path", path);
 
 	if (file_exists(path)) {
-		fatal(EEXIST, "%s create_config_file: can't create config file"
-		    "  --  it's already existent", GfxFailure);
+		fatal(EEXIST, "%s %s: can't create config file  --  "
+		    "it's already existent", GfxFailure, __func__);
 	} else if ((fp = fopen(path, "w")) == NULL) {
-		fatal(errno, "%s create_config_file: fopen", GfxFailure);
+		fatal(errno, "%s %s: fopen", GfxFailure, __func__);
 	}
 
 	FOREACH_CDV() {
@@ -425,8 +425,8 @@ create_config_file(const char *path)
 			/* continue */;
 		if ((ret = fprintf(fp, "%s = \"%s\";\n", cdv->setting_name,
 		    ans)) < 0) {
-			fatal(0, "%s create_config_file: failed to "
-			    "write to the file stream", GfxFailure);
+			fatal(0, "%s %s: failed to write to the file stream",
+			    GfxFailure, __func__);
 		}
 		free(ans);
 	}
@@ -434,7 +434,7 @@ create_config_file(const char *path)
 	(void) fclose(fp);
 
 	if (chmod(path, mode) != 0)
-		fatal(errno, "%s create_config_file: chmod", GfxFailure);
+		fatal(errno, "%s %s: chmod", GfxFailure, __func__);
 
 	printf("%s %s successfully written!\n", GfxSuccess, path);
 }
