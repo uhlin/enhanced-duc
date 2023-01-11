@@ -541,6 +541,7 @@ main(int argc, char *argv[])
 		log_warn(0, "Initialization of signal handling failed");
 	if (atexit(program_clean_up) == -1)
 		log_warn(errno, "Failed to register a clean up function");
+	block_signals();
 
 	(void) setlocale(LC_ALL, "");
 	process_options(argc, argv, &opt, &conf[0], nitems(conf));
