@@ -9,7 +9,6 @@ TEST_LOGFILE ?= /tmp/run.log
 include $(ROOT)options.mk
 
 CPPFLAGS += -DUNIT_TESTING=1\
-	-I$(ROOT)\
 	-I/usr/local/include
 
 LDFLAGS += -L/usr/local/lib
