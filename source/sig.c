@@ -67,6 +67,24 @@ handle_signals(int signum)
 }
 
 /**
+ * This function is called whenever the program exits, no matter if it
+ * was an error that caused it, or if the program exited normally.
+ */
+void
+program_clean_up(void)
+{
+	net_deinit();
+	destroy_config_custom_values();
+
+	if (g_conf_read)
+		log_msg("%s %s has exited", g_programName, g_programVersion);
+	if (g_lockfile_fd != -1)
+		close(g_lockfile_fd);
+	if (g_log_to_syslog)
+		closelog();
+}
+
+/**
  * Initialize signal handling for the program. For example decide what
  * to do if the OS sends SIGSEGV (invalid memory reference) to the
  * program.
@@ -111,22 +129,4 @@ sighand_init(void)
 	}
 
 	return 0;
-}
-
-/**
- * This function is called whenever the program exits, no matter if it
- * was an error that caused it, or if the program exited normally.
- */
-void
-program_clean_up(void)
-{
-	net_deinit();
-	destroy_config_custom_values();
-
-	if (g_conf_read)
-		log_msg("%s %s has exited", g_programName, g_programVersion);
-	if (g_lockfile_fd != -1)
-		close(g_lockfile_fd);
-	if (g_log_to_syslog)
-		closelog();
 }
