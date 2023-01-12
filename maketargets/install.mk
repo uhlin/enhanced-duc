@@ -9,7 +9,7 @@ DESTDIR ?=
 
 DEST_PROGRAM = $(DESTDIR)$(PREFIX)/bin
 DEST_MANUAL = $(DESTDIR)$(PREFIX)/share/man/man1
-DEST_CONFIG = /etc/enhanced-duc.template.conf
+DEST_CONFIG = $(DESTDIR)/etc/enhanced-duc.template.conf
 
 install: $(INSTALL_DEPS)
 	$(INSTALL) -d $(DEST_PROGRAM)
