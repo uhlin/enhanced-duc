@@ -2,5 +2,6 @@
 *.run
 *.tgz
 cov-int/
+educ.rc
 enhanced-duc
 include/funcs-yesno.h
