@@ -19,7 +19,7 @@ include source/build.mk
 # common rules
 include common.mk
 
-.PHONY: check clean install
+.PHONY: check clean install install-rcfile
 
 include $(TARGETS_DIR)check.mk
 include $(TARGETS_DIR)clean.mk
