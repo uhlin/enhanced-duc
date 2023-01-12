@@ -26,7 +26,7 @@ include $(TARGETS_DIR)clean.mk
 include $(TARGETS_DIR)install.mk
 
 educ.rc:
-	cat /dev/null >"$@"
+	$(ROOT)create-rc.sh "$(PREFIX)"
 
 install-rcfile: educ.rc
 	$(Q) true
