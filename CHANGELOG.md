@@ -2,20 +2,20 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
-- Added automatic checking of the presence of wanted functions
-- Added blocking of signals at program startup
-- Added code optimizations
-- Added null checks
-- Added paths to unveil whitelist
-- Added usage of `__func__`
-- Changed the directory structure
-- Deleted disabled code
-- Fixed building on macOS
-- Fixed weaknesses in `create_config_file()` found by Code QL
+- **Added** automatic checking of the presence of wanted functions
+- **Added** blocking of signals at program startup
+- **Added** code optimizations
+- **Added** null checks
+- **Added** paths to unveil whitelist
+- **Added** usage of `__func__`
+- **Changed** the directory structure
+- **Deleted** disabled code
+- **Fixed** building on macOS
+- **Fixed** weaknesses in `create_config_file()` found by Code QL
 - Made multiple improvements to the TLS/SSL functions
 - Minimum supported TLS protocol version has been set to 1.2
-- Updated the interpreter
-- Updated the man page
+- **Updated** the interpreter
+- **Updated** the man page
 
 ## [2.2] - 2021-04-09 ##
 - Added and deleted tests
