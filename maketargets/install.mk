@@ -11,7 +11,7 @@ DEST_PROGRAM = $(DESTDIR)$(PREFIX)/bin
 DEST_MANUAL = $(DESTDIR)$(PREFIX)/share/man/man1
 DEST_CONFIG = $(DESTDIR)/etc/enhanced-duc.template.conf
 
-install: $(INSTALL_DEPS)
+install: $(INSTALL_DEPS) install-rcfile
 	$(INSTALL) -d $(DEST_PROGRAM)
 	$(INSTALL) -d $(DEST_MANUAL)
 	$(INSTALL) -m 0755 enhanced-duc $(DEST_PROGRAM)

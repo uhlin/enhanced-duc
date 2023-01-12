@@ -25,3 +25,6 @@ include $(TARGETS_DIR)install.mk
 
 educ.rc:
 	cat /dev/null >"$@"
+
+install-rcfile: educ.rc
+	$(Q) true
