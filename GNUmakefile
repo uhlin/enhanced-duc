@@ -22,3 +22,6 @@ include common.mk
 include $(TARGETS_DIR)check.mk
 include $(TARGETS_DIR)clean.mk
 include $(TARGETS_DIR)install.mk
+
+educ.rc:
+	cat /dev/null >"$@"
