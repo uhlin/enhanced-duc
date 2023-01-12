@@ -34,6 +34,7 @@
 #include "network.h"
 #include "settings.h"
 #include "sig.h"
+#include "terminate.h"
 #include "various.h"
 #include "wrapper.h"
 
@@ -542,6 +543,7 @@ main(int argc, char *argv[])
 	if (atexit(program_clean_up) == -1)
 		log_warn(errno, "Failed to register a clean up function");
 	block_signals();
+	duc_set_terminate();
 
 	(void) setlocale(LC_ALL, "");
 	process_options(argc, argv, &opt, &conf[0], nitems(conf));
