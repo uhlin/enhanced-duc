@@ -28,5 +28,11 @@ include $(TARGETS_DIR)install.mk
 educ.rc:
 	$(ROOT)create-rc.sh "$(PREFIX)"
 
+DEST_RCFILE = $(DESTDIR)/etc/rc.d/educ
+
 install-rcfile: educ.rc
+ifeq ($(OSNAME),OpenBSD)
+	$(INSTALL) -m 0555 educ.rc $(DEST_RCFILE)
+else
 	$(Q) true
+endif
