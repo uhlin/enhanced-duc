@@ -6,6 +6,8 @@ CFLAGS = -D_BSD_SOURCE=1\
 	-D_POSIX_C_SOURCE=200809L\
 	-O2\
 	-Wall\
+	-Wformat-security\
+	-Wshadow\
 	-Wsign-compare\
 	-Wstrict-prototypes\
 	-pipe\
