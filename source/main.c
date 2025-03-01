@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -41,7 +41,7 @@
 const char g_programName[]     = "Enhanced DUC";
 const char g_programVersion[]  = "v2.3";
 const char g_programAuthor[]   = "Markus Uhlin";
-const char g_maintainerEmail[] = "markus.uhlin@bredband.net";
+const char g_maintainerEmail[] = "markus.uhlin@icloud.com";
 
 char g_last_ip_addr[100] = "";
 

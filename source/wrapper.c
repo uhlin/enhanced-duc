@@ -1,4 +1,4 @@
-/* Copyright (c) 2015-2023 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2015-2023 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any

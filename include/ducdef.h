@@ -1,6 +1,6 @@
 #ifndef DUC_DEFINITIONS_H
 #define DUC_DEFINITIONS_H
-/* Copyright (c) 2021-2023 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2021-2023 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any

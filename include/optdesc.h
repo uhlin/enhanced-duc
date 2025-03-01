@@ -1,6 +1,6 @@
 #ifndef OPTION_DESCRIPTION_H
 #define OPTION_DESCRIPTION_H
-/* Copyright (c) 2021 Markus Uhlin <markus.uhlin@bredband.net>
+/* Copyright (c) 2021 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
