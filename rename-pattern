@@ -1,10 +1,11 @@
 #!/bin/sh
 
 TARGETS="
-*.c
-*.cpp
-*.h
-*.hpp
+include/*.h
+source/*.c
+source/*.cpp
+source/*.h
+source/*.hpp
 tests/*.c
 tests/*.h
 "
