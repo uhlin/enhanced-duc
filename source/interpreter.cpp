@@ -31,8 +31,8 @@ static const char ArgBegin = '"';
 static const char ArgEnd = '"';
 static const char CommentChar = '#';
 
-static const size_t	identifier_maxSize = 50;
-static const size_t	argument_maxSize = 480;
+static const size_t	identifier_maxSize = 64;
+static const size_t	argument_maxSize = 512;
 
 /**
  * Copy identifier
