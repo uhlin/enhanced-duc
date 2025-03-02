@@ -51,8 +51,7 @@ copy_identifier(const char *&id)
 	*dest = '\0';
 
 	if (count == 1)
-		fatal(EOVERFLOW, "In copy_identifier: fatal: "
-		    "string was truncated!");
+		fatal(EOVERFLOW, "%s: fatal: string was truncated", __func__);
 	return dest_buf;
 }
 
@@ -81,8 +80,7 @@ copy_argument(const char *&arg)
 	*dest = '\0';
 
 	if (inside_arg && count == 1)
-		fatal(EOVERFLOW, "In copy_argument: fatal: "
-		    "string was truncated!");
+		fatal(EOVERFLOW, "%s: fatal: string was truncated", __func__);
 	if (inside_arg) {
 		delete[] dest_buf;
 		return nullptr;
