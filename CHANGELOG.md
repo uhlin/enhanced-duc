@@ -1,6 +1,9 @@
 # Change Log #
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] ##
+- Updated the config file interpreter
+
 ## [2.3] - 2023-01-12 ##
 - **Added** automatic checking of the presence of wanted functions
 - **Added** blocking of signals at program startup
