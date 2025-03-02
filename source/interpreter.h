@@ -24,16 +24,16 @@ typedef bool (*Interpreter_vFunc)(const char *);
 typedef int (*Interpreter_instFunc)(const char *, const char *);
 
 struct Interpreter_in {
-	char			*path;
-	char			*line;
-	long int		 line_num;
-	Interpreter_vFunc	 validator_func;
-	Interpreter_instFunc	 install_func;
+	char *path;
+	char *line;
+	long int line_num;
+	Interpreter_vFunc validator_func;
+	Interpreter_instFunc install_func;
 };
 
 __DUC_BEGIN_DECLS
-extern const char g_fgets_nullret_err1[];
-extern const char g_fgets_nullret_err2[];
+extern const char g_fgets_nullret_err1[70];
+extern const char g_fgets_nullret_err2[70];
 
 void	Interpreter(const struct Interpreter_in *);
 void	Interpreter_processAllLines(FILE *, const char *, Interpreter_vFunc,

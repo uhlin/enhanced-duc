@@ -22,19 +22,23 @@
 #include "various.h"
 #include "wrapper.h"
 
-const char g_fgets_nullret_err1[] = "error: fgets() returned null and the "
+const char g_fgets_nullret_err1[70] = "error: fgets() returned null and the "
     "error indicator is set";
-const char g_fgets_nullret_err2[] = "error: fgets() returned null for an "
+const char g_fgets_nullret_err2[70] = "error: fgets() returned null for an "
     "unknown reason";
 
-static const size_t	identifier_maxSize = 64;
-static const size_t	argument_maxSize = 512;
+static const char ArgBegin = '"';
+static const char ArgEnd = '"';
+static const char CommentChar = '#';
+
+static const size_t	identifier_maxSize = 50;
+static const size_t	argument_maxSize = 480;
 
 /**
  * Copy identifier
  */
 static char *
-copy_identifier(const char *&id) noexcept
+copy_identifier(const char *&id)
 {
 	size_t	 count = identifier_maxSize;
 	char	*dest_buf = new char[count + 1];
@@ -55,9 +59,9 @@ copy_identifier(const char *&id) noexcept
 /**
  * Copy argument
  */
-/*lint -sem(copy_argument, r_null) */
+//lint -sem(copy_argument, r_null)
 static char *
-copy_argument(const char *&arg) noexcept
+copy_argument(const char *&arg)
 {
 	bool	 inside_arg = true;
 	size_t	 count = argument_maxSize;
@@ -65,7 +69,7 @@ copy_argument(const char *&arg) noexcept
 	char	*dest = addrof(dest_buf[0]);
 
 	while (*arg && count > 1) {
-		if (*arg == '\"') {
+		if (*arg == ArgEnd) {
 			inside_arg = false;
 			arg++;
 			break;
@@ -81,7 +85,7 @@ copy_argument(const char *&arg) noexcept
 		    "string was truncated!");
 	if (inside_arg) {
 		delete[] dest_buf;
-		return NULL;
+		return nullptr;
 	}
 	return dest_buf;
 }
@@ -89,10 +93,8 @@ copy_argument(const char *&arg) noexcept
 static void
 clean_up(char *id, char *arg)
 {
-	if (id)
-		delete[] id;
-	if (arg)
-		delete[] arg;
+	delete[] id;
+	delete[] arg;
 }
 
 /**
@@ -107,13 +109,13 @@ clean_up(char *id, char *arg)
 void
 Interpreter(const struct Interpreter_in *in)
 {
-	char	*id = NULL;
-	char	*arg = NULL;
+	char	*id = nullptr;
+	char	*arg = nullptr;
+
+	if (in == nullptr)
+		fatal(EINVAL, "%s", __func__);
 
 	try {
-		if (in == NULL)
-			throw std::runtime_error("null input");
-
 		const char *cp = addrof(in->line[0]);
 
 		if (!isalnum(*cp) && *cp != '_')
@@ -127,9 +129,9 @@ Interpreter(const struct Interpreter_in *in)
 		}
 
 		adv_while_isspace(&cp);
-		if (*cp++ != '\"')
-			throw std::runtime_error("expected string");
-		else if ((arg = copy_argument(cp)) == NULL)
+		if (*cp++ != ArgBegin)
+			throw std::runtime_error("expected arg begin");
+		else if ((arg = copy_argument(cp)) == nullptr)
 			throw std::runtime_error("unterminated argument");
 
 		adv_while_isspace(&cp);
@@ -137,7 +139,7 @@ Interpreter(const struct Interpreter_in *in)
 			throw std::runtime_error("no line terminator!");
 
 		adv_while_isspace(&cp);
-		if (*cp && *cp != '#') {
+		if (*cp && *cp != CommentChar) {
 			throw std::runtime_error("implicit data after "
 			    "line terminator!");
 		} else if (!(in->validator_func(id))) {
@@ -149,6 +151,10 @@ Interpreter(const struct Interpreter_in *in)
 		} else if ((errno = in->install_func(id, arg)) != 0) {
 			throw std::runtime_error("install error");
 		}
+	} catch (const std::bad_alloc &e) {
+		std::cerr << "out of memory: " << e.what() << '\n';
+		clean_up(id, arg);
+		abort();
 	} catch (const std::runtime_error &e) {
 		std::cerr << '\t' << in->line << '\n';
 
@@ -172,17 +178,17 @@ void
 Interpreter_processAllLines(FILE *fp, const char *path, Interpreter_vFunc func1,
     Interpreter_instFunc func2)
 {
-	char buf[MAXLINE] = { '\0' };
-	long int line_num = 0;
+	char		buf[MAXLINE] = { '\0' };
+	long int	line_num = 0;
 
-	while (fgets(buf, sizeof buf, fp) != NULL) {
-		char *line;
-		const char *cp;
-		struct Interpreter_in in;
+	while (fgets(buf, sizeof buf, fp) != nullptr) {
+		char			*line;
+		const char		*cp;
+		struct Interpreter_in	 in;
 
 		cp = &buf[0];
 		adv_while_isspace(&cp);
-		if (strings_match(cp, "") || *cp == '#') {
+		if (strings_match(cp, "") || *cp == CommentChar) {
 			line_num++;
 			continue;
 		}
