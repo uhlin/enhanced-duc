@@ -169,6 +169,10 @@ Interpreter(const struct Interpreter_in *in)
 
 		clean_up(id, arg);
 		abort();
+	} catch (...) {
+		std::cerr << "unknown exception  --  should not be reached\n";
+		clean_up(id, arg);
+		abort();
 	}
 
 	clean_up(id, arg);
