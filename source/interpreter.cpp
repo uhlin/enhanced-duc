@@ -44,9 +44,8 @@ copy_identifier(const char *&id)
 	char	*dest_buf = new char[count + 1];
 	char	*dest = addrof(dest_buf[0]);
 
-	while ((isalnum(*id) || *id == '_') && count > 1) {
+	while ((isalnum(*id) || *id == '_') && count > 1)
 		*dest++ = *id++, count--;
-	}
 
 	*dest = '\0';
 
