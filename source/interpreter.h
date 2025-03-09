@@ -41,7 +41,7 @@ void	Interpreter_processAllLines(FILE *, const char *, Interpreter_vFunc,
 __DUC_END_DECLS
 
 static inline void
-adv_while_isspace(const char **ptr)
+eatwhite(const char **ptr)
 {
 	while (isspace(**ptr))
 		(*ptr)++;

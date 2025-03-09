@@ -119,23 +119,23 @@ Interpreter(const struct Interpreter_in *in)
 			throw std::runtime_error("unexpected leading "
 			    "character");
 		id = copy_identifier(cp);
-		adv_while_isspace(&cp);
+		eatwhite(&cp);
 		if (*cp++ != '=') {
 			throw std::runtime_error("expected assignment "
 			    "operator");
 		}
 
-		adv_while_isspace(&cp);
+		eatwhite(&cp);
 		if (*cp++ != ArgBegin)
 			throw std::runtime_error("expected arg begin");
 		else if ((arg = copy_argument(cp)) == nullptr)
 			throw std::runtime_error("unterminated argument");
 
-		adv_while_isspace(&cp);
+		eatwhite(&cp);
 		if (*cp++ != ';')
 			throw std::runtime_error("no line terminator!");
 
-		adv_while_isspace(&cp);
+		eatwhite(&cp);
 		if (*cp && *cp != CommentChar) {
 			throw std::runtime_error("implicit data after "
 			    "line terminator!");
@@ -188,7 +188,7 @@ Interpreter_processAllLines(FILE *fp, const char *path, Interpreter_vFunc func1,
 		struct Interpreter_in	 in;
 
 		cp = &buf[0];
-		adv_while_isspace(&cp);
+		eatwhite(&cp);
 		if (strings_match(cp, "") || *cp == CommentChar) {
 			line_num++;
 			continue;
