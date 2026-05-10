@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@icloud.com>
+/* Copyright (c) 2016-2026 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -512,12 +512,16 @@ read_config_file(const char *path)
 	Interpreter_processAllLines(fp, path, is_recognized_setting,
 	    install_setting);
 
-	if (feof(fp))
-		fclose(fp);
-	else if (ferror(fp))
+	if (feof(fp)) {
+		if (fclose(fp) != 0) {
+			log_warn(errno, "%s: error closing file pointer",
+			    __func__);
+		}
+	} else if (ferror(fp)) {
 		fatal(0, "%s: %s", __func__, g_fgets_nullret_err1);
-	else
+	} else {
 		fatal(0, "%s: %s", __func__, g_fgets_nullret_err2);
+	}
 
 	g_conf_read = true;
 }
