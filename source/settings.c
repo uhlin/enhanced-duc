@@ -209,7 +209,7 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	const int errno_save = errno;
 	if (!strncmp(desc, "Your password.", 14)) {
 		toggle_echo(ON);
-		putchar('\n');
+		(void) putchar('\n');
 	}
 
 	if (fgets_fail)
