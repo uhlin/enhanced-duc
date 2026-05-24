@@ -122,7 +122,7 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 static __dead void
 usage(void)
 {
-	extern char *__progname;
+	extern char *__progname; // NOLINT
 	char *msgVersion = strdup_printf("%s%s%s %s by %s\n",
 	    MAGENTA, g_programName, NORMAL,
 	    g_programVersion,
