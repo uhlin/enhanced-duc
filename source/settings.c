@@ -193,8 +193,8 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	const size_t sz = 390;
 	char *answer = xcalloc(sz, 1);
 
-	log_assert_arg_nonnull("get_answer", "desc", desc);
-	log_assert_arg_nonnull("get_answer", "defaultAnswer", defaultAnswer);
+	log_assert_arg_nonnull(__func__, "desc", desc);
+	log_assert_arg_nonnull(__func__, "defaultAnswer", defaultAnswer);
 
 	(void) fputs(MAGENTA, stdout);
 	(void) puts(desc);
@@ -213,13 +213,14 @@ get_answer(const char *desc, enum setting_type type, const char *defaultAnswer)
 	}
 
 	if (fgets_fail)
-		fatal(errno_save, "get_answer: fatal: fgets fail");
+		fatal(errno_save, "%s: fatal: fgets fail", __func__);
 
 	const bool input_too_big = strchr(answer, '\n') == NULL;
 	int c = EOF;
 
 	if (input_too_big) {
-		fprintf(stderr, "%s get_answer: input too big!\n", GfxFailure);
+		(void) fprintf(stderr, "%s %s: input too big!\n", GfxFailure,
+		    __func__);
 		while (c = getchar(), c != '\n' && c != EOF)
 			/* discard */;
 		free(answer);
