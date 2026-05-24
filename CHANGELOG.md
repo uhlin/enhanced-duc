@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] ##
+- Added `snprintf()` truncation checks
+- Added logging of `fclose()` errors
+- Fixed hardcoded function names in messages
 - Updated the config file interpreter
 
 ## [2.3] - 2023-01-12 ##
