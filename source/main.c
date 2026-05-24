@@ -115,6 +115,9 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 		case 'B':
 			po->want_daemon = true;
 			break;
+		default:
+			po->want_usage = true;
+			return; // XXX
 		}
 	}
 }
