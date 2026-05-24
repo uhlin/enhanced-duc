@@ -1,4 +1,4 @@
-/* Copyright (c) 2015, 2018, 2021 Markus Uhlin <markus.uhlin@icloud.com>
+/* Copyright (c) 2015-2026 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -46,6 +46,9 @@ log_doit(int errCode, int priority, const char *fmt, va_list ap)
 		case LOG_INFO:
 		case LOG_DEBUG:
 			stream = stdout;
+			break;
+		default:
+			// XXX: empty
 			break;
 		}
 
