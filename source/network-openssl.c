@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@icloud.com>
+/* Copyright (c) 2016-2026 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -228,7 +228,7 @@ net_ssl_recv(char *recvbuf, size_t recvbuf_size)
 int
 net_ssl_begin(void)
 {
-	const char		*err_reason = "";
+	const char		*err_reason = ""; // NOLINT
 	static const int	 VALUE_HANDSHAKE_OK = 1;
 
 	if (ssl != NULL) {
