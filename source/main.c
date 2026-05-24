@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2023 Markus Uhlin <markus.uhlin@icloud.com>
+/* Copyright (c) 2016-2026 Markus Uhlin <markus.uhlin@icloud.com>
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software for any
@@ -79,6 +79,7 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 	const char opt_string[] = ":hcx:DoB";
 	enum { MISSING_OPTARG = ':', UNRECOGNIZED_OPTION = '?' };
 	int opt = -1;
+	int ret = -1;
 
 	while ((opt = getopt(argc, argv, opt_string)) != -1) {
 		switch (opt) {
@@ -99,7 +100,11 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 			po->want_create_config_file = true;
 			return;
 		case 'x':
-			snprintf(ar, ar_sz, "%s", optarg);
+			ret = snprintf(ar, ar_sz, "%s", optarg);
+			if (ret < 0 || (size_t)ret >= ar_sz) {
+				(void) fprintf(stderr, "%s: warning: "
+				    "option argument too long", __func__);
+			}
 			break;
 		case 'D':
 			po->want_debug = true;
