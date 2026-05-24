@@ -86,11 +86,11 @@ process_options(int argc, char *argv[], struct program_options *po, char *ar,
 		case MISSING_OPTARG:
 		case UNRECOGNIZED_OPTION:
 			if (opt == MISSING_OPTARG) {
-				fprintf(stderr, "Option '%c' requires an "
-				    "argument.\n", optopt);
+				(void) fprintf(stderr, "Option '%c' "
+				    "requires an argument.\n", optopt);
 			} else {
-				fprintf(stderr, "Unrecognized option '%c'.\n",
-				    optopt);
+				(void) fprintf(stderr, "Unrecognized option "
+				    "'%c'.\n", optopt);
 			}
 			/*FALLTHROUGH*/
 		case 'h':
