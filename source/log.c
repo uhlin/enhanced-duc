@@ -117,7 +117,7 @@ log_debug(const char *fmt, ...)
 void
 log_init(void)
 {
-	extern char	*__progname;
+	extern char	*__progname; // NOLINT
 	static bool	 initialized = false;
 
 	if (initialized)
