@@ -161,7 +161,7 @@ set_cycle_off(void)
 static void
 force_priv_drop(void)
 {
-	struct passwd *pw = getpwnam(enhanced_duc_user);
+	const struct passwd *pw = getpwnam(enhanced_duc_user);
 
 	log_msg("dropping root privileges...");
 
@@ -213,7 +213,8 @@ hostname_array_assign(void)
 	}
 
 	for (size_t hosts_assigned = 0;; hosts_assigned++) {
-		char *token = strtok(hosts_assigned == 0 ? dump : NULL, "|");
+		const char *token = strtok(hosts_assigned == 0 ? dump : NULL,
+		    "|");
 
 		if (token && hosts_assigned < nitems(hostname_array)) {
 			hostname_array[hosts_assigned] = xstrdup(token);
